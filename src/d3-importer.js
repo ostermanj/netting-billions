@@ -1,4 +1,4 @@
-import { ascending, extent, max, min, range, descending } from 'd3-array';
+import { ascending, descending, extent, max, min, range, sum  } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { entries, nest}         from 'd3-collection';
 import { format, formatLocale } from 'd3-format';
@@ -31,6 +31,7 @@ export default {
     scaleTime,
     select,
     selectAll,
+    sum,
     timeFormat,
     timeParse,
     timeYear,

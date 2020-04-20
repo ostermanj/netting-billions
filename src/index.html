@@ -3,8 +3,17 @@
 <% for (var css in htmlWebpackPlugin.files.css) { %>
     <link class="emitted-css" href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
 <% } %>
-    <p class="hw">hello world</p>
 </div>
+	<table>
+		<thead>
+			<tr>
+				<th></th><th>Volume</th><th>Dock value</th><th>Retail value</th>
+			</tr>
+		</thead>
+		<tbody id="d3-container">
+			
+		</tbody>
+	</table>
 <div class="clearfix"></div>
 <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
 <script class="emitted-bundle" src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
