@@ -1,7 +1,14 @@
 @import './variables.scss';
 @import './d3-tip.scss';
 
-.hw {
-	color: magenta;
+
+.sparkline {
+    stroke: #000;
+    stroke-width: 2px;   
+    fill: none;
+}
+
+svg {
+    max-width: 75px;
 }
 
