@@ -3,7 +3,7 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { entries, nest}         from 'd3-collection';
 import { format, formatLocale } from 'd3-format';
 import { path }                 from 'd3-path';
-import { scaleTime,scaleLinear, scaleSqrt, scaleOrdinal } from 'd3-scale';
+import { scaleLinear,scaleLog } from 'd3-scale';
 import { select, selectAll }               from 'd3-selection';
 import { line }                 from 'd3-shape';
 import { timeYear }             from 'd3-time';
@@ -25,10 +25,8 @@ export default {
     nest,
     path,
     range,
-    scaleOrdinal,
     scaleLinear,
-    scaleSqrt,
-    scaleTime,
+    scaleLog,
     select,
     selectAll,
     sum,

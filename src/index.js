@@ -16,7 +16,8 @@ const viewBoxHeight = 50;
 const height = viewBoxHeight - margin.top - margin.bottom;
 const width = 100 - margin.left - margin.right;
 
-const yScale = d3.scaleLinear().range([height, 0]);  // to be completed each instance
+const yScaleLog = d3.scaleLog().range([height, 0]);  // to be completed each instance
+const yScaleLinear = d3.scaleLinear().range([height, 0]);  // to be completed each instance
 const xScale = d3.scaleLinear().range([0, width]).domain([years[0], years[years.length - 1]]);
 
 /*const minMax = ['volume','catch_value','sales_value'].reduce(function(acc,cur){
@@ -26,6 +27,7 @@ const xScale = d3.scaleLinear().range([0, width]).domain([years[0], years[years.
 },{});*/
 
 const sums = {};
+const percents = {};
 d3.formatLocale({
     decimal: '.',
     thousands: ',',
@@ -33,14 +35,17 @@ d3.formatLocale({
     currency: ['$', '']
 });
 
-function returnValueline(property) {
+function returnValueline(property, {scale, sharedScale}) {
     return d3.line()
         .x(d => {
             return xScale(d.x);
         })
         .y(d => {
-            console.log(d3.min(sums[property]), d3.max(sums[property]));
-            return yScale.domain( [d3.min(sums[property]), d3.max(sums[property])] )(d.y);
+            if ( sharedScale ){
+                return scale.domain( [d3.min(sums[property]), d3.max(sums[property])] )(d.y);
+            } else {
+                return scale.domain( [d.min, d.max ] )(d.y);
+            }
         });
 }
 
@@ -51,16 +56,21 @@ function nestBy(fields,data){
         return acc.key(d => d[cur]);
     },d3.nest()).rollup(leaves => {
         var sum =  Math.round(d3.sum(leaves, l => l.value));
+        var percentages = leaves.reduce((acc,cur) => {
+            acc.push( (cur.value - leaves[0].value) / leaves[0].value);
+            return acc;
+        },[]);
         sums[leaves[0].property] = sums[leaves[0].property] ? [...sums[leaves[0].property],sum] : [sum];
+        percents[leaves[0].property] = percents[leaves[0].property] ? [...percents[leaves[0].property],sum] : [...percentages];
         return sum;
     }).entries(data);
 }
 
-console.log(sums);
+console.log(sums, percents);
 var nestedData = nestBy(['ocean','property','year'], data);
 console.log(nestedData);
-function renderTable(){
-    var rows = d3.select('#d3-container')
+function renderTable(scale,index){
+    var rows = d3.select('#d3-container-' + index)
         .selectAll('tr').data(nestedData)
         .enter().append('tr')
         .attr('class', d => d.key);
@@ -86,15 +96,24 @@ function renderTable(){
                 .datum( d => years.map(year => {
                     return {
                         x: year,
-                        y: d.values.find(d => d.key == year).value
+                        y: d.values.find(d => d.key == year).value,
+                        min: d3.min(d.values, v => v.value),
+                        max: d3.max(d.values, v => v.value)
                     };
                 }))
-                .attr('d', returnValueline(d.key))
+                .attr('d', returnValueline(d.key, scale))
                 .attr('class', 'sparkline');
         })
 
 
 }
 
+[
+    {scale: yScaleLinear, sharedScale: false},
+    {scale: yScaleLinear, sharedScale: true},
+    {scale: yScaleLog, sharedScale: false},
+    {scale: yScaleLog, sharedScale: true},
 
-renderTable();
+].forEach((scale,i) => {
+    renderTable(scale,i);
+});
