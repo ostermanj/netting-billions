@@ -1,4 +1,4 @@
-import { ascending, descending, extent, max, min, range, sum  } from 'd3-array';
+import { ascending, descending, deviation, extent, max, mean, median, min, range, sum, variance  } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { entries, nest}         from 'd3-collection';
 import { format, formatLocale } from 'd3-format';
@@ -15,12 +15,15 @@ export default {
     axisBottom,
     axisLeft,
     descending,
+    deviation,
     entries,
     extent,
     format,
     formatLocale,
     line,
     max,
+    mean,
+    median,
     min,
     nest,
     path,
@@ -33,5 +36,6 @@ export default {
     timeFormat,
     timeParse,
     timeYear,
-    tip
+    tip,
+    variance
 };
