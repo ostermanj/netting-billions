@@ -66,9 +66,32 @@ function nestBy(fields,data){
     }).entries(data);
 }
 
+
 console.log(sums, percents);
 var nestedData = nestBy(['ocean','property','year'], data);
 console.log(nestedData);
+function summarizeChildren(datum){ // ie {key: 'WPCO', values: []}}
+   function total(datum){
+        datum.total = datum.values.reduce((acc, cur) => {
+            return acc + (cur.values ? total(cur) : cur.value);
+        },0);
+        return datum.total;
+   }
+   function minMax(datum){
+      datum.minMax = datum.values.reduce((acc,cur) => {
+        acc[0] = cur.values ? Math.min(minMax(cur)[0], acc[0]) : Math.min(cur.value, acc[0]);
+        acc[1] = cur.values ? Math.max(minMax(cur)[1], acc[1]) : Math.max(cur.value, acc[1]);
+        return acc;
+      },[Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY]);
+      return datum.minMax;
+   }
+   total(datum);
+   minMax(datum);
+}   
+
+nestedData.forEach(datum => {
+    summarizeChildren(datum);
+});
 function renderTable(scale,index){
     var rows = d3.select('#d3-container-' + index)
         .selectAll('tr').data(nestedData)
