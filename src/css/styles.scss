@@ -8,7 +8,10 @@
     fill: none;
 }
 
-#pew-app svg {
+svg {
     width: 75px;
+    display: block;
+    outline: 1px solid magenta;
+    margin-bottom: 1em;
 }
 

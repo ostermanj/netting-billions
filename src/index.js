@@ -2,6 +2,9 @@ import './css/styles.scss';
 import d3 from './d3-importer.js';
 import data from './data/data.csv';
 
+window.data = data;
+window.d3 = d3;
+
 /*  1. create an object with all fields from the data except `value` as keys and a Set of all values for that field as the values.
     This will be used later to set up <table>s that will house the svg graphs. The data will be nested so that the summaries of the
     data make sense at each level of nesting (i.e., nested first by property being measured). That's good for the data but will not mirror the 
@@ -39,14 +42,15 @@ import data from './data/data.csv';
             return acc.concat(cur.values ? summarizeChildren(cur) : cur.value);
         },[]);
         
-        datum.valueCount = [descendantValues.length, d3.format(',.0f')(descendantValues.length)];
-        datum.max = [d3.max(descendantValues), d3.format(',.0f')(d3.max(descendantValues))];
-        datum.min = [d3.min(descendantValues), d3.format(',.0f')(d3.min(descendantValues))];
-        datum.total = [d3.sum(descendantValues), d3.format(',.0f')(d3.sum(descendantValues))];
-        datum.mean = [d3.mean(descendantValues), d3.format(',.0f')(d3.mean(descendantValues))];
-        datum.median = [d3.median(descendantValues), d3.format(',.0f')(d3.median(descendantValues))];
-        datum.variance = [d3.variance(descendantValues), d3.format(',.0f')(d3.variance(descendantValues))];
-        datum.deviation = [d3.deviation(descendantValues), d3.format(',.0f')(d3.deviation(descendantValues))];
+        datum.valueCount = descendantValues.length;
+        datum.max    = d3.max(datum.values, v => v.total || v.value);
+       // datum.max = d3.max(desce);
+        datum.min = d3.min(datum.values, v => v.total || v.value);
+        datum.total = d3.sum(descendantValues);
+        datum.mean = d3.mean(descendantValues);
+        datum.median = d3.median(descendantValues);
+        datum.variance = d3.variance(descendantValues);
+        datum.deviation = d3.deviation(descendantValues);
 
         return descendantValues;
     }
@@ -58,30 +62,17 @@ import data from './data/data.csv';
 /* end */
 
 /*
-const margin = {
-    top: 1,
-    right: 0,
-    bottom: 1,
-    left: 0
-};
 
-const years = [2012,2014,2016,2018];
+const years = fieldValues.year.values().sort();
 
-const viewBoxHeight = 50;
 
 const height = viewBoxHeight - margin.top - margin.bottom;
 const width = 100 - margin.left - margin.right;
 
-const yScaleLog = d3.scaleLog().range([height, 0]);  // to be completed each instance
-const yScaleLinear = d3.scaleLinear().range([height, 0]);  // to be completed each instance
-const xScale = d3.scaleLinear().range([0, width]).domain([years[0], years[years.length - 1]]);
+//const yScaleLog = d3.scaleLog().range([height, 0]);  // to be completed each instance
 
-/*const minMax = ['volume','catch_value','sales_value'].reduce(function(acc,cur){
-    console.log(data.filter(d => d.property == cur));
-    acc[cur] = [d3.min(data.filter(d => d.property == cur), d => d.value), d3.max(data.filter(d => d.property == cur), d => d.value)];
-    return acc;
-},{});*/
-/*
+
+
 d3.formatLocale({
     decimal: '.',
     thousands: ',',
@@ -89,60 +80,78 @@ d3.formatLocale({
     currency: ['$', '']
 });
 
-function returnValueline(property, {scale, sharedScale}) {
+function returnValueline(property) {
     return d3.line()
         .x(d => {
             return xScale(d.x);
         })
         .y(d => {
-            if ( sharedScale ){
-                return scale.domain( [d3.min(sums[property]), d3.max(sums[property])] )(d.y);
-            } else {
-                return scale.domain( [d.min, d.max ] )(d.y);
-            }
+            return yScale(d.y);
         });
 }
-
-
-
-
-console.log(nestedData);
-/*function summarizeChildren(datum){ // ie {key: 'WPCO', values: []}}
-   function total(datum){
-        datum.total = datum.values.reduce((acc, cur) => {
-            return acc + (cur.values ? total(cur) : cur.value);
-        },0);
-        return datum.total;
-   }
-   function descendants(datum){ // 
-    console.log(datum);
-        datum.descendants = datum.values.reduce((acc, cur) => {
-            //console.log(cur);
-            return acc + (cur.values ? descendants(cur) : 1);
-        },0);
-        datum.mean = datum.total / datum.descendants;
-        return datum.descendants;
-   }
-   function minMax(datum){
-      datum.minMax = datum.values.reduce((acc,cur) => {
-        acc[0] = cur.values ? Math.min(minMax(cur)[0], acc[0]) : Math.min(cur.value, acc[0]);
-        acc[1] = cur.values ? Math.max(minMax(cur)[1], acc[1]) : Math.max(cur.value, acc[1]);
-        return acc;
-      },[Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY]);
-      return datum.minMax;
-   }
-   function descendantValues(datum){
-        datum.descendantValues = datum.values.reduce((acc, cur) => {
-            return acc.concat(cur.values ? descendantValues(cur) : cur.value);
-        },[]);
-        return datum.descendantValues;
-   }
-   total(datum);
-   descendants(datum);
-   minMax(datum);
-   descendantValues(datum);
-}   
 */
+const years = Array.from(fieldValues.year.values()).sort();
+const margin = {
+    top: 1,
+    right: 0,
+    bottom: 1,
+    left: 0
+};
+const viewBoxHeight = 50;
+const height = viewBoxHeight - margin.top - margin.bottom;
+const width = 100 - margin.left - margin.right;
+const yScale = d3.scaleLinear().range([height, 0]);  // to be completed each instance
+const xScale = d3.scaleLinear().range([0, width]).domain([years[0], years[years.length - 1]]);
+
+
+const valueline = d3.line()
+    .x(d => {
+        return xScale(d.x);
+    })
+    .y(d => {
+        return yScale(d.y);
+    });
+// TO DO . UGH HERE there is a problem with the min max
+function createSVG({datum,parent}){
+    var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    console.log(parent, d3.min(parent.values, v => v.total), d3.max(parent.values, v => v.total));
+    /* put each graph on its own scale filling full range */
+    // yScale.domain([datum.min, datum.max]); 
+    /* put each column of charts on its own scale. ie each property on same scale, comparable */
+    yScale.domain([d3.min(parent.values, v => v.min), d3.max(parent.values, v => v.max)]);
+    d3.select(svg)
+        .attr('viewBox', '0 0 100 ' + viewBoxHeight)
+        .attr('focusable', false)
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('version', '1.1')
+        .append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`)
+            .append('path')
+            .datum( () => {
+                var _d = years.map(year => {
+                    return {
+                        x: year,
+                        y: datum.values.find(d => d.key == year).total,
+                    };
+                });
+                console.log(_d);
+                return _d;
+            })
+            .attr('d', valueline)
+            .attr('class', 'sparkline');
+    document.body.appendChild(svg);
+    return svg;
+
+}
+const SVGs = nestedData.reduce((acc,property) => {
+    acc[property.key] = property.values.reduce((acc, ocean) => {
+        acc[ocean.key] = createSVG({datum: ocean, parent: property});
+        return acc;
+    },{});
+    return acc;
+},{});
+
+console.log(SVGs);
 /*
 
 function renderTable(scale,index){
