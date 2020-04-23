@@ -42,7 +42,13 @@ window.d3 = d3;
             cur.parent = datum;
             return acc.concat(cur.values ? summarizeChildren(cur) : cur.value);
         },[]);
-        
+        function pValues(datum){
+            return datum.values.reduce((acc, cur) => {
+                var min = d3.min([acc[0], cur.values ? pValues(cur)[0] : ( cur.value - datum.values[0].value ) / datum.values[0].value ]);
+                var max = d3.max([acc[1], cur.values ? pValues(cur)[1] : ( cur.value - datum.values[0].value ) / datum.values[0].value ]);
+                return [min,max];
+            },[Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]);
+        }
         datum.descendantValues = descendantValues;
         datum.max       = d3.max(descendantValues);
         datum.min       = d3.min(descendantValues);
@@ -50,6 +56,11 @@ window.d3 = d3;
         datum.median    = d3.median(descendantValues);
         datum.variance  = d3.variance(descendantValues);
         datum.deviation = d3.deviation(descendantValues);
+        datum.maxZ      = d3.max(descendantValues, d => (d - datum.mean) / datum.deviation);
+        datum.minZ      = d3.min(descendantValues, d => (d - datum.mean) / datum.deviation);
+
+        datum.minP = pValues(datum)[0];
+        datum.maxP = pValues(datum)[1];
      //   datum.max    = d3.max(datum.values, v => v.max || v.value);
      //   datum.min = d3.min(datum.values, v => v.min || v.value);
      //   datum.total = d3.sum(datum.values, v => v.total || v.value);
@@ -66,15 +77,19 @@ window.d3 = d3;
     });
 
     console.log(nestedData);
+
+    const minZ = d3.min(nestedData, d => d.minZ);
+    const maxZ = d3.max(nestedData, d => d.maxZ);
+    const equalRange = [0 - Math.max(Math.abs(minZ), Math.abs(maxZ)), Math.max(Math.abs(minZ), Math.abs(maxZ))];
+
+   //  const minP = d3.min(nestedData, d => d.minP);
+   //  const maxP = d3.max(nestedData, d => d.maxP);
+   // const equalRange = [0 - Math.max(Math.abs(minP), Math.abs(maxP)), Math.max(Math.abs(minP), Math.abs(maxP))];
 /* end */
 
-/*
-
-const years = fieldValues.year.values().sort();
 
 
-const height = viewBoxHeight - margin.top - margin.bottom;
-const width = 100 - margin.left - margin.right;
+
 
 //const yScaleLog = d3.scaleLog().range([height, 0]);  // to be completed each instance
 
@@ -87,17 +102,6 @@ d3.formatLocale({
     currency: ['$', '']
 });
 
-function returnValueline(property) {
-    return d3.line()
-        .x(d => {
-            return xScale(d.x);
-        })
-        .y(d => {
-            return yScale(d.y);
-        });
-}
-*/
-/*
 const years = Array.from(fieldValues.year.values()).sort();
 const margin = {
     top: 1,
@@ -108,7 +112,7 @@ const margin = {
 const viewBoxHeight = 50;
 const height = viewBoxHeight - margin.top - margin.bottom;
 const width = 100 - margin.left - margin.right;
-const yScale = d3.scaleLinear().range([height, 0]);  // to be completed each instance
+const yScale = d3.scaleLinear().range([height, 0]).domain(equalRange);  
 const xScale = d3.scaleLinear().range([0, width]).domain([years[0], years[years.length - 1]]);
 
 
@@ -119,16 +123,21 @@ const valueline = d3.line()
     .y(d => {
        // return yScale(d.y);
         return yScale(d.z);
+       //return yScale(d.p);
     });
 // TO DO . UGH HERE there is a problem with the min max
-function createSVG({datum,parent}){
-    var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    console.log(parent);
+function createSVG(datum){
+   console.log(datum);
     /* put each graph on its own scale filling full range */
-    // yScale.domain([datum.min, datum.max]); 
+    //yScale.domain([datum.min, datum.max]); 
+    /* put all graphs in a column on a shared scale acc to min and max value among them */
+  //  var maxAbsP = d3.max([Math.abs(datum.parent.minP), Math.abs(datum.parent.maxP)]);
+  //  yScale.domain([0 - maxAbsP, maxAbsP]); 
+    
+    var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     /* put each column of charts on its own scale. ie each property on same scale, comparable */
     //yScale.domain([d3.min(parent.values, v => v.min), d3.max(parent.values, v => v.max)]);
- /*   d3.select(svg)
+    d3.select(svg)
         .attr('viewBox', '0 0 100 ' + viewBoxHeight)
         .attr('focusable', false)
         .attr('xmlns', 'http://www.w3.org/2000/svg')
@@ -141,15 +150,13 @@ function createSVG({datum,parent}){
                     return {
                         x: year,
                         /* based on absolute value */
-             //           y: datum.values.find(d => d.key == year).total,
+                        y: datum.values.find(d => d.key == year).value,
                         /* z-score */
-              //          z: ( datum.values.find(d => d.key == year).total - d3.mean(parent.values, v => v.mean) ) / d3.min(parent.values, v => v.deviation),
-               /*     };
+                        z: ( datum.values.find(d => d.key == year).value - datum.parent.mean ) / datum.parent.deviation,
+
+                        p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
+                   };
                 });
-                var minZ = d3.min(_d, d => d.z);
-                var maxZ = d3.max(_d, d => d.z);
-                yScale.domain([minZ,maxZ]);
-                console.log(_d, minZ, maxZ);
                 return _d;
             })
             .attr('d', valueline)
@@ -160,7 +167,7 @@ function createSVG({datum,parent}){
 }
 const SVGs = nestedData.reduce((acc,property) => {
     acc[property.key] = property.values.reduce((acc, ocean) => {
-        acc[ocean.key] = createSVG({datum: ocean, parent: property});
+        acc[ocean.key] = createSVG(ocean);
         return acc;
     },{});
     return acc;
