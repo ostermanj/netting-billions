@@ -27,7 +27,7 @@ window.d3 = d3;
     function nestBy(fields,data){
         return fields.reduce(function(acc,cur){
             return acc.key(d => d[cur]);
-        },d3.nest()).entries(data);
+        },d3.nest()).rollup(leaves => d3.sum(leaves, l => l.value)).entries(data);
     }
 
     const nestedData = nestBy(['property','ocean','year'], data);
@@ -39,18 +39,25 @@ window.d3 = d3;
 
     function summarizeChildren(datum){ 
         var descendantValues = datum.values.reduce((acc, cur) => {
+            cur.parent = datum;
             return acc.concat(cur.values ? summarizeChildren(cur) : cur.value);
         },[]);
         
-        datum.valueCount = descendantValues.length;
-        datum.max    = d3.max(datum.values, v => v.total || v.value);
-       // datum.max = d3.max(desce);
-        datum.min = d3.min(datum.values, v => v.total || v.value);
-        datum.total = d3.sum(descendantValues);
-        datum.mean = d3.mean(descendantValues);
-        datum.median = d3.median(descendantValues);
-        datum.variance = d3.variance(descendantValues);
+        datum.descendantValues = descendantValues;
+        datum.max       = d3.max(descendantValues);
+        datum.min       = d3.min(descendantValues);
+        datum.mean      = d3.mean(descendantValues);
+        datum.median    = d3.median(descendantValues);
+        datum.variance  = d3.variance(descendantValues);
         datum.deviation = d3.deviation(descendantValues);
+     //   datum.max    = d3.max(datum.values, v => v.max || v.value);
+     //   datum.min = d3.min(datum.values, v => v.min || v.value);
+     //   datum.total = d3.sum(datum.values, v => v.total || v.value);
+     //   datum.mean = d3.mean(datum.values, v => v.total || v.value);
+     //   datum.median = d3.median(datum.values, v => v.total || v.value);
+     //   datum.variance = d3.variance(datum.values, v => v.total || v.value);
+     //   datum.deviation = d3.deviation(datum.values, v => v.total || v.value);
+     
 
         return descendantValues;
     }
@@ -90,6 +97,7 @@ function returnValueline(property) {
         });
 }
 */
+/*
 const years = Array.from(fieldValues.year.values()).sort();
 const margin = {
     top: 1,
@@ -109,17 +117,18 @@ const valueline = d3.line()
         return xScale(d.x);
     })
     .y(d => {
-        return yScale(d.y);
+       // return yScale(d.y);
+        return yScale(d.z);
     });
 // TO DO . UGH HERE there is a problem with the min max
 function createSVG({datum,parent}){
     var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    console.log(parent, d3.min(parent.values, v => v.total), d3.max(parent.values, v => v.total));
+    console.log(parent);
     /* put each graph on its own scale filling full range */
     // yScale.domain([datum.min, datum.max]); 
     /* put each column of charts on its own scale. ie each property on same scale, comparable */
-    yScale.domain([d3.min(parent.values, v => v.min), d3.max(parent.values, v => v.max)]);
-    d3.select(svg)
+    //yScale.domain([d3.min(parent.values, v => v.min), d3.max(parent.values, v => v.max)]);
+ /*   d3.select(svg)
         .attr('viewBox', '0 0 100 ' + viewBoxHeight)
         .attr('focusable', false)
         .attr('xmlns', 'http://www.w3.org/2000/svg')
@@ -131,10 +140,16 @@ function createSVG({datum,parent}){
                 var _d = years.map(year => {
                     return {
                         x: year,
-                        y: datum.values.find(d => d.key == year).total,
-                    };
+                        /* based on absolute value */
+             //           y: datum.values.find(d => d.key == year).total,
+                        /* z-score */
+              //          z: ( datum.values.find(d => d.key == year).total - d3.mean(parent.values, v => v.mean) ) / d3.min(parent.values, v => v.deviation),
+               /*     };
                 });
-                console.log(_d);
+                var minZ = d3.min(_d, d => d.z);
+                var maxZ = d3.max(_d, d => d.z);
+                yScale.domain([minZ,maxZ]);
+                console.log(_d, minZ, maxZ);
                 return _d;
             })
             .attr('d', valueline)
