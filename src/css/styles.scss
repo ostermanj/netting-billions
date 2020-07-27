@@ -2,16 +2,29 @@
 @import './d3-tip.scss';
 
 
-.sparkline {
+.sparkline, .circles circle {
     stroke: #000;
-    stroke-width: 2px;   
+    stroke-width: 3px;   
     fill: none;
+    &.volume {
+        stroke: $teal;
+    }
+    &.catch_value {
+        stroke: $orange;
+    }
+    &.sales_value {
+        stroke: $red;
+    }
+}
+
+.circles circle {
+    fill: #fff;
 }
 
 svg {
-    width: 75px;
+    width: 65px;
     display: block;
-    outline: 1px solid magenta;
+    //outline: 1px solid magenta;
     margin-bottom: 1em;
 }
 
