@@ -206,7 +206,8 @@ module.exports = env => {
         plugins,
         resolve: {
             alias: {
-                "@Submodule": path.resolve('submodules')
+                "@Submodule": path.resolve('submodules'),
+                "@Project": path.resolve('src')
             }
         },
     }
