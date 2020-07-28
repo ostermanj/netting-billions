@@ -179,7 +179,7 @@ if ( isDev ){
 module.exports = env => {
     return {
         devServer: {
-            hot: true
+            hot: isDev
         },
         devtool: isProd ? false : 'eval-source-map',
         entry: {
