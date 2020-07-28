@@ -2,6 +2,6 @@
 /* eslint no-undef: warn */
 import './css/styles.scss';
 import { fieldValues, nestedData } from './scripts/data.js';
-import { init } from './scripts/charts.js';
+import { initCharts } from '@Project/components/charts/';
 
-init({fieldValues,nestedData});
+initCharts({fieldValues,nestedData});

@@ -109,6 +109,10 @@ const rules = [
             {
                 loader: 'css-loader',
                 options: {
+                    modules: {
+                        mode: 'local',
+                        localIdentName: isDev ? '[path][local]' : '[local]--[hash:base64:5]', // hash to avoid collisions
+                    },
                     sourceMap: true,
                     importLoaders: 1
                 }
