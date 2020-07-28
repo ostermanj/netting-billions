@@ -48,14 +48,20 @@ window.d3 = d3;
         },d3.nest()).rollup(leaves => d3.sum(leaves, l => l.value)).entries(data);
     }
 
-    //const nestedData = nestBy(['property','ocean','year'], data);
-    const nestedData = ['ocean','species','gear','product'].map(d => {
-        var nested = nestBy([ undefined, 'property', d, 'year'], data);
-        nested.forEach(datum => { // mutates nested
-            datum.key = d;
-            summarizeChildren(datum);
-        });
-        return nested[0];
+    // assigning nestedValues as children of a total datum so that the rollup summaries of all
+    // data can be properties of it. this way we can access the min/max percentage change, and other 
+    // relative measures of change like z-score, deviation, etc, for the entire data set and scale
+    // all graphs consistently
+
+    const nestedData = summarizeChildren({
+        key: 'total',
+        values: ['ocean','species','gear','product'].map(d => {
+            var nested = nestBy([ undefined, 'property', d, 'year'], data);
+            nested.forEach(datum => { // mutates nested
+                datum.key = d;
+            });
+            return nested[0];
+        })
     });
 
     console.log('nested',nestedData);
@@ -71,32 +77,37 @@ window.d3 = d3;
     if needed and other manipulations.
 */
 
-    function summarizeChildren(datum){ 
-        var descendantValues = datum.values.reduce((acc, cur) => {
-            cur.parent = datum;
-            return acc.concat(cur.values ? summarizeChildren(cur) : cur.value);
-        },[]);
-        var pValues = returnPValues(datum);
-        function returnPValues(datum){
-            return datum.values.reduce((acc, cur) => {
-                var min = d3.min([acc[0], cur.values ? returnPValues(cur)[0] : ( cur.value - datum.values[0].value ) / datum.values[0].value ]);
-                var max = d3.max([acc[1], cur.values ? returnPValues(cur)[1] : ( cur.value - datum.values[0].value ) / datum.values[0].value ]);
-                return [min,max];
-            },[Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]);
-        }
-        datum.descendantValues = descendantValues;
-        datum.max       = d3.max(descendantValues);
-        datum.min       = d3.min(descendantValues);
-        datum.mean      = d3.mean(descendantValues);
-        datum.median    = d3.median(descendantValues);
-        datum.variance  = d3.variance(descendantValues);
-        datum.deviation = d3.deviation(descendantValues);
-        datum.maxZ      = d3.max(descendantValues, d => (d - datum.mean) / datum.deviation); // z-score
-        datum.minZ      = d3.min(descendantValues, d => (d - datum.mean) / datum.deviation); // z-score 
-        datum.minP = pValues[0]; // percentage values. min/max value as expressed as a percentage of the first data point (year 0).
-        datum.maxP = pValues[1]; // percentage values. min/max value as expressed as a percentage of the first data point (year 0).
+    function summarizeChildren(datum){
+        function _summarize(){
+            var descendantValues = datum.values.reduce((acc, cur) => {
+                cur.parent = datum;
+                return acc.concat(cur.values ? summarizeChildren(cur) : cur.value);
+            },[]);
+            var pValues = returnPValues(datum);
+            function returnPValues(datum){
+                return datum.values.reduce((acc, cur) => {
+                    var min = d3.min([acc[0], cur.values ? returnPValues(cur)[0] : ( cur.value - datum.values[0].value ) / datum.values[0].value ]);
+                    var max = d3.max([acc[1], cur.values ? returnPValues(cur)[1] : ( cur.value - datum.values[0].value ) / datum.values[0].value ]);
+                    return [min,max];
+                },[Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]);
+            }
+            datum.descendantValues = descendantValues;
+            datum.max       = d3.max(descendantValues);
+            datum.min       = d3.min(descendantValues);
+            datum.mean      = d3.mean(descendantValues);
+            datum.median    = d3.median(descendantValues);
+            datum.variance  = d3.variance(descendantValues);
+            datum.deviation = d3.deviation(descendantValues);
+            datum.maxZ      = d3.max(descendantValues, d => (d - datum.mean) / datum.deviation); // z-score
+            datum.minZ      = d3.min(descendantValues, d => (d - datum.mean) / datum.deviation); // z-score 
+            datum.minP = pValues[0]; // percentage values. min/max value as expressed as a percentage of the first data point (year 0).
+            datum.maxP = pValues[1]; // percentage values. min/max value as expressed as a percentage of the first data point (year 0).
 
-        return descendantValues;
+            return descendantValues;
+
+        }
+        _summarize();
+        return datum; 
     }
  
 function hashValues(d){
@@ -137,7 +148,17 @@ const valueline = d3.line()
     });
 
 function createSVG(datum){
+    var _d = years.map(year => {
+        return {
+            x: year,
+            /* based on absolute value */
+            y: datum.values.find(d => d.key == year).value,
+            /* z-score */
+            z: ( datum.values.find(d => d.key == year).value - datum.parent.mean ) / datum.parent.deviation,
 
+            p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
+       };
+    });
     // TODO: how is this scaled -- whould be by percentage value, I believe
    console.log(datum);
     /* put each graph on its own scale filling full range */
@@ -147,7 +168,8 @@ function createSVG(datum){
   //  yScale.domain([0 - maxAbsP, maxAbsP]); 
 
   //yScale.domain([datum.parent.minZ, datum.parent.maxZ]);
-  yScale.domain([datum.parent.minP, datum.parent.maxP]); // scale each line based on min.max domain from parent pValues
+  var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
+  yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
     
     var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     /* put each column of charts on its own scale. ie each property on same scale, comparable */
@@ -158,34 +180,25 @@ function createSVG(datum){
         .attr('xmlns', 'http://www.w3.org/2000/svg')
         .attr('version', '1.1')
         .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
+            .attr('transform', `translate(${margin.left},${margin.top})`)
+            .datum(_d);
 
         g.append('path')
-        .datum( () => {
-            var _d = years.map(year => {
-                return {
-                    x: year,
-                    /* based on absolute value */
-                    y: datum.values.find(d => d.key == year).value,
-                    /* z-score */
-                    z: ( datum.values.find(d => d.key == year).value - datum.parent.mean ) / datum.parent.deviation,
-
-                    p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
-               };
-            });
-            return _d;
-        })
-        .attr('d', valueline)
-        .attr('class', 'sparkline ' + datum.key);
+            .attr('d', valueline)
+            .attr('class', 'sparkline ' + datum.parent.key); //parent key to get class of column, not row
 
         g.append('g')
             .attr('class','circles')
-            .selectAll('circle').data(datum.values)
+            .selectAll('circle')
+            .data(d => d)
             .enter().append('circle')
-            .attr('cx', d => xScale(d.key))
-            .attr('cy', d => yScale(( d.value - datum.values[0].value ) / datum.values[0].value ) )
-            .attr('r',3)
-            .attr('class', datum.key);
+                .attr('cx', d => xScale(d.x))
+                .attr('cy', function(d){
+                    return yScale(d.p);
+                 })
+                .attr('r',3)
+                .attr('class', datum.parent.key); //parent key to get class of column, not row
+    
     this.appendChild(svg);
 
 }
@@ -193,7 +206,7 @@ const container = d3.select('#render-here');
 
 var sections = container
     .selectAll('section')
-    .data(nestedData, function(d){ return d ? d.key : this.getAttribute('data-key');});
+    .data(nestedData.values, function(d){ return d ? d.key : this.getAttribute('data-key');});
 
     {
         let entering = sections
@@ -236,14 +249,16 @@ sections.each(function(data){
             rows.exit().remove();
         }
 
+    // remember the rendering of the tables follows a different sequence then the nesting of the data so we
+    // have to manually find the data needed for each the cells of each row
     var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
             .data(d => [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d)), function(d){ return d ? hashValues(d.values) : this.getAttribute('data-hash');});
 
         {
             let entering = cells
                 .enter().append('td')
-                .attr('data-hash', d => hashValues(d.values));
-                //.each(createSVG);
+                .attr('data-hash', d => hashValues(d.values))  
+                .each(createSVG);
 
             cells = cells.merge(entering);
             cells.exit().remove();
