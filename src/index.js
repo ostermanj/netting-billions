@@ -50,14 +50,12 @@ window.d3 = d3;
 
     //const nestedData = nestBy(['property','ocean','year'], data);
     const nestedData = ['ocean','species','gear','product'].map(d => {
-        var nested = nestBy([ d,'property','year'], data);
+        var nested = nestBy([ undefined, 'property', d, 'year'], data);
         nested.forEach(datum => { // mutates nested
+            datum.key = d;
             summarizeChildren(datum);
         });
-        return { 
-            key: d,
-            values: nested
-        };
+        return nested[0];
     });
 
     console.log('nested',nestedData);
@@ -191,7 +189,6 @@ function createSVG(datum){
     this.appendChild(svg);
 
 }
-console.log(createSVG);
 const container = d3.select('#render-here');
 
 var sections = container
@@ -220,34 +217,52 @@ var sections = container
         // handling enter separately for prerendering. 
         sections = sections.merge(entering);
     }
+sections.each(function(data){
+    var section = d3.select(this);
+    var rows = section.selectAll('tbody')
+        .selectAll('tr')
+        .data(d => [...fieldValues[d.key]], function(_d){ return _d ? _d : this.getAttribute('data-key');});
 
-var rows = sections.selectAll('tbody')
-    .selectAll('tr')
-    .data(d => d.values, function(d){ return d ? d.key : this.getAttribute('data-key');});
+        {
+            let entering = rows
+                .enter().append('tr')
+                .attr('data-key', d => d);
 
-    {
-        let entering = rows
-            .enter().append('tr')
-            .attr('data-key', d => d.key);
+            entering.append('th')
+                .attr('scope','row')
+                .text(d => d);
 
-        entering.append('th')
-            .attr('scope','row')
-            .text(d => d.key);
+            rows = rows.merge(entering);
+            rows.exit().remove();
+        }
 
-        rows = rows.merge(entering);
-        rows.exit().remove();
-    }
+    var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
+            .data(d => [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d)), function(d){ return d ? hashValues(d.values) : this.getAttribute('data-hash');});
+
+        {
+            let entering = cells
+                .enter().append('td')
+                .attr('data-hash', d => hashValues(d.values));
+                //.each(createSVG);
+
+            cells = cells.merge(entering);
+            cells.exit().remove();
+
+        }
+
+});
+
 
     // below each <td> is keyed by a hash of the data it will hold so that at runtime cells with 
     // data that match the buildtime data will not be overwritten
-var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
+/*var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
         .data(d => d.values, function(d){ return d ? hashValues(d.values) : this.getAttribute('data-hash');});
 
     {
         let entering = cells
             .enter().append('td')
-            .attr('data-hash', d => hashValues(d.values))
-            .each(createSVG);
+            .attr('data-hash', d => hashValues(d.values));
+            //.each(createSVG);
 
         cells = cells.merge(entering);
         cells.exit().remove();
