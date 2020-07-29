@@ -9,6 +9,8 @@ const path = require('path');
 const outputFolder = process.env.NODE_ENV === 'preview' ? 'docs/' : process.env.NODE_ENV === 'localpreview' ? 'preview/' : 'dist/';
 const isDev = mode === 'development';
 const isProd = process.env.NODE_ENV === 'production';
+const PrerenderSPAPlugin = require('prerender-spa-plugin');
+const pretty = require('pretty');
 
 const repoName = 'netting-billions';
 const publicPath = isProd ? '/~/media/data-visualizations/interactives/2020/netting-billions/' : '';
@@ -42,6 +44,30 @@ const copyWebpack =
             }
         }
     }]);
+const prerender = 
+    new PrerenderSPAPlugin({
+         // Required - The path to the webpack-outputted app to prerender.
+         staticDir: path.join(__dirname, outputFolder),
+         // Required - Routes to render.
+         routes: ['/'],
+         renderer: new PrerenderSPAPlugin.PuppeteerRenderer({
+             defaultViewport: null,
+             headless: false,
+             inject: true,
+             injectProperty: 'IS_PRERENDERING',
+             //renderAfterTime: 30000
+             renderAfterDocumentEvent: 'custom-render-trigger'
+         }),
+         postProcess: function(renderedRoute){
+             renderedRoute.html = renderedRoute.html.replace(/class="emitted-css" href="(.*?)"/,'class="emitted-css" href="' + publicPath + '$1' + '"');
+             renderedRoute.html = renderedRoute.html.replace(/class="emitted-bundle" src="(.*?)"/g,'class="emitted-bundle" src="' + publicPath + '$1' + '"');
+             if (isProd){
+                 renderedRoute.html = renderedRoute.html.replace(/<head>[\s\S]*.*<\/head>/,'').replace(/<\/?html.*?>|<\/?body.*?>/g,'');
+             }
+             renderedRoute.html = pretty(renderedRoute.html);
+             return renderedRoute;
+         }
+ });
 const devToolPlugins = [new webpack.SourceMapDevToolPlugin({
     test: /\.js/,
     filename: '[name]js.map',
@@ -162,7 +188,8 @@ if (!isDev) {
         use: [{
             loader: 'babel-loader',
             options: {
-                presets: ['@babel/preset-env']
+                presets: ['@babel/preset-env'],
+                plugins: ['@babel/plugin-transform-runtime']
             }
         },
         {
@@ -171,15 +198,18 @@ if (!isDev) {
     });
 }
 if ( isProd ){
-    plugins.push(...devToolPlugins, new CleanWebpackPlugin());
+    plugins.push(...devToolPlugins);
 }
 if ( isDev ){
-    plugins.push(new webpack.HotModuleReplacementPlugin());
+    //plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+if (!isDev) {
+    plugins.push(new CleanWebpackPlugin(), prerender);
 }
 module.exports = env => {
     return {
         devServer: {
-            hot: isDev
+            //hot: isDev
         },
         devtool: isProd ? false : 'eval-source-map',
         entry: {
@@ -205,7 +235,6 @@ module.exports = env => {
             path: __dirname + '/' + outputFolder,
             filename: '[name].js?v=[hash:6]',
             chunkFilename: '[name].[id].js',
-            publicPath
         },
         plugins,
         resolve: {
