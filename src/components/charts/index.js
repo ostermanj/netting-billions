@@ -47,7 +47,9 @@ function abbrev({value, type}){
 
     return d3.format(formatTypes[type])(value).replace('G','B');
 }
-
+function units(key){
+    return dictionary[key].units;
+}
 d3.formatLocale({
     decimal: '.',
     thousands: ',',
@@ -98,14 +100,15 @@ export function initCharts({nestedData,fieldValues}){
                         return yScale(d.p);
                      })
                     .attr('r',3)
-                    .attr('class', s[datum.parent.key]); //parent key to get class of column, not row
+                    .attr('class', s[datum.parent.key]) //parent key to get class of column, not row
+                    .classed(s.isLast, (d,i,arr) => i == arr.length - 1);
 
             g.append('text')
                 .attr('class',`${s.dataPoint} ${s[datum.parent.key]}`)
                 .attr('x', d => xScale(d[d.length - 1].x))
                 .attr('y', d => yScale(d[d.length - 1].p))
                 .attr('dy', '0.3em')
-                .attr('dx', '1em')
+                .attr('dx', '0.5em')
                 .text(d => abbrev({value: d[d.length - 1].y, type: datum.parent.key}));
         
         this.appendChild(svg);
@@ -137,7 +140,7 @@ export function initCharts({nestedData,fieldValues}){
                 .data(['', ...fieldValues.property]) // TODO:  use metadata for display value
                 .enter().append('th')
                 .attr('scope', (d,i) => i == 0 ? null :'column')
-                .text(d => d ? display(d) : '');
+                .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}`: '');
             
             table.append('tbody');
 

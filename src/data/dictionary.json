@@ -96,7 +96,8 @@
         "description": "At least three-quarters of the tuna caught worldwide each year is processed and sold in cans. However, demand continues to rise for sashimi and other products."
     },
     "v": {
-        "display": "Tons"
+        "display": "Volume",
+        "units": "tons"
     },
     "dv": {
         "display": "Dock value",

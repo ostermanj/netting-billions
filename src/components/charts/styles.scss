@@ -9,15 +9,39 @@
         text-align: center;
     }
     table {
-        table-layout: fixed;
         width: 100%;
+        @media screen and (min-width: 400px){
+            table-layout: fixed;
+        }
+
+    }
+    tr {
+        @media screen and (max-width: 399px){
+            padding-top: 10px;
+        }
     }
     th, td {
+        padding: 0.625rem;
         background-color: inherit;
         border: none;
     }
+    th:not([scope="row"]), td {
+        @media screen and (max-width: 399px) {
+            padding-top: 1rem;   
+        }
+    }
     th[scope="row"] {
         text-align: left;
+        @media screen and (max-width: 399px){
+            /* working in Chrome and FF -- need to check others */
+            display: block;
+            position: relative;
+            top: -9px;
+            left: -10px;
+            width: 0;
+            white-space: nowrap;
+            font-size: .85rem;
+        }
     }
     tbody tr:not(:last-of-type) {
         border-bottom: 1px solid $gray;
@@ -36,13 +60,27 @@
     fill: none;
     &.v {
         stroke: $teal;
+        &.isLast {
+            fill: lighten($teal, 10%);
+        }
     }
     &.dv {
         stroke: $orange;
+        &.isLast {
+            fill: lighten($orange, 10%);
+        }
     }
     &.ev {
         stroke: $red;
+        &.isLast {
+            fill: lighten($red, 10%);
+        }
     }
+}
+
+.units {
+    color: $a11y;
+    font-weight: normal;
 }
 .dataPoint {
     &.v {
@@ -53,6 +91,9 @@
     }
     &.ev {
         fill: $red;
+    }
+    @media screen and (max-width: 399px){
+        font-size: 0.85rem;
     }
 }
 
