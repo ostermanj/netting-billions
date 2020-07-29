@@ -1,0 +1,109 @@
+{
+    "BB": {
+        "display": "Pole & line"
+    },
+    "GN": {
+        "display": "Gillnet"
+    },
+    "HL": {
+        "display": "Handline"
+    },
+    "LL": {
+        "display": "Longline"
+    },
+    "O": {
+        "display": "Other"
+    },
+    "PS": {
+        "display": "Purse seine"
+    },
+    "TR": {
+        "display": "Troll"
+    },
+    "W": {
+        "display": "WCPFC",
+        "description": "Western and Central Pacific Fisheries Commission"
+    },
+    "IA": {
+        "display": "IATTC",
+        "description": "Inter-American Tropical Tuna Commission"
+    },
+    "IO": {
+        "display": "IOTC",
+        "description": "Indian Ocean Tuna Commission"
+    },
+    "IC": {
+        "display": "ICCAT",
+        "description": "International Commission for the Conservation of Atlantic Tunas"
+    },
+    "C": {
+        "display": "CCSBT",
+        "description": "Commission for the Conservation of Southern Bluefin Tuna"
+    },
+    "ALB": {
+        "display": "Albacore"
+    },
+    "BET": {
+        "display": "Bigeye"
+    },
+    "BFT": {
+        "display": "Bluefin"
+    },
+    "PBF": {
+        "display": "Pacific Bluefin"
+    },
+    "SBF": {
+        "display": "Southern Bluefin"
+    },
+    "SKJ": {
+        "display": "Skipjack"
+    },
+    "YFT": {
+        "display": "Yellowfin"
+    },
+    "cb": {
+        "display": "Canning byproducts"
+    },
+    "lc": {
+        "display": "For loining/canning"
+    },
+    "d": {
+        "display": "For domestic (fresh or processing)"
+    },
+    "fs": {
+        "display": "For fresh sashimi"
+    },
+    "zs": {
+        "display": "For frozen sashimi"
+    },
+    "r": {
+        "display": "For ranching"
+    },
+    "rfmo": {
+        "display": "RFMO",
+        "description": "Regional fisheries management organizations (RFMOs) are multinational organizations charged with overseeing fisheries for highly migratory species such as tuna."
+    },
+    "species": {
+        "display": "Species",
+        "description": "The seven most commercially important tuna species are skipjack, yellowfin, albacore, bigeye and southern, Atlantic and Pacific bluefin."
+    },
+    "gear": {
+        "display": "Gear",
+        "description": "Tunas are caught with many different gear types, from purse seine nets that encircle schools of fish to pole and lines that catch fish one at a time."
+    },
+    "product": {
+        "display": "End product",
+        "description": "At least three-quarters of the tuna caught worldwide each year is processed and sold in cans. However, demand continues to rise for sashimi and other products."
+    },
+    "v": {
+        "display": "Tons"
+    },
+    "dv": {
+        "display": "Dock value",
+        "description": "the amount paid to fishers for their catch"
+    },
+    "ev": {
+        "display": "End value",
+        "description": "the amount paid by final customers"
+    }
+}

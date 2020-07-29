@@ -1,0 +1,70 @@
+@import '@Project/css/variables.scss';
+@import '@Project/css/d3-tip.scss';
+
+.chartSection {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto 2em;
+    h2 {
+        text-align: center;
+    }
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    th, td {
+        background-color: inherit;
+        border: none;
+    }
+    th[scope="row"] {
+        text-align: left;
+    }
+    tbody tr:not(:last-of-type) {
+        border-bottom: 1px solid $gray;
+    }
+}
+.intro {
+    text-align: center;
+    width: 100%;
+    max-width: 610px;
+    margin: 0 auto;
+    margin-bottom: 1em;
+}
+.sparkline, .circles circle {
+    stroke: #000;
+    stroke-width: 2.3px;   
+    fill: none;
+    &.v {
+        stroke: $teal;
+    }
+    &.dv {
+        stroke: $orange;
+    }
+    &.ev {
+        stroke: $red;
+    }
+}
+.dataPoint {
+    &.v {
+        fill: $teal;
+    }
+    &.dv {
+        fill: $orange;
+    }
+    &.ev {
+        fill: $red;
+    }
+}
+
+.circles circle {
+    fill: #fff;
+}
+
+.chartSVG {
+    width: 100%;
+    max-width: 85px;
+    display: block;
+    margin: 0 auto;
+    overflow: visible !important;
+}
+
