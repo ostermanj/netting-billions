@@ -1,11 +1,16 @@
+@import './variables.scss';
+
 .d3-tip {
   line-height: 1;
-  font-weight: bold;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  padding: 6px;
+  background: #fff;
+  color: #333;
   border-radius: 2px;
-  pointer-events: none;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease-in-out 0.15s, top 0.15s ease-in-out, left 0.15s ease-in-out;
+  border: 1px solid $gray;
+
+  font-size: 12px;
 }
 
 /* Creates a small triangle extender for the tooltip */

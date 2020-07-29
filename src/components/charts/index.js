@@ -65,6 +65,8 @@ export function initCharts({nestedData,fieldValues}){
         
         var _d = years.map(year => {
             return {
+                row: datum.key,
+                column: datum.parent.key,
                 x: year,
                 /* based on absolute value */
                 y: datum.values.find(d => d.key == year).value,
@@ -110,6 +112,16 @@ export function initCharts({nestedData,fieldValues}){
                 .attr('dy', '0.3em')
                 .attr('dx', '0.5em')
                 .text(d => abbrev({value: d[d.length - 1].y, type: datum.parent.key}));
+
+            g.append('g')
+                .attr('class', s.dummyBars)
+                .selectAll('rect')
+                .data(d => d)
+                .enter().append('rect')
+                    .attr('x', (d,i,arr) => xScale(d.x) - ( (width) / ( arr.length - 1 )) / 2)
+                    .attr('width', (d,i,arr) => (width) / ( arr.length - 1 ) )
+                    .attr('height', height);
+                    
         
         this.appendChild(svg);
 
@@ -183,4 +195,18 @@ export function initCharts({nestedData,fieldValues}){
             }
 
     });
+    var tip = d3.tip()
+        //.direction('n')
+        .attr('class', `${s['d3-tip']} ${s.n}`)
+        //.offset([-8, 0])
+        .html(d => {
+            return `${d.x} | ${abbrev({value: d.y, type: d.column})}`;
+        });
+    
+    d3.selectAll('svg.' + s.chartSVG)
+        .call(tip);
+ 
+    d3.selectAll('.' + s.dummyBars + ' rect' )
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
 }
