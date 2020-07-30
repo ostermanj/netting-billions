@@ -59,13 +59,13 @@
     stroke-width: 2.3px;   
     fill: none;
     &.v {
-        stroke: $teal;
+        stroke: darken($teal, 20%);
         &.isLast {
             fill: lighten($teal, 10%);
         }
     }
     &.dv {
-        stroke: $orange;
+        stroke: darken($orange, 10%);
         &.isLast {
             fill: lighten($orange, 10%);
         }
@@ -84,10 +84,10 @@
 }
 .dataPoint {
     &.v {
-        fill: $teal;
+        fill: darken($teal, 20%);
     }
     &.dv {
-        fill: $orange;
+        fill: darken($orange, 10%);
     }
     &.ev {
         fill: $red;
@@ -102,9 +102,20 @@
 }
 .tooltipDiv {
     margin-bottom: 0.25em;
+    color: $a11y;
 }
 .currentYear {
-    font-weight: bold;
+    font-weight: 900;
+    color: $dark_gray;
+    .v & {
+        color: darken($teal, 20%);
+    }
+    .dv & {
+        color: darken($orange, 10%);
+    }
+    .ev & {
+        color: $red;
+    }
 }
 .circles circle {
     fill: #fff;

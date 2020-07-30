@@ -5,9 +5,9 @@ import StringHelpers from '@Submodule/UTILS';
 import s from './styles.scss';
 import dictionary from '@Project/data/dictionary.json';
 
-/*if ( module.hot ){
+if ( module.hot ){
     module.hot.accept('./styles.scss');
-}*/
+}
  
 const margin = {
     top: 5,
@@ -30,19 +30,19 @@ const valueline = d3.line()
     });
 function formatTypes(precision){
     return {
-        v: `,.${precision}s`,
-        dv: `$,.${precision}s`,
-        ev: `$,.${precision}s`
+        v: `,.${precision}~s`,
+        dv: `$,.${precision}~s`,
+        ev: `$,.${precision}~s`
     }
 }
 const tip = d3.tip()
     //.direction('n')
     .attr('class', `${s['d3-tip']} ${s.n}`)
     //.offset([-8, 0])
-    .html((d,i,arr) => {
+    .html((d,i,arr) => {    
         return d.reduce(function(acc,cur,j){
             return acc + `<div class="${s.tooltipDiv}${i == j ? ' ' + s.currentYear : ''}">${cur.x}: ${abbrev({value: cur.y, type: cur.column, precision: 3})}</div>`;
-        }, '');
+        }, `<div class="${s[d[0].column]}">`) + '</div>';
     });
 function hashValues(d){
     return d.reduce((acc, cur) => acc + cur.value, '').hashCode();
