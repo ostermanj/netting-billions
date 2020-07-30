@@ -28,11 +28,22 @@ const valueline = d3.line()
     .y(d => {
        return yScale(d.p);
     });
-const formatTypes = {
-    v: ',.2s',
-    dv: '$,.2s',
-    ev: '$,.2s'
-};
+function formatTypes(precision){
+    return {
+        v: `,.${precision}s`,
+        dv: `$,.${precision}s`,
+        ev: `$,.${precision}s`
+    }
+}
+const tip = d3.tip()
+    //.direction('n')
+    .attr('class', `${s['d3-tip']} ${s.n}`)
+    //.offset([-8, 0])
+    .html((d,i,arr) => {
+        return d.reduce(function(acc,cur,j){
+            return acc + `<div class="${s.tooltipDiv}${i == j ? ' ' + s.currentYear : ''}">${cur.x}: ${abbrev({value: cur.y, type: cur.column, precision: 3})}</div>`;
+        }, '');
+    });
 function hashValues(d){
     return d.reduce((acc, cur) => acc + cur.value, '').hashCode();
 }
@@ -42,10 +53,10 @@ function display(key){
 function description(key){
     return dictionary[key].description;
 }
-function abbrev({value, type}){
+function abbrev({value, type, precision}){
     console.log(type);
 
-    return d3.format(formatTypes[type])(value).replace('G','B');
+    return d3.format(formatTypes(precision)[type])(value).replace('G','B');
 }
 function units(key){
     return dictionary[key].units;
@@ -59,11 +70,8 @@ d3.formatLocale({
 
 
 export function initCharts({nestedData,fieldValues}){
-    function createSVG(datum){
-        var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
-        yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
-        
-        var _d = years.map(year => {
+    function returnDatum(datum){
+        return years.map(year => {
             return {
                 row: datum.key,
                 column: datum.parent.key,
@@ -76,6 +84,22 @@ export function initCharts({nestedData,fieldValues}){
                 p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
            };
         });
+    }
+    function initTooltips(datum){
+        var cell = d3.select(this);
+        var svg = cell.select('svg');
+        var bars = svg.selectAll('.' + s.dummyBars + ' rect');
+        svg.call(tip);
+        bars
+            .data(years.map(() => returnDatum(datum)))
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide);
+
+
+    }
+    function createSVG(datum){
+        var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
+        yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
         
         var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
         var g = d3.select(svg)
@@ -86,7 +110,7 @@ export function initCharts({nestedData,fieldValues}){
             .attr('version', '1.1')
             .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`)
-                .datum(_d);
+                .datum(returnDatum(datum));
 
             g.append('path')
                 .attr('d', valueline)
@@ -111,12 +135,15 @@ export function initCharts({nestedData,fieldValues}){
                 .attr('y', d => yScale(d[d.length - 1].p))
                 .attr('dy', '0.3em')
                 .attr('dx', '0.5em')
-                .text(d => abbrev({value: d[d.length - 1].y, type: datum.parent.key}));
+                .text(d => abbrev({value: d[d.length - 1].y, type: datum.parent.key, precision: 3}));
 
             g.append('g')
                 .attr('class', s.dummyBars)
                 .selectAll('rect')
-                .data(d => d)
+                .data(d => {
+                    console.log(datum);
+                    return d;
+                })
                 .enter().append('rect')
                     .attr('x', (d,i,arr) => xScale(d.x) - ( (width) / ( arr.length - 1 )) / 2)
                     .attr('width', (d,i,arr) => (width) / ( arr.length - 1 ) )
@@ -191,22 +218,22 @@ export function initCharts({nestedData,fieldValues}){
 
                 cells = cells.merge(entering);
                 cells.exit().remove();
+                cells.each(initTooltips);
 
             }
+       /* cells.selectAll('svg.' + s.chartSVG)
+            .call(tip);
+        
+        cells.selectAll('.' + s.dummyBars + ' rect' )
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide);*/
 
     });
-    var tip = d3.tip()
-        //.direction('n')
-        .attr('class', `${s['d3-tip']} ${s.n}`)
-        //.offset([-8, 0])
-        .html(d => {
-            return `${d.x} | ${abbrev({value: d.y, type: d.column})}`;
-        });
-    
+/*
     d3.selectAll('svg.' + s.chartSVG)
         .call(tip);
  
     d3.selectAll('.' + s.dummyBars + ' rect' )
         .on('mouseover', tip.show)
-        .on('mouseout', tip.hide);
+        .on('mouseout', tip.hide);*/
 }

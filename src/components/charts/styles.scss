@@ -100,7 +100,12 @@
 .dummyBars rect {
     fill: transparent;
 }
-
+.tooltipDiv {
+    margin-bottom: 0.25em;
+}
+.currentYear {
+    font-weight: bold;
+}
 .circles circle {
     fill: #fff;
 }
