@@ -65,10 +65,10 @@ const nestedData = summarizeChildren({
 */
 
 function summarizeChildren(datum) {
-    function _summarize() {
+    function _summarize(datum) {
         var descendantValues = datum.values.reduce((acc, cur) => {
             cur.parent = datum;
-            return acc.concat(cur.values ? summarizeChildren(cur) : cur.value);
+            return acc.concat(cur.values ? _summarize(cur) : cur.value);
         }, []);
         var pValues = returnPValues(datum);
 
@@ -94,7 +94,7 @@ function summarizeChildren(datum) {
         return descendantValues;
 
     }
-    _summarize();
+    _summarize(datum);
     return datum;
 }
 
