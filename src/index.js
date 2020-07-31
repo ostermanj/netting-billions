@@ -8,5 +8,5 @@ import { initCharts } from '@Project/components/charts/';
 
 initCharts({});
 //initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});
-//initCharts({filters: [['rfmo','W'],['species','ALB'],['gear','GN']]});
+//initCharts({filters: [['rfmo','W']]});
 document.dispatchEvent(new Event('custom-render-trigger'));

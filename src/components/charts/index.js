@@ -21,7 +21,6 @@ const height = viewBoxHeight - margin.top - margin.bottom;
 const width = 100 - margin.left - margin.right;
 const yScale = d3.scaleLinear().range([height, 0]);
 const xScale = d3.scaleLinear().range([0, width]);
-const container = d3.select('#render-here');
 const valueline = d3.line()
     .x(d => {
         return xScale(d.x);
@@ -60,6 +59,14 @@ function abbrev({value, type, precision}){
 function units(key){
     return dictionary[key].units;
 }
+function returnSubcontainer(parent){
+    var row = document.createElement('tr');
+    var cell = document.createElement('td');
+    cell.setAttribute('colspan', fieldValues.property.size + 1);
+    row.appendChild(cell);
+    parent.insertAdjacentElement('afterend',row);
+    return cell;
+}
 d3.formatLocale({
     decimal: '.',
     thousands: ',',
@@ -67,11 +74,15 @@ d3.formatLocale({
     currency: ['$', '']
 });
 
-
-export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc'}){
+export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null}){
+    console.log(filters);
     var nestedData = returnNestedData(filters);
+    var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     function rowClickHandler(d){
-        console.log(d, this, n);
+        var rowKeys = JSON.parse(this.dataset.keys);
+        var rowValues = JSON.parse(this.dataset.values);
+        var rowFilters = rowKeys.map((key,i) => [key,rowValues[i]]);
+        initCharts({filters: rowFilters, sortBy, sortDirection, appendAfter: this});
     }
     function returnDatum(datum){ 
         return datum.values.map((value, i, arr) => {
@@ -99,7 +110,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc'}
         var columnValues = d.values.find(d => d.key == sortBy).values;
         var ab = [a,b].map(fv => {
             var yearValues = columnValues.find(d => d.key == fv).values;
-            return yearValues[yearValues.length - 1].value;
+            return yearValues.length > 0 ? yearValues[yearValues.length - 1].value : 0;
         });
         return sortDirection == 'desc' ? ab[1] - ab[0] : ab[0] - ab[1];
     }
@@ -173,27 +184,31 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc'}
                 .enter().append('section')
                 .attr('class', s.chartSection)
                 .attr('data-key', d => d.key);
+            
+            if ( filters.length === 0 ){ //only add head and graf when no filters applied, ie, main tables
+                entering.append('h2')
+                    .text(d => display(d.key));
 
-            entering.append('h2')
-                .text(d => display(d.key));
-
-            entering.append('p')
-                .attr('class', s.intro)
-                .text(d => description(d.key));
+                entering.append('p')
+                    .attr('class', s.intro)
+                    .text(d => description(d.key));
+                }
 
             let table = entering.append('table');
 
-            table.append('thead')
-                .selectAll('th')
-                .data(d => ['', ...fieldValues.property]) 
-                .enter().append('th')
-                .attr('scope', (d,i) => i == 0 ? null :'column')
-                .attr('class', d => s[d])
-                .classed(s.sortedBy, d => {
-                    return d == sortBy;
-                })
-                .classed(s.asc, d => d == sortBy && sortDirection == 'asc' )
-                .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}`: '');
+            if ( filters.length === 0 ){ // table headers only if no filters applied, ie, main tables
+                table.append('thead')
+                    .selectAll('th')
+                    .data(d => ['', ...fieldValues.property]) 
+                    .enter().append('th')
+                    .attr('scope', (d,i) => i == 0 ? null :'column')
+                    .attr('class', d => s[d])
+                    .classed(s.sortedBy, d => {
+                        return d == sortBy;
+                    })
+                    .classed(s.asc, d => d == sortBy && sortDirection == 'asc' )
+                    .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}`: '');
+                }
             
             table.append('tbody');
 
@@ -207,13 +222,13 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc'}
             .data(d => {
                 var rtn = [...fieldValues[d.key]].sort(sortFieldValues.bind(undefined,d));
                 return rtn;
-            }, function(_d){ return _d ? _d : this.getAttribute('data-value');});
+            }, function(_d){ return _d ? _d : this.getAttribute('data-values');});
 
             {
                 let entering = rows
                     .enter().append('tr')
-                    .attr('data-key', data.key)
-                    .attr('data-value', d => d); // eg W, IO, IA, etc
+                    .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
+                    .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])); // eg W, IO, IA, etc
 
                 entering.append('th')
                     .attr('scope','row')
@@ -230,7 +245,6 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc'}
         var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
                 .data(d => {
                     var _d = [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d));
-                    console.log(_d);
                     return _d;
                 }, function(d){ return d ? hashValues(d.values) : this.getAttribute('data-hash');});
 

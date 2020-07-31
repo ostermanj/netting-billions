@@ -90,16 +90,12 @@ function summarizeChildren(datum) {
     function _summarize(datum) {
         var descendantValues = datum.values.reduce((acc, cur) => {
             cur.parent = datum;
-            if ( cur.value ){
-                console.log(cur.parent);
-            }
             return acc.concat(cur.values ? _summarize(cur) : cur.value);
         }, []);
         var pValues = returnPValues(datum);
 
         function returnPValues(datum) {
            // var _datumValues = datum.values.slice();
-            console.log(datum.values);
             // there's a problem here: dividing by zero when the first value is zero, or all are zero
             // take a slice() copy of datum.values to avoid mutating datum and shift of the first value
             // so long as it's value === 0. in effect, measure pValue against the first nonzero value
