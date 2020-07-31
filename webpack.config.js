@@ -201,7 +201,7 @@ if ( isProd ){
     plugins.push(...devToolPlugins);
 }
 if ( isDev ){
-    //plugins.push(new webpack.HotModuleReplacementPlugin());
+    plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 if (!isDev) {
     plugins.push(new CleanWebpackPlugin(), prerender);
@@ -209,7 +209,7 @@ if (!isDev) {
 module.exports = env => {
     return {
         devServer: {
-            //hot: isDev
+            hot: isDev
         },
         devtool: isProd ? false : 'eval-source-map',
         entry: {

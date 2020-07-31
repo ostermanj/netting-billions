@@ -4,7 +4,27 @@
 .chartSection {
     width: 100%;
     max-width: 650px;
-    margin: 0 auto 2em;
+    background-color: $light_gray;
+    margin: 0;
+    &.chartSection0 {
+        margin: 0 auto 2em;
+        background-color: #fff;
+    }
+    &.chartSection1 {
+        & > table th[scope="row"], & > h2 {
+            padding-left: 0.625rem;
+        }
+    }
+    &.chartSection2 {
+        & > table th[scope="row"], & > h2 {
+            padding-left: 1.25rem;
+        }
+    }
+    &.chartSection3 {
+        & > table th[scope="row"], & > h2 {
+            padding-left: 1.875rem;
+        }
+    }
     h2 {
         text-align: center;
     }
@@ -36,6 +56,25 @@
         &.ev  {
             color: $red;
         }
+        &.childCell {
+            padding: 0;
+            h2 {
+                position: relative;
+                text-align: left;
+                font-size: 1rem;
+                color: #fff;
+                background-color: $dark_gray;
+                padding-top: 0.625rem;
+                padding-bottom: 0.625rem;
+                margin: 0;
+                span {
+                    color: $gray;
+                    position: absolute;
+                    right: 0.625rem;
+                    font-weight: normal;
+                }
+            }
+        }
 
     }
     th:not([scope="row"]), td {
@@ -44,6 +83,7 @@
         }
     }
     th[scope="row"] {
+        border-top: 1px solid $gray;
         text-align: left;
         @media screen and (max-width: 399px){
             /* working in Chrome and FF -- need to check others */
@@ -55,6 +95,9 @@
             white-space: nowrap;
             font-size: .85rem;
         }
+    }
+    tr:first-of-type th[scope="row"]{
+        border-top-color: transparent;
     }
     th[scope="column"].sortedBy {
         &::after {
@@ -158,4 +201,8 @@
     margin: 0 auto;
     overflow: visible !important;
 }
+
+
+
+
 

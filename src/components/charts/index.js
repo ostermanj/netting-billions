@@ -50,6 +50,14 @@ function hashValues(d){
 function display(key){
     return dictionary[key].display;
 }
+function displayFilters(filters){
+    if ( filters.length == 0 ){
+        return '';
+    }
+    return filters.reduce(function(acc,cur,i,arr){
+        return acc + display(cur[1]) + ( i < arr.length - 1 ? ' | ' : '' );
+    },'( ') + ' )';
+}
 function description(key){
     return dictionary[key].description;
 }
@@ -63,6 +71,8 @@ function returnSubcontainer(parent){
     var row = document.createElement('tr');
     var cell = document.createElement('td');
     cell.setAttribute('colspan', fieldValues.property.size + 1);
+    cell.classList.add(s.childCell);
+    row.classList.add(s.isExpanded);
     row.appendChild(cell);
     parent.insertAdjacentElement('afterend',row);
     return cell;
@@ -79,6 +89,11 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
     var nestedData = returnNestedData(filters);
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     function rowClickHandler(d){
+        if ( this.classList.contains('js-child-is-loaded') ){
+            return; // here handle the expanding/collapsing of already loaded children
+                    // include aria-expanded, etc.
+        }
+        this.classList.add('js-child-is-loaded') 
         var rowKeys = JSON.parse(this.dataset.keys);
         var rowValues = JSON.parse(this.dataset.values);
         var rowFilters = rowKeys.map((key,i) => [key,rowValues[i]]);
@@ -182,12 +197,13 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
         {
             let entering = sections
                 .enter().append('section')
-                .attr('class', s.chartSection)
+                .attr('class', `${s.chartSection} ${s['chartSection' + filters.length]}`)
                 .attr('data-key', d => d.key);
             
-            if ( filters.length === 0 ){ //only add head and graf when no filters applied, ie, main tables
                 entering.append('h2')
-                    .text(d => display(d.key));
+                    .html(d => `${display(d.key)} <span>${displayFilters(filters)}</span>`);
+
+            if ( filters.length === 0 ){ //only add graf when no filters applied, ie, main tables
 
                 entering.append('p')
                     .attr('class', s.intro)
