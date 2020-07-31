@@ -25,6 +25,19 @@
         background-color: inherit;
         border: none;
     }
+    td {
+        text-align: center;
+        &.v  {
+            color: darken($teal, 20%);
+        }
+        &.dv  {
+            color: darken($orange, 10%);
+        }
+        &.ev  {
+            color: $red;
+        }
+
+    }
     th:not([scope="row"]), td {
         @media screen and (max-width: 399px) {
             padding-top: 1rem;   

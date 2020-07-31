@@ -1,7 +1,10 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
+/* eslint no-debugger: warn */
 import data from '@Project/data/data.csv';
 import d3 from '@Project/d3-importer.js';
+
+const sections = ['rfmo', 'species', 'gear', 'product'];
 
 /*  1. create an object with all fields from the data except `value` as keys and a Set of all values for that field as the values.
     This will be used later to set up <table>s that will house the svg graphs. The data will be nested so that the summaries of the
@@ -45,18 +48,37 @@ function nestBy(fields, data) {
 // relative measures of change like z-score, deviation, etc, for the entire data set and scale
 // all graphs consistently
 
-const nestedData = summarizeChildren({
-    key: 'total',
-    values: ['rfmo', 'species', 'gear', 'product'].map(d => {
-        var nested = nestBy([undefined, 'property', d, 'year'], data);
-        nested.forEach(datum => { // mutates nested
-            datum.key = d;
-        });
-        return nested[0];
-    })
-});
+// setting it to be the return value of  a fn so that we can specify filters of the data first
+// eg when a row is clicked we will want to return a nesting of only the data that belongs to that
+// row. on load filter not specified, will default to empty array []
+function returnNestedData(filters){
+    var _nested = summarizeChildren({
+        key: 'total',
+        values: filterSections(filters).map(d => {
+            var nested = nestBy([undefined, 'property', d, 'year'], filterData(filters));
+            nested.forEach(datum => { // mutates nested
+                datum.key = d;
+            });
+            return nested[0];
+        })
+    });
+    return _nested;
+}
 
+function filterData(filters){ // filters = array of arrays(2).  0: key, 1: value
+    var _data = filters.reduce(function(acc,cur){
+        return acc.filter(d => d[cur[0]] == cur[1]);
+    }, data);
+    return _data;
+}
 
+function filterSections(filters){
+    return filters.reduce(function(acc,cur){
+        var index = acc.indexOf(cur[0]);
+        acc.splice(index, 1);
+        return acc;
+    }, sections);
+}
 /***********************/
 
 /*  3. Summarize the nestedData at each level. This will facilitate easy reference to max and min values, for instance, at 
@@ -68,11 +90,23 @@ function summarizeChildren(datum) {
     function _summarize(datum) {
         var descendantValues = datum.values.reduce((acc, cur) => {
             cur.parent = datum;
+            if ( cur.value ){
+                console.log(cur.parent);
+            }
             return acc.concat(cur.values ? _summarize(cur) : cur.value);
         }, []);
         var pValues = returnPValues(datum);
 
         function returnPValues(datum) {
+           // var _datumValues = datum.values.slice();
+            console.log(datum.values);
+            // there's a problem here: dividing by zero when the first value is zero, or all are zero
+            // take a slice() copy of datum.values to avoid mutating datum and shift of the first value
+            // so long as it's value === 0. in effect, measure pValue against the first nonzero value
+            // in the series
+            while ( datum.values.length > 0 && datum.values[0].value === 0 ){
+                datum.values.shift();
+            }
             return datum.values.reduce((acc, cur) => {
                 var min = d3.min([acc[0], cur.values ? returnPValues(cur)[0] : (cur.value - datum.values[0].value) / datum.values[0].value]);
                 var max = d3.max([acc[1], cur.values ? returnPValues(cur)[1] : (cur.value - datum.values[0].value) / datum.values[0].value]);
@@ -98,4 +132,5 @@ function summarizeChildren(datum) {
     return datum;
 }
 
-export { fieldValues, nestedData} ;
+export { fieldValues, returnNestedData} ;
+

@@ -4,6 +4,7 @@ import d3 from '@Project/d3-importer.js';
 import StringHelpers from '@Submodule/UTILS';
 import s from './styles.scss';
 import dictionary from '@Project/data/dictionary.json';
+import { fieldValues, returnNestedData } from '@Project/scripts/data.js';
 
 if ( module.hot ){
     module.hot.accept('./styles.scss');
@@ -54,8 +55,6 @@ function description(key){
     return dictionary[key].description;
 }
 function abbrev({value, type, precision}){
-    console.log(type);
-
     return d3.format(formatTypes(precision)[type])(value).replace('G','B');
 }
 function units(key){
@@ -69,21 +68,42 @@ d3.formatLocale({
 });
 
 
-export function initCharts({nestedData,fieldValues}){
-    function returnDatum(datum){
-        return years.map(year => {
+export function initCharts({filters = []}){
+    var nestedData = returnNestedData(filters);
+    function rowClickHandler(d){
+        console.log(d, this, n);
+    }
+    function returnDatum(datum){ 
+        var _datum = datum.values.map((value, i, arr) => {
             return {
+                row: datum.key,
+                column: datum.parent.key,
+                x: value.key,
+                y: value.value,
+                z: ( value.value - datum.parent.mean ) / datum.parent.deviation,
+                p: ( value.value - arr[0].value ) / arr[0].value
+            };
+        });  
+       /* var _datum = years.map((year, i) => {
+            var y = datum.values.find(d => d.key == year).value;
+            return ( y == 0 && i == 0) ? null : {
                 row: datum.key,
                 column: datum.parent.key,
                 x: year,
                 /* based on absolute value */
-                y: datum.values.find(d => d.key == year).value,
+               // y,
                 /* z-score */
-                z: ( datum.values.find(d => d.key == year).value - datum.parent.mean ) / datum.parent.deviation,
+               // z: ( datum.values.find(d => d.key == year).value - datum.parent.mean ) / datum.parent.deviation,
                 /* percentage change */
-                p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
-           };
-        });
+               // p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
+         /*  };
+        });*/
+
+/*        while ( _datum[0] == null ){
+            console.log(_datum)
+            _datum.shift();
+        }*/
+        return _datum;
     }
     function initTooltips(datum){
         var cell = d3.select(this);
@@ -98,6 +118,10 @@ export function initCharts({nestedData,fieldValues}){
 
     }
     function createSVG(datum){
+        if ( datum.descendantValues.every(d => d === 0) ){
+            this.textContent = 'n.a.';
+            return;
+        }
         var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
         yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
         
@@ -141,7 +165,6 @@ export function initCharts({nestedData,fieldValues}){
                 .attr('class', s.dummyBars)
                 .selectAll('rect')
                 .data(d => {
-                    console.log(datum);
                     return d;
                 })
                 .enter().append('rect')
@@ -190,12 +213,13 @@ export function initCharts({nestedData,fieldValues}){
         var section = d3.select(this);
         var rows = section.selectAll('tbody')
             .selectAll('tr')
-            .data(d => [...fieldValues[d.key]], function(_d){ return _d ? _d : this.getAttribute('data-key');});
+            .data(d => [...fieldValues[d.key]], function(_d){ return _d ? _d : this.getAttribute('data-value');});
 
             {
                 let entering = rows
                     .enter().append('tr')
-                    .attr('data-key', d => d);
+                    .attr('data-key', data.key)
+                    .attr('data-value', d => d); // eg W, IO, IA, etc
 
                 entering.append('th')
                     .attr('scope','row')
@@ -203,17 +227,26 @@ export function initCharts({nestedData,fieldValues}){
 
                 rows = rows.merge(entering);
                 rows.exit().remove();
+
+                rows.on('click', rowClickHandler);
             }
 
         // remember the rendering of the tables follows a different sequence then the nesting of the data so we
         // have to manually find the data needed for each the cells of each row
         var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
-                .data(d => [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d)), function(d){ return d ? hashValues(d.values) : this.getAttribute('data-hash');});
+                .data(d => {
+                    var _d = [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d));
+                    console.log(_d);
+                    return _d;
+                }, function(d){ return d ? hashValues(d.values) : this.getAttribute('data-hash');});
 
             {
                 let entering = cells
                     .enter().append('td')
-                    .attr('data-hash', d => hashValues(d.values))  
+                    .attr('data-hash', d => {
+                        return hashValues(d.values);
+                    })
+                    .attr('class', d => s[d.parent.key])  
                     .each(createSVG);
 
                 cells = cells.merge(entering);

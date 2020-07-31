@@ -3,8 +3,9 @@
 //import "core-js/stable";
 //import "regenerator-runtime/runtime";
 import './css/styles.scss';
-import { fieldValues, nestedData } from './scripts/data.js';
+//import { fieldValues, returnNestedData } from './scripts/data.js';
 import { initCharts } from '@Project/components/charts/';
 
-initCharts({fieldValues,nestedData});
+initCharts({filters: []});
+//initCharts({filters: [['rfmo','W'],['species','ALB'],['gear','GN']]});
 document.dispatchEvent(new Event('custom-render-trigger'));
