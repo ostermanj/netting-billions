@@ -6,6 +6,7 @@ import './css/styles.scss';
 //import { fieldValues, returnNestedData } from './scripts/data.js';
 import { initCharts } from '@Project/components/charts/';
 
-initCharts({filters: []});
+initCharts({});
+//initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});
 //initCharts({filters: [['rfmo','W'],['species','ALB'],['gear','GN']]});
 document.dispatchEvent(new Event('custom-render-trigger'));

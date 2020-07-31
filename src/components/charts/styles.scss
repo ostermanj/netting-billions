@@ -56,6 +56,23 @@
             font-size: .85rem;
         }
     }
+    th[scope="column"].sortedBy {
+        &::after {
+            content: ' \2193'; // up arrow
+        }
+        &.asc::after {
+            content: ' \2191'; //down arrow
+        }
+        &.v::after  {
+            color: darken($teal, 20%);
+        }
+        &.dv::after  {
+            color: darken($orange, 10%);
+        }
+        &.ev::after  {
+            color: $red;
+        }
+    }
     tbody tr:not(:last-of-type) {
         border-bottom: 1px solid $gray;
     }

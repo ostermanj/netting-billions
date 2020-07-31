@@ -68,13 +68,13 @@ d3.formatLocale({
 });
 
 
-export function initCharts({filters = []}){
+export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc'}){
     var nestedData = returnNestedData(filters);
     function rowClickHandler(d){
         console.log(d, this, n);
     }
     function returnDatum(datum){ 
-        var _datum = datum.values.map((value, i, arr) => {
+        return datum.values.map((value, i, arr) => {
             return {
                 row: datum.key,
                 column: datum.parent.key,
@@ -84,26 +84,6 @@ export function initCharts({filters = []}){
                 p: ( value.value - arr[0].value ) / arr[0].value
             };
         });  
-       /* var _datum = years.map((year, i) => {
-            var y = datum.values.find(d => d.key == year).value;
-            return ( y == 0 && i == 0) ? null : {
-                row: datum.key,
-                column: datum.parent.key,
-                x: year,
-                /* based on absolute value */
-               // y,
-                /* z-score */
-               // z: ( datum.values.find(d => d.key == year).value - datum.parent.mean ) / datum.parent.deviation,
-                /* percentage change */
-               // p: ( datum.values.find(d => d.key == year).value - datum.values.find(d => d.key == years[0]).value ) / datum.values.find(d => d.key == years[0]).value
-         /*  };
-        });*/
-
-/*        while ( _datum[0] == null ){
-            console.log(_datum)
-            _datum.shift();
-        }*/
-        return _datum;
     }
     function initTooltips(datum){
         var cell = d3.select(this);
@@ -114,8 +94,14 @@ export function initCharts({filters = []}){
             .data(years.map(() => returnDatum(datum)))
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);
-
-
+    }
+    function sortFieldValues(d,a,b){
+        var columnValues = d.values.find(d => d.key == sortBy).values;
+        var ab = [a,b].map(fv => {
+            var yearValues = columnValues.find(d => d.key == fv).values;
+            return yearValues[yearValues.length - 1].value;
+        });
+        return sortDirection == 'desc' ? ab[1] - ab[0] : ab[0] - ab[1];
     }
     function createSVG(datum){
         if ( datum.descendantValues.every(d => d === 0) ){
@@ -199,21 +185,29 @@ export function initCharts({filters = []}){
 
             table.append('thead')
                 .selectAll('th')
-                .data(['', ...fieldValues.property]) // TODO:  use metadata for display value
+                .data(d => ['', ...fieldValues.property]) 
                 .enter().append('th')
                 .attr('scope', (d,i) => i == 0 ? null :'column')
+                .attr('class', d => s[d])
+                .classed(s.sortedBy, d => {
+                    return d == sortBy;
+                })
+                .classed(s.asc, d => d == sortBy && sortDirection == 'asc' )
                 .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}`: '');
             
             table.append('tbody');
 
-            // handling enter separately for prerendering. 
+            // handling enter separately for prerenderin
             sections = sections.merge(entering);
         }
     sections.each(function(data){
         var section = d3.select(this);
         var rows = section.selectAll('tbody')
             .selectAll('tr')
-            .data(d => [...fieldValues[d.key]], function(_d){ return _d ? _d : this.getAttribute('data-value');});
+            .data(d => {
+                var rtn = [...fieldValues[d.key]].sort(sortFieldValues.bind(undefined,d));
+                return rtn;
+            }, function(_d){ return _d ? _d : this.getAttribute('data-value');});
 
             {
                 let entering = rows
