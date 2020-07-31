@@ -59,7 +59,8 @@
         &.childCell {
             padding: 0;
             h2 {
-                position: relative;
+                position: sticky;
+                top: 100px;
                 text-align: left;
                 font-size: 1rem;
                 color: #fff;
