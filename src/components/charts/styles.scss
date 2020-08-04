@@ -10,23 +10,13 @@
         margin: 0 auto 2em;
         background-color: #fff;
     }
-    &.chartSection1 {
+    &:not(.chartSection0) {
+        th[scope="row"] button {
+            left: 0;
+        }
         & > table th[scope="row"], & > h2 {
             padding-left: 1.5rem;
         }
-    }
-    &.chartSection2 {
-        & > table th[scope="row"], & > h2 {
-            padding-left: 1.5rem;
-        }
-    }
-    &.chartSection3 {
-        & > table th[scope="row"], & > h2 {
-            padding-left: 1.5rem;
-        }
-    }
-    &:not(.chartSection0) th[scope="row"] button {
-        left: 0;
     }
     h2 {
         text-align: center;
@@ -75,17 +65,29 @@
                 font-size: 1rem;
                 color: #fff;
                 background-color: $dark_gray;
-                padding-top: 0.625rem;
-                padding-bottom: 0.625rem;
+                padding:0.625rem;
                 margin: 0;
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
                 z-index: 1;
-                span {
+                .filtersDisplay {
                     color: $gray;
-                    //position: absolute;
-                    //right: 0.625rem;
                     font-weight: normal;
+                    font-size: 0.85em;
                 }
             }
+           /* .chartSection1 h2 {
+                z-index: 3;
+            }
+            .chartSection2 h2 {
+                z-index: 2;
+                top: 140px;
+            }
+            .chartSection3 h2 {
+                top: 180px;
+                z-index: 1;
+            }*/
         }
 
     }
@@ -233,11 +235,12 @@
         left: 30%;
         top: 50%;
         transform-origin: 50% 50%;
-        transform: translateY(-50%) scale(1);
+        transform: translateY(calc(-50% - 2px)) scale(1);
         transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        line-height: 100%;
     }
     tr:hover > th &::before {
-        transform: translateY(-50%) scale(1.25);
+        transform: translateY(calc(-50% - 2px))  scale(1.25);
         color: $pew_blue;
     }
 }

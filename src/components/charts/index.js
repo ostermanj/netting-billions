@@ -55,8 +55,8 @@ function displayFilters(filters){
         return '';
     }
     return filters.reduce(function(acc,cur,i,arr){
-        return acc + display(cur[1]) + ( i < arr.length - 1 ? ' | ' : '' );
-    },'( ') + ' )';
+        return acc + `${display(cur[1])}${( i < arr.length - 1 ? ', ' : '' )}`;
+    },'Selected: ');
 }
 function description(key){
     return dictionary[key].description;
@@ -209,7 +209,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
                 .attr('data-key', d => d.key);
             
                 entering.append('h2')
-                    .html(d => `${display(d.key)} <span>${displayFilters(filters)}</span>`);
+                    .html(d => `<span>${display(d.key)}</span> <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
 
             if ( filters.length === 0 ){ //only add graf when no filters applied, ie, main tables
 
