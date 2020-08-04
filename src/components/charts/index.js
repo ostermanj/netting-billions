@@ -209,7 +209,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
                 .attr('data-key', d => d.key);
             
                 entering.append('h2')
-                    .html(d => `${filters.reduce((acc,cur,i) => acc + '—' + (i == filters.length - 1 ? ' ' : ''),'')}${display(d.key)} <span>${displayFilters(filters)}</span>`);
+                    .html(d => `${display(d.key)} <span>${displayFilters(filters)}</span>`);
 
             if ( filters.length === 0 ){ //only add graf when no filters applied, ie, main tables
 

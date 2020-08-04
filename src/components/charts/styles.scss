@@ -78,10 +78,11 @@
                 padding-top: 0.625rem;
                 padding-bottom: 0.625rem;
                 margin: 0;
+                z-index: 1;
                 span {
                     color: $gray;
-                    position: absolute;
-                    right: 0.625rem;
+                    //position: absolute;
+                    //right: 0.625rem;
                     font-weight: normal;
                 }
             }
