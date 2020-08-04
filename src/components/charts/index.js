@@ -251,6 +251,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
             {
                 let entering = rows
                     .enter().append('tr')
+                    .attr('title','Click to expand')
                     .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                     .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])); // eg W, IO, IA, etc
 
@@ -261,7 +262,8 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
 
                 th.text(d => display(d));
                 th.append('button')
-                    .text('+');
+                    .attr('class', s.expandButton)
+                    .attr('aria-label','Click to expand row');
 
                 rows = rows.merge(entering);
                 rows.exit().remove();
