@@ -57,7 +57,11 @@
             color: $red;
         }
         &.childCell {
+            display: none;
             padding: 0;
+            &.isExpandedChild {
+                display: table-cell;
+            }
             h2 {
                 position: sticky;
                 top: 100px;
@@ -201,6 +205,9 @@
     display: block;
     margin: 0 auto;
     overflow: visible !important;
+}
+.isExpanded {
+    outline: 1px solid magenta;
 }
 
 

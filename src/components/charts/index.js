@@ -72,7 +72,6 @@ function returnSubcontainer(parent){
     var cell = document.createElement('td');
     cell.setAttribute('colspan', fieldValues.property.size + 1);
     cell.classList.add(s.childCell);
-    row.classList.add(s.isExpanded);
     row.appendChild(cell);
     parent.insertAdjacentElement('afterend',row);
     return cell;
@@ -90,14 +89,24 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     function rowClickHandler(d){
         if ( this.classList.contains('js-child-is-loaded') ){
+            this.isExpanded = !this.isExpanded;
             return; // here handle the expanding/collapsing of already loaded children
                     // include aria-expanded, etc.
         }
-        this.classList.add('js-child-is-loaded') 
+        Object.defineProperty(this, 'isExpanded', {
+            get: function(){ return this._isExpanded; },
+            set: function(value){
+                this._isExpanded = value;
+                this.classList[value ? 'add' : 'remove'](s.isExpanded);
+                this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild);
+             }
+        });
         var rowKeys = JSON.parse(this.dataset.keys);
         var rowValues = JSON.parse(this.dataset.values);
         var rowFilters = rowKeys.map((key,i) => [key,rowValues[i]]);
-        initCharts({filters: rowFilters, sortBy, sortDirection, appendAfter: this});
+        this.classList.add('js-child-is-loaded');
+        this.expansionChild = initCharts({filters: rowFilters, sortBy, sortDirection, appendAfter: this});
+        this.isExpanded = true; 
     }
     function returnDatum(datum){ 
         return datum.values.map((value, i, arr) => {
@@ -285,6 +294,8 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);*/
 
+
+
     });
 /*
     d3.selectAll('svg.' + s.chartSVG)
@@ -293,4 +304,5 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
     d3.selectAll('.' + s.dummyBars + ' rect' )
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide);*/
+    return container.node();
 }
