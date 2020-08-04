@@ -254,9 +254,14 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
                     .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                     .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])); // eg W, IO, IA, etc
 
-                entering.append('th')
-                    .attr('scope','row')
-                    .text(d => display(d));
+                let th = entering.append('th');
+
+                th.attr('scope','row');
+                
+
+                th.text(d => display(d));
+                th.append('button')
+                    .text('+');
 
                 rows = rows.merge(entering);
                 rows.exit().remove();
