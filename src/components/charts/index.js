@@ -84,7 +84,6 @@ d3.formatLocale({
 });
 
 export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null}){
-    console.log(filters);
     var nestedData = returnNestedData(filters);
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     function rowClickHandler(d){

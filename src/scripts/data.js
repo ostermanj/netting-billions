@@ -73,13 +73,14 @@ function filterData(filters){ // filters = array of arrays(2).  0: key, 1: value
 }
 
 function filterSections(filters){
-    return filters.reduce(function(acc,cur){
+    var rtn =  filters.reduce(function(acc,cur){
         var index = acc.indexOf(cur[0]);
         if ( index > -1 ){ // do not splice if section has already been removed. slice(-1) will remove last
             acc.splice(index, 1);
         }
         return acc;
-    }, sections);
+    }, sections.slice()); // gotta take a slice() copy  of sections to avoid mutating it
+    return rtn;
 }
 /***********************/
 
