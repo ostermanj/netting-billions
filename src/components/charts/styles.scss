@@ -68,13 +68,19 @@
                 padding:0.625rem;
                 margin: 0;
                 display: flex;
-                justify-content: space-between;
+               // justify-content: space-between;
+               align-items: baseline;
                 flex-wrap: wrap;
                 z-index: 1;
                 .filtersDisplay {
+                    margin-left: 0.4em;
                     color: $gray;
                     font-weight: normal;
                     font-size: 0.85em;
+                    span {
+                        font-weight: 600;
+                        color: $light_gray;
+                    }
                 }
             }
            /* .chartSection1 h2 {
