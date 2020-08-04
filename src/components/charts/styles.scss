@@ -4,7 +4,7 @@
 .chartSection {
     width: 100%;
     max-width: 650px;
-    background-color: $light_gray;
+    background-color: $lightest_gray;
     margin: 0;
     &.chartSection0 {
         margin: 0 auto 2em;
@@ -59,8 +59,10 @@
         &.childCell {
             display: none;
             padding: 0;
+            border-bottom: 1px solid $dark_gray;
             &.isExpandedChild {
                 display: table-cell;
+
             }
             h2 {
                 position: sticky;
@@ -207,7 +209,13 @@
     overflow: visible !important;
 }
 .isExpanded {
-    outline: 1px solid magenta;
+   // outline: 1px solid magenta;
+    th, td {
+     /*   position: sticky;
+        top: 100px;
+        background-color: #fff;
+        z-index: 1;*/
+    }
 }
 
 
