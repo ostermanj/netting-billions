@@ -153,12 +153,33 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
         yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
         
         var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-        var g = d3.select(svg)
+        var _svg = d3.select(svg)
             .attr('class', s.chartSVG)
             .attr('viewBox', '0 0 100 ' + viewBoxHeight)
             .attr('focusable', false)
             .attr('xmlns', 'http://www.w3.org/2000/svg')
             .attr('version', '1.1')
+            .attr('role', 'img')
+            .attr('aria-labelledby', `title-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key} ` +
+                                      `desc-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key}`);
+
+        _svg.append('title')
+            .attr('id', `title-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key}`)
+            .text(() => {
+                return `Line graph showing the ${display(datum.parent.key)} of tuna caught ` + 
+                       `in each of ${datum.values.length} years for ${display(datum.parent.parent.key)}: ` +
+                       `${display(datum.key)}.`;
+            });
+
+        _svg.append('desc')
+            .attr('id', `desc-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key}`)
+            .text(() => {
+                return datum.values.reduce(function(acc,cur,j){
+                    return acc + `${cur.key}: ${abbrev({value: cur.value, type: cur.parent.parent.key, precision: 3})}${ j < datum.values.length - 1 ? '; ' :''}`;
+                },'');
+            });
+
+        var g = _svg
             .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`)
                 .datum(returnDatum(datum));
