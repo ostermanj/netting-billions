@@ -1,6 +1,10 @@
 @import '@Project/css/variables.scss';
 @import '@Project/css/d3-tip.scss';
 
+$a11y_on_black: #969696;
+$a11y_on_blue: #c2c2c2;
+$a11y_on_teal: #CFCFCF;
+
 .chartSection {
     width: 100%;
     max-width: 650px;
@@ -17,9 +21,46 @@
         & > table th[scope="row"], & > h2 {
             padding-left: 1.5rem;
         }
+        & > h2::before {
+            content: '\00B7';
+            position: absolute;
+            left: 0.75rem;
+        }
+        .childCell {
+            border-bottom-color: #153164;
+        }
+    }
+    &.chartSection2 {
+        background-color: lighten($light_blue, 2%);
+        & > table th[scope="row"], & > h2 {
+            padding-left: 2.25rem;
+        }
+        th[scope="row"] button {
+            left: 0.4rem;
+        }
+        & > h2::before {
+            content: '\00B7' + ' ' + '\00B7';
+        }
+        .childCell {
+            border-bottom-color: #004344;
+        }
+
+    }
+    &.chartSection3 {
+        background-color: lighten(#b0dfdd,17%);
+        & > table th[scope="row"], & > h2 {
+            padding-left: 3rem;
+        }
+        th[scope="row"] button {
+            left: 0.8rem;
+        }
+        & > h2::before {
+            content: '\00B7' + ' ' + '\00B7' + ' ' + '\00B7';
+        }
     }
     h2 {
         text-align: center;
+        position: relative;
     }
     table {
         width: 100%;
@@ -65,7 +106,8 @@
                 font-size: 1rem;
                 color: #fff;
                 background-color: $dark_gray;
-                padding:0.625rem;
+                padding-top: 0.625rem;
+                padding-bottom: 0.625rem;
                 margin: 0;
                 display: flex;
                // justify-content: space-between;
@@ -74,28 +116,41 @@
                 z-index: 1;
                 .filtersDisplay {
                     margin-left: 0.4em;
-                    color: $gray;
+                    color: $a11y_on_black;
                     font-weight: normal;
                     font-size: 0.85em;
                     span {
                         font-weight: 600;
-                        color: $light_gray;
+                        color: lighten($a11y_on_black, 15%);
                     }
                 }
             }
-           /* .chartSection1 h2 {
-                z-index: 3;
-            }
-            .chartSection2 h2 {
-                z-index: 2;
-                top: 140px;
-            }
+            .chartSection2 {
+                h2 {
+                    background-color: #153164;
+                    .filtersDisplay {
+                        color: $a11y_on_blue;
+                        span {
+                            color: lighten($a11y_on_blue, 15%);
+                        }
+                    }
+                }
+            } 
             .chartSection3 h2 {
-                top: 180px;
-                z-index: 1;
-            }*/
+                background-color: #004344;
+                .filtersDisplay {
+                    color: $a11y_on_teal;
+                    span {
+                        color: lighten($a11y_on_teal, 15%);
+                    }
+                }
+            }
         }
 
+    }
+    td.childCell .chartSection1 > h2 {
+        background-color: $dark_gray;
+        color: #fff;
     }
     th:not([scope="row"]), td {
         @media screen and (max-width: 399px) {
@@ -103,7 +158,6 @@
         }
     }
     th[scope="row"] {
-        border-top: 1px solid $gray;
         text-align: left;
         position: relative;
         @media screen and (max-width: 399px){
@@ -117,9 +171,7 @@
             font-size: .85rem;
         }
     }
-    tr:first-of-type th[scope="row"]{
-        border-top-color: transparent;
-    }
+    
     th[scope="column"].sortedBy {
         &::after {
             content: ' \2193'; // up arrow
@@ -137,8 +189,11 @@
             color: $red;
         }
     }
-    tbody tr:not(:last-of-type) {
-        border-bottom: 1px solid $gray;
+    tbody tr {
+        border-top: 1px solid $gray;
+        &:first-of-type {
+            border-top-color: transparent;
+        }
     }
 }
 .intro {
@@ -222,8 +277,13 @@
     margin: 0 auto;
     overflow: visible !important;
 }
-.isExpanded > th button::before {
-    content: '–';
+.isExpanded {
+    & > th {
+        font-weight: 900;
+        button::before {
+            content: '–';
+        }
+    }
 }
 .expandButton {
     position: absolute;
