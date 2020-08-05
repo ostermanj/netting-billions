@@ -245,10 +245,12 @@ $a11y_on_teal: #CFCFCF;
 .tooltipDiv {
     margin-bottom: 0.25em;
     color: $a11y;
+
 }
-.currentYear {
-    font-weight: 900;
-    color: $dark_gray;
+.tooltipHead {
+    text-align: center;
+    font-size: 0.85rem;
+    margin: 0 0 0.25em 0;
     .v & {
         color: darken($teal, 20%);
     }
@@ -258,6 +260,19 @@ $a11y_on_teal: #CFCFCF;
     .ev & {
         color: $red;
     }
+}
+.currentYear {
+    font-weight: 900;
+    color: $dark_gray;
+   /* .v & {
+        color: darken($teal, 20%);
+    }
+    .dv & {
+        color: darken($orange, 10%);
+    }
+    .ev & {
+        color: $red;
+    }*/
 }
 .circles circle {
     fill: #fff;
@@ -350,6 +365,7 @@ $a11y_on_teal: #CFCFCF;
         }
     }
 }
+
 
 
 

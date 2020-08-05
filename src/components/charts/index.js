@@ -42,7 +42,7 @@ const tip = d3.tip()
     .html((d,i,arr) => {    
         return d.reduce(function(acc,cur,j){
             return acc + `<div class="${s.tooltipDiv}${i == j ? ' ' + s.currentYear : ''}">${cur.x}: ${abbrev({value: cur.y, type: cur.column, precision: 3})}</div>`;
-        }, `<div class="${s[d[0].column]}">`) + '</div>';
+        }, `<section class="${s[d[0].column]}"><h1 class="${s.tooltipHead}">${display(d[0].column)}</h1>`) + '</section>';
     });
 function hashValues(d){
     return d.reduce((acc, cur) => acc + cur.value, '').hashCode();
