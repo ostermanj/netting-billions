@@ -86,6 +86,10 @@ d3.formatLocale({
 export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null}){
     var nestedData = returnNestedData(filters);
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
+    if ( filters.length > 0 ){
+        container
+            .attr('id', filters.map(f => f[1]).join('-'));    
+    }
     function rowClickHandler(d){
         if ( this.classList.contains('js-child-is-loaded') ){
             this.isExpanded = !this.isExpanded;
@@ -96,13 +100,16 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
             get: function(){ return this._isExpanded; },
             set: function(value){
                 this._isExpanded = value;
+                this.setAttribute('aria-expanded', value);
                 this.classList[value ? 'add' : 'remove'](s.isExpanded);
-                this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild);
+                this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild)
+                this.button.setAttribute('aria-label', value ? 'Click to collapse row' : 'Click to expand row');
              }
         });
         var rowKeys = JSON.parse(this.dataset.keys);
         var rowValues = JSON.parse(this.dataset.values);
         var rowFilters = rowKeys.map((key,i) => [key,rowValues[i]]);
+        this.button = this.querySelector('.js-expand-button');
         this.classList.add('js-child-is-loaded');
         this.expansionChild = initCharts({filters: rowFilters, sortBy, sortDirection, appendAfter: this});
         this.isExpanded = true; 
@@ -253,6 +260,8 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
                 let entering = rows
                     .enter().append('tr')
                     .attr('title','Click to expand')
+                    .attr('aria-expanded', false)
+                    .attr('aria-controls', d => [...filters.map(f => f[1]), d].join('-'))
                     .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                     .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])); // eg W, IO, IA, etc
 
@@ -263,7 +272,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
 
                 th.text(d => display(d));
                 th.append('button')
-                    .attr('class', s.expandButton)
+                    .attr('class', 'js-expand-button ' + s.expandButton)
                     .attr('aria-label','Click to expand row');
 
                 rows = rows.merge(entering);
