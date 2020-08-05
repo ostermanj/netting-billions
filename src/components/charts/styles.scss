@@ -18,7 +18,7 @@ $a11y_on_teal: #CFCFCF;
         th[scope="row"] button {
             left: 0;
         }
-        & > table th[scope="row"], & > h2 {
+        & > table th[scope="row"], & > .sectionHead {
             padding-left: 1.5rem;
         }
         .childCell {
@@ -27,7 +27,7 @@ $a11y_on_teal: #CFCFCF;
     }
     &.chartSection2 {
         background-color: lighten($light_blue, 2%);
-        & > table th[scope="row"], & > h2 {
+        & > table th[scope="row"], & > .sectionHead {
             padding-left: 2.25rem;
         }
         th[scope="row"] button {
@@ -40,14 +40,14 @@ $a11y_on_teal: #CFCFCF;
     }
     &.chartSection3 {
         background-color: lighten(#b0dfdd,17%);
-        & > table th[scope="row"], & > h2 {
+        & > table th[scope="row"], & > .sectionHead {
             padding-left: 3rem;
         }
         th[scope="row"] button {
             left: 0.8rem;
         }
     }
-    h2 {
+    .sectionHead {
         text-align: center;
         position: relative;
     }
@@ -89,7 +89,7 @@ $a11y_on_teal: #CFCFCF;
                 display: table-cell;
 
             }
-            h2 {
+            .sectionHead {
                 position: sticky;
                 top: 100px;
                 text-align: left;
@@ -119,7 +119,7 @@ $a11y_on_teal: #CFCFCF;
                 margin-top: -62px;
             }
             .chartSection2 {
-                h2 {
+                .sectionHead {
                     background-color: #153164;
                     .filtersDisplay {
                         color: $a11y_on_blue;
@@ -129,7 +129,7 @@ $a11y_on_teal: #CFCFCF;
                     }
                 }
             } 
-            .chartSection3 h2 {
+            .chartSection3 .sectionHead {
                 background-color: #004344;
                 .filtersDisplay {
                     color: $a11y_on_teal;
@@ -141,7 +141,7 @@ $a11y_on_teal: #CFCFCF;
         }
 
     }
-    td.childCell .chartSection1 > h2 {
+    td.childCell .chartSection1 > .sectionHead {
         background-color: $dark_gray;
         color: #fff;
     }
