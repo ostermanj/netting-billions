@@ -21,11 +21,6 @@ $a11y_on_teal: #CFCFCF;
         & > table th[scope="row"], & > h2 {
             padding-left: 1.5rem;
         }
-        & > h2::before {
-            content: '\00B7';
-            position: absolute;
-            left: 0.75rem;
-        }
         .childCell {
             border-bottom-color: #153164;
         }
@@ -37,9 +32,6 @@ $a11y_on_teal: #CFCFCF;
         }
         th[scope="row"] button {
             left: 0.4rem;
-        }
-        & > h2::before {
-            content: '\00B7' + ' ' + '\00B7';
         }
         .childCell {
             border-bottom-color: #004344;
@@ -53,9 +45,6 @@ $a11y_on_teal: #CFCFCF;
         }
         th[scope="row"] button {
             left: 0.8rem;
-        }
-        & > h2::before {
-            content: '\00B7' + ' ' + '\00B7' + ' ' + '\00B7';
         }
     }
     h2 {
@@ -280,8 +269,11 @@ $a11y_on_teal: #CFCFCF;
 .isExpanded {
     & > th {
         font-weight: 900;
-        button::before {
+        button::after {
             content: '–';
+        }
+        button::before {
+            visibility: visible;
         }
     }
 }
@@ -294,20 +286,64 @@ $a11y_on_teal: #CFCFCF;
     height: 100%;
     border: none;
     background-color: transparent;
-    &::before {
+    &::after {
         content: '+';
         color: $a11y;
         position: absolute;
-        left: 30%;
+        left: calc(40% - 0.5px);
         top: 50%;
         transform-origin: 50% 50%;
-        transform: translateY(calc(-50% - 2px)) scale(1);
+        transform: translate(calc(-50% + 0.5px), calc(-50% - 2px)) scale(1);
         transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
         line-height: 100%;
     }
+    &::before {
+        content: '';
+        display: block;
+        border: 1px solid $a11y;
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        left: 40%;
+        top: 50%;
+        transform-origin: 50% 50%;
+        transform: translate(calc(-50%), calc(-50% - 1px)) scale(1);
+        transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        position: absolute;
+        visibility: hidden;
+    }
     tr:hover > th &::before {
-        transform: translateY(calc(-50% - 2px))  scale(1.25);
-        color: $pew_blue;
+        //color: $dark_gray;
+    }
+    tr:hover > th &::after {
+        //color: $dark_gray;
+    }
+    .chartSection0 .isExpanded & {
+        &::after {
+            color: #fff;
+        }       
+        &::before {
+            border-color: $dark_gray;
+            background-color: $dark_gray;
+        }
+    }
+    .chartSection1 .isExpanded & {
+        &::after {
+            color: #fff;
+        }       
+        &::before {
+            border-color: #153164;
+            background-color: #153164;
+        }
+    }
+    .chartSection2 .isExpanded & {
+        &::after {
+            color: #fff;
+        }       
+        &::before {
+            border-color: #004344;
+            background-color: #004344;
+        }
     }
 }
 
