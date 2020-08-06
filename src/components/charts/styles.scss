@@ -50,6 +50,7 @@ $a11y_on_teal: #CFCFCF;
     .sectionHead {
         text-align: center;
         position: relative;
+        cursor: default;
     }
     table {
         width: 100%;
@@ -63,6 +64,9 @@ $a11y_on_teal: #CFCFCF;
         @media screen and (max-width: 399px){
             padding-top: 10px;
         }
+    }
+    &.isLastSection tr {
+        cursor: default;
     }
     th, td {
         padding: 0.625rem;
@@ -101,9 +105,12 @@ $a11y_on_teal: #CFCFCF;
                 margin: 0 0 62px 0;
                 display: flex;
                // justify-content: space-between;
-               align-items: baseline;
+                align-items: baseline;
                 flex-wrap: wrap;
                 z-index: 1;
+                @media screen and (max-width: 910px){
+                    top: 98px;
+                }
                 .filtersDisplay {
                     margin-left: 0.4em;
                     color: $a11y_on_black;

@@ -145,6 +145,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
         return sortDirection == 'desc' ? ab[1] - ab[0] : ab[0] - ab[1];
     }
     function createSVG(datum){
+        console.log('in createSVG');
         if ( datum.descendantValues.every(d => d === 0) ){
             this.textContent = 'n.a.';
             return;
@@ -156,7 +157,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
         var _svg = d3.select(svg)
             .attr('class', s.chartSVG)
             .attr('viewBox', '0 0 100 ' + viewBoxHeight)
-            .attr('focusable', false)
+            //.attr('focusable', false)
             .attr('xmlns', 'http://www.w3.org/2000/svg')
             .attr('version', '1.1')
             .attr('role', 'img')
@@ -234,6 +235,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
             let entering = sections
                 .enter().append('section')
                 .attr('class', `${s.chartSection} ${s['chartSection' + filters.length]}`)
+                .classed(s.isLastSection, nestedData.values.length == 1)
                 .attr('data-key', d => d.key);
             
                 entering.append('h' + ( filters.length + 2 ))
@@ -272,34 +274,45 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
         var section = d3.select(this);
         var rows = section.selectAll('tbody')
             .selectAll('tr')
-            .data(d => {
-                var rtn = [...fieldValues[d.key]].sort(sortFieldValues.bind(undefined,d));
+            .data(() => {
+                var rtn = [...fieldValues[data.key]].sort(sortFieldValues.bind(undefined,data));
                 return rtn;
-            }, function(_d){ return _d ? _d : this.getAttribute('data-values');});
+            }, function(_d){ // this second parameter of `.data()` sets the key by which to identify each data-bound element
+                             // needs to be IDd so that on page load the prerendered elements are not rerendered
+                             // `_d` is undefined for the prerendered elements captured by selectAll, so return that `data-value`
+                             // attribute instead.
+                console.log(_d);
+                return _d ? JSON.stringify([...filters.map(f => f[1]), _d]) : this.getAttribute('data-values');
+            });
 
             {
                 let entering = rows
                     .enter().append('tr')
-                    .attr('title','Click to expand')
-                    .attr('aria-expanded', false)
-                    .attr('aria-controls', d => [...filters.map(f => f[1]), d].join('-'))
                     .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                     .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])); // eg W, IO, IA, etc
+
+                if ( nestedData.values.length > 1 ){ // do not do expansion stuff if we're at the last branch of the tree
+                    entering
+                        .attr('title','Click to expand')
+                        .attr('aria-expanded', false)
+                        .attr('aria-controls', d => [...filters.map(f => f[1]), d].join('-'))
+                }
 
                 let th = entering.append('th');
 
                 th.attr('scope','row');
-                
-
                 th.text(d => display(d));
-                th.append('button')
-                    .attr('class', 'js-expand-button ' + s.expandButton)
-                    .attr('aria-label','Click to expand row');
+                if ( nestedData.values.length > 1 ){
+                    th.append('button')
+                        .attr('class', 'js-expand-button ' + s.expandButton)
+                        .attr('aria-label','Click to expand row');
+                }
 
                 rows = rows.merge(entering);
                 rows.exit().remove();
-
-                rows.on('click', rowClickHandler);
+                if ( nestedData.values.length > 1 ){
+                    rows.on('click', rowClickHandler);
+                }
             }
 
         // remember the rendering of the tables follows a different sequence then the nesting of the data so we
