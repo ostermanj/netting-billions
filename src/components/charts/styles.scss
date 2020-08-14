@@ -5,6 +5,9 @@ $a11y_on_black: #969696;
 $a11y_on_blue: #c2c2c2;
 $a11y_on_teal: #CFCFCF;
 
+$color-level-2: #153164;
+$color-level-3: #004344;
+
 .chartSection {
     width: 100%;
     max-width: 650px;
@@ -13,27 +16,40 @@ $a11y_on_teal: #CFCFCF;
     &.chartSection0 {
         margin: 0 auto 2em;
         background-color: #fff;
+        & > table > tr > td.childCell.isExpandedChild {
+            border-left: 1px solid #000;
+            &::before {
+                display: none;
+            }
+        }
     }
     &:not(.chartSection0) {
+
+        th[scope="row"]::after {
+            left: 14px;
+        }
         th[scope="row"] button {
             left: 0;
         }
         & > table th[scope="row"], & > .sectionHead {
-            padding-left: 1.5rem;
+            padding-left: 1.75rem;
         }
-        .childCell {
-            border-bottom-color: #153164;
+        td.childCell.isExpandedChild::before {
+                left: 14px;
         }
     }
     &.chartSection2 {
-        & > table th[scope="row"], & > .sectionHead {
+        & > table th[scope="row"] {
             padding-left: 2.25rem;
+        }
+        .sectionHead {
+            margin-left: 14px !important;
         }
         th[scope="row"] button {
             left: 0.4rem;
         }
         .childCell {
-            border-bottom-color: #004344;
+            border-bottom-color: $color-level-3;
         }
 
     }
@@ -85,10 +101,20 @@ $a11y_on_teal: #CFCFCF;
         }
         &.childCell {
             display: none;
+            position: relative;
             padding: 0;
-            border-bottom: 1px solid $dark_gray;
             &.isExpandedChild {
                 display: table-cell;
+                &::before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    width: 1px;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    background-color: #000;
+                }
 
             }
             .sectionHead {
@@ -125,11 +151,11 @@ $a11y_on_teal: #CFCFCF;
             }
             .chartSection2 {
                 .sectionHead {
-                    background-color: #153164;
+                    background-color: $color-level-2;
                 }
             } 
             .chartSection3 .sectionHead {
-                background-color: #004344;
+                background-color: $color-level-3;
             }
         }
 
@@ -146,6 +172,19 @@ $a11y_on_teal: #CFCFCF;
     th[scope="row"] {
         text-align: left;
         position: relative;
+        padding-left: 0.9375rem;
+        &::after {
+            content: '';
+            width: 1px;
+            background-color: #000;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            bottom: 0;
+            display: block;
+            visibility: hidden;
+        }
+
         @media screen and (max-width: 399px){
             /* working in Chrome and FF -- need to check others */
             display: block;
@@ -282,12 +321,19 @@ $a11y_on_teal: #CFCFCF;
     overflow: visible !important;
 }
 .isExpanded {
-    & > th {
+    & > th[scope="row"] {
         font-weight: 900;
+        &::after {
+            visibility: visible;
+        }
         button::before {
             background-color: #000;
             background-image: url('./minus.svg');
+            .chartSection1 & {
+                background-color: $color-level-2;
+            }
         }
+
     }
 }
 .expandButton {
@@ -295,7 +341,7 @@ $a11y_on_teal: #CFCFCF;
     left: -15px;
     top: 0;
     appearance: none;
-    width: 30px;
+    width: 31px;
     height: 100%;
     border: none;
     background-color: transparent;
@@ -308,13 +354,14 @@ $a11y_on_teal: #CFCFCF;
         width: 15px;
         height: 15px;
         border-radius: 8px;
-        left: 40%;
+        left: 15px;
         top: 50%;
         transform-origin: 50% 50%;
         transform: translate(calc(-50%), calc(-50% - 1px)) scale(1);
         transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
         position: absolute;
         box-sizing: border-box;
+        
       //  visibility: hidden;
     }
     tr:hover > th &::before {
@@ -323,22 +370,23 @@ $a11y_on_teal: #CFCFCF;
     tr:hover > th &::after {
         //color: $dark_gray;
     }
-    .chartSection0 .isExpanded & {
-        &::after {
-            color: #fff;
-        }       
+    /*.chartSection0 .isExpanded & {
+            
         &::before {
-            border-color: #000;
-            background-color: #000;
+            border-color: $color-level-2;
+            background-color: $color-level-2;
         }
     }
-    .chartSection1 .isExpanded & {
-        &::after {
-            color: #fff;
-        }       
-        &::before {
-            border-color: #153164;
-            background-color: #153164;
+    .chartSection1 {
+        
+        .isExpanded & {
+            &::after {
+                color: #fff;
+            }       
+            &::before {
+                border-color: $color-level-2;
+                background-color: $color-level-2;
+            }
         }
     }
     .chartSection2 .isExpanded & {
@@ -346,10 +394,10 @@ $a11y_on_teal: #CFCFCF;
             color: #fff;
         }       
         &::before {
-            border-color: #004344;
-            background-color: #004344;
+            border-color: $color-level-3;
+            background-color: $color-level-3;
         }
-    }
+    }*/
 }
 
 
