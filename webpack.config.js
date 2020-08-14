@@ -176,6 +176,10 @@ const rules = [
         test: /\.html$/,
         exclude: /index.*\.html/,
         use: 'html-loader'
+    },
+    {
+        test: /\.svg$/,
+        use: 'svg-url-loader'
     }
 ];
 
