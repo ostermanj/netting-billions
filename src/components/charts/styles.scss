@@ -5,8 +5,10 @@ $a11y_on_black: #969696;
 $a11y_on_blue: #c2c2c2;
 $a11y_on_teal: #CFCFCF;
 
-$color-level-2: #153164;
-$color-level-3: #004344;
+//$color-level-2: #153164;
+//$color-level-3: #004344;
+$color-level-2: #000;
+$color-level-3: #000;
 
 .chartSection {
     width: 100%;
@@ -27,38 +29,70 @@ $color-level-3: #004344;
 
         th[scope="row"]::after {
             left: 14px;
+            background-color: $color-level-2;
         }
         th[scope="row"] button {
             left: 0;
         }
         & > table th[scope="row"], & > .sectionHead {
-            padding-left: 1.75rem;
+            //padding-left: 1.75rem;
+            padding-left: 28px;
+            
         }
+
         td.childCell.isExpandedChild::before {
                 left: 14px;
+                background-color: $color-level-2;
         }
     }
-    &.chartSection2 {
-        & > table th[scope="row"] {
-            padding-left: 2.25rem;
+    &.chartSection2, &.chartSection3 {
+        &::before {
+            content: '';
+            display: block;
+            width: 14px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            background-color: #fff;
+            //z-index: 2;
         }
-        .sectionHead {
+    }
+    &.chartSection3::before {
+        width: 28px;
+    }
+    &.chartSection2 {
+        th[scope="row"]::after {
+            left: 28px;
+            background-color: $color-level-3;
+        }
+        & > table th[scope="row"] {
+            padding-left: 42px;
+        }
+        & > .sectionHead {
             margin-left: 14px !important;
         }
         th[scope="row"] button {
-            left: 0.4rem;
+            left: 6px;
         }
         .childCell {
             border-bottom-color: $color-level-3;
         }
-
+        td.childCell.isExpandedChild::before {
+                left: 28px;
+                background-color: $color-level-3;
+        }
     }
     &.chartSection3 {
-        & > table th[scope="row"], & > .sectionHead {
-            padding-left: 3rem;
+
+        & > table th[scope="row"] {
+            padding-left: 48px;
         }
+        & > .sectionHead {
+               padding-left: 20px;
+               margin-left: 28px !important;
+           }
         th[scope="row"] button {
-            left: 0.8rem;
+            left: 13px;
         }
     }
     .sectionHead {
@@ -83,7 +117,7 @@ $color-level-3: #004344;
         cursor: default;
     }
     th, td {
-        padding: 0.625rem;
+        padding: 10px;
         background-color: inherit;
         border: none;
     }
@@ -126,15 +160,16 @@ $color-level-3: #004344;
                 background-color: #000;
                 padding-top: 0.625rem;
                 padding-bottom: 0.625rem;
-                margin: 0 0 62px 0;
+                margin: 0;
                 display: flex;
                // justify-content: space-between;
                 align-items: baseline;
                 flex-wrap: wrap;
-                z-index: 1;
+                border-top: 1px solid $light_gray;
                 @media screen and (max-width: 910px){
                     top: 98px;
                 }
+
                 .filtersDisplay {
                     margin-left: 0.4em;
                     color: #fff;
@@ -146,8 +181,19 @@ $color-level-3: #004344;
                     }
                 }
             }
+            h3.sectionHead {
+                z-index: 3;
+            }
+            h4.sectionHead {
+                top: 142px;
+                z-index: 2;
+            }
+            h5.sectionHead {
+                top: 184px;
+                z-index: 1;
+            }
             table {
-                margin-top: -62px;
+                //margin-top: -62px;
             }
             .chartSection2 {
                 .sectionHead {
@@ -172,7 +218,7 @@ $color-level-3: #004344;
     th[scope="row"] {
         text-align: left;
         position: relative;
-        padding-left: 0.9375rem;
+        padding-left: 15px;
         &::after {
             content: '';
             width: 1px;
@@ -332,6 +378,9 @@ $color-level-3: #004344;
             .chartSection1 & {
                 background-color: $color-level-2;
             }
+            .chartSection2 & {
+                background-color: $color-level-3;
+            }
         }
 
     }
@@ -361,7 +410,9 @@ $color-level-3: #004344;
         transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
         position: absolute;
         box-sizing: border-box;
-        
+        .chartSection2 & {
+            left: 22px;
+        }
       //  visibility: hidden;
     }
     tr:hover > th &::before {
