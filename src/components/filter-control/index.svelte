@@ -5,11 +5,13 @@
 import FilterItem from '@Project/components/filter-item/';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { FilterIsClosed } from '@Project/store.js';
+import { Sortable } from '@shopify/draggable';
+import { onMount } from 'svelte';
 
 export let sections;
 
 let filterIsClosed;
-
+let draggableContainers = [];
 FilterIsClosed.subscribe(v => {
     filterIsClosed = v;
 });
@@ -17,6 +19,12 @@ FilterIsClosed.subscribe(v => {
 function closeHandler(){
     FilterIsClosed.set(true);
 }
+
+onMount(() => {
+    new Sortable(draggableContainers, {
+        draggable: '.filter-item'
+    });
+}); 
 </script>
 
 <style lang="scss">
@@ -63,13 +71,14 @@ function closeHandler(){
     .filter-items-container {
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
-        justify-content: space-evenly;
         flex-grow: 1;
     }
     .filter-items-container--organize {
         background-color: $light_gray;
-        height: 210px;
+        height: 230px;
+        padding: 10px;
+        position: relative;
+        bottom: 10px;
     }
     .section-label {
         font-weight: bold;
@@ -102,7 +111,7 @@ function closeHandler(){
         <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data">
             <section class="form-section" id="filter-form" aria-labelledby="filter-form-label">
                 <label class="section-label" id="filter-form-label">Available filters:</label>
-                <div class="filter-items-container">
+                <div bind:this="{draggableContainers[0]}" class="filter-items-container">
                    {#each sections as section }
                     <FilterItem {section} />
                     {/each}
@@ -110,7 +119,7 @@ function closeHandler(){
             </section>
             <section class="form-section" id="drill-down-form" aria-labelledby="drill-down-label">
                 <label class="section-label" id="drill-down-label">Organize by:</label>
-                <div class="filter-items-container filter-items-container--organize">
+                <div bind:this="{draggableContainers[1]}" class="filter-items-container filter-items-container--organize">
                 </div>
             </section>
         </form>

@@ -11,6 +11,7 @@ export let section;
     .filter-item {
         height: 50px;
         background-color: $pew_blue;
+        margin-bottom: 2px;
     }
 </style>
 <div class="filter-item">
