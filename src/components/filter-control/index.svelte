@@ -4,7 +4,7 @@
 //import dictionary from '@Project/data/dictionary.json';
 import FilterItem from '@Project/components/filter-item/';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
-import { FilterIsClosed } from '@Project/store.js';
+import { FilterIsClosed, OrganizeBy } from '@Project/store.js';
 import { Sortable } from '@shopify/draggable';
 import { onMount } from 'svelte';
 
@@ -15,14 +15,26 @@ let draggableContainers = [];
 FilterIsClosed.subscribe(v => {
     filterIsClosed = v;
 });
+OrganizeBy.subscribe(v => {
+    console.log(v);
+});
 
 function closeHandler(){
     FilterIsClosed.set(true);
 }
 
 onMount(() => {
-    new Sortable(draggableContainers, {
+    var sortable = new Sortable(draggableContainers, {
         draggable: '.filter-item'
+    });
+
+    sortable.on('sortable:stop', e => {
+       if ( e.newContainer == draggableContainers[1] || ( e.newContainer == draggableContainers[0] && e.oldContainer == draggableContainers[1] )) {
+            setTimeout(() => {
+                let orgBy = Array.from(draggableContainers[1].children).map(d => d.dataset.key);
+                OrganizeBy.set(orgBy);
+            });
+        }
     });
 }); 
 </script>

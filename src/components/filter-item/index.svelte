@@ -14,6 +14,6 @@ export let section;
         margin-bottom: 2px;
     }
 </style>
-<div class="filter-item">
+<div data-key="{section}" class="filter-item">
     {section}
 </div>
