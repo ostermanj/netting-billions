@@ -107,7 +107,7 @@ const svelteUse = [
         options: {
             emitCss: true,
             hotReload: true,
-            hydratable: true, // here must be true for preprocessing of component to work
+         //   hydratable: true, // here must be true for preprocessing of component to work
             preprocess: {
                 style: sass({}, {name: 'scss'})
             }
@@ -245,7 +245,7 @@ if (isProd) {
     plugins.push(...devToolPlugins);
 }
 if (isDev) {
-    plugins.push(new webpack.HotModuleReplacementPlugin());
+   // plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 if (!isDev) {
     plugins.push(new CleanWebpackPlugin(), prerender);
@@ -253,7 +253,7 @@ if (!isDev) {
 module.exports = env => {
     return {
         devServer: {
-            hot: isDev
+            hot: false //isDev
         },
         devtool: isProd ? false : 'eval-source-map',
         entry: {

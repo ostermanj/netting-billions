@@ -2,6 +2,7 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 import dictionary from '@Project/data/dictionary.json';
+import FilterControl from '@Project/components/filter-control/'
 
 let sections = ['rfmo','species','gear','product']; 
 let anchors = {};
@@ -77,4 +78,5 @@ function clickHandler(){
         </ul>
     </nav>
     <button></button>
+   <FilterControl {sections} />
 </div>

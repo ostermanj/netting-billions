@@ -10,7 +10,7 @@ if ( module.hot ){
 }
 new Navigation({
     target: document.querySelector('#render-here'),
-    hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
+   // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
 });
 initCharts({});
 //initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});
