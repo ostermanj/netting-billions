@@ -31,7 +31,7 @@ function _organize(orgBy){
         if ( Sections[i] ){
             if ( orgBy[i] == undefined ){
                 Object.values(Sections[i]).forEach(nodeArr => {
-                    nodeArray.forEach(node => {
+                    nodeArr.forEach(node => {
                         node.style.display = 'block';
                     });
                 });
@@ -41,9 +41,11 @@ function _organize(orgBy){
                         node.style.display = 'none';
                     });
                });
-               Sections[i][orgBy[i]].forEach(node => {
-                    node.style.display = 'block';
-               }); 
+               if ( Sections[i][orgBy[i]] ){
+                   Sections[i][orgBy[i]].forEach(node => {
+                        node.style.display = 'block';
+                   }); 
+               }
             }
         }
     });
