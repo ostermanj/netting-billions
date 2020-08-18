@@ -5,6 +5,49 @@ import StringHelpers from '@Submodule/UTILS';
 import s from './styles.scss';
 import dictionary from '@Project/data/dictionary.json';
 import { fieldValues, returnNestedData } from '@Project/scripts/data.js';
+import { OrganizeBy } from '@Project/store.js';
+import organize from './organize.js';
+
+var organizeBy;
+
+OrganizeBy.subscribe(v => {
+    _organize(v);
+    organizeBy = v;
+});
+
+var Sections = []; // [{rfmo:[<section>], . . .}, {},{},{}]
+function logSection(depth,d,i,arr){
+    Sections[depth] = Sections[depth] || {};
+    Sections[depth][d.key] = Sections[depth][d.key] || [];
+    Sections[depth][d.key].push(arr[i]);
+    console.log(Sections);
+}
+function _organize(orgBy){
+    // TOOO somewhere, open the children is orgBy array warrant it
+    if ( orgBy == undefined ){
+        return;
+    }
+    [3,2,1,0].forEach(i => {
+        if ( Sections[i] ){
+            if ( orgBy[i] == undefined ){
+                Object.values(Sections[i]).forEach(nodeArr => {
+                    nodeArray.forEach(node => {
+                        node.style.display = 'block';
+                    });
+                });
+            } else {
+               Object.values(Sections[i]).forEach(nodeArr => {
+                    nodeArr.forEach(node => {
+                        node.style.display = 'none';
+                    });
+               });
+               Sections[i][orgBy[i]].forEach(node => {
+                    node.style.display = 'block';
+               }); 
+            }
+        }
+    });
+}
 
 if ( module.hot ){
     module.hot.accept('./styles.scss');
@@ -84,6 +127,7 @@ d3.formatLocale({
 });
 
 export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null}){
+    // filters = Array of key, value arrays corresponding to the row clicked
     var nestedData = returnNestedData(filters);
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     if ( filters.length > 0 ){
@@ -234,10 +278,20 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
         {
             let entering = sections
                 .enter().append('section')
-                .attr('class', `${s.chartSection} ${s['chartSection' + filters.length]}`)
+                .attr('class', `js-chart-section js-chart-section${filters.length} ${s.chartSection} ${s['chartSection' + filters.length]}`)
                 .classed(s.isLastSection, nestedData.values.length == 1)
-                .attr('data-key', d => d.key);
-            
+                .attr('data-key', d => d.key)
+                .style('display', function(d){
+                    if ( !organizeBy || organizeBy[filters.length] == undefined || organizeBy[filters.length] == d.key ){
+                        return 'block'
+                    }
+                    return 'none';
+                }).each(logSection.bind(undefined, filters.length));
+
+
+
+            // here you should assign the section to a variable or object in more general scope so 
+            // that existing sections can be handle on subscribe to OrganizeBy
                 entering.append('h' + ( filters.length + 2 ))
                     .attr('class', s.sectionHead)
                     .html(d => `<a id="head-${d.key}" class="${s.headAnchor}"></a><span>${display(d.key)}</span> <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
