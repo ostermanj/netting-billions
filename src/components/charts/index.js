@@ -240,7 +240,7 @@ export function initCharts({filters = [], sortBy = 'ev', sortDirection = 'desc',
             
                 entering.append('h' + ( filters.length + 2 ))
                     .attr('class', s.sectionHead)
-                    .html(d => `<span>${display(d.key)}</span> <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
+                    .html(d => `<a id="head-${d.key}" class="${s.headAnchor}"></a><span>${display(d.key)}</span> <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
 
             if ( filters.length === 0 ){ //only add graf when no filters applied, ie, main tables
 
