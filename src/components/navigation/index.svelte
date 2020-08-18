@@ -2,14 +2,22 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 import dictionary from '@Project/data/dictionary.json';
-import FilterControl from '@Project/components/filter-control/'
+import FilterControl from '@Project/components/filter-control/';
+import { FilterIsClosed } from '@Project/store.js';
 
 let sections = ['rfmo','species','gear','product']; 
 let anchors = {};
+let filterIsClosed;
 function clickHandler(){
   anchors[this.dataset.key] = anchors[this.dataset.key] || document.querySelector(`#head-${this.dataset.key}`);
   anchors[this.dataset.key].scrollIntoView(true);
-}   
+} 
+function openFilters(){
+    FilterIsClosed.set(false);
+}
+FilterIsClosed.subscribe(v => {
+    filterIsClosed = v;
+});
 </script>
 <style lang="scss">
     @import '../../css/variables.scss';
@@ -68,15 +76,18 @@ function clickHandler(){
             filter: brightness(1);
         }
     }
+    .isHidden {
+        visibility: hidden;
+    }
 </style>
-<div class="nav-wrapper">
-    <nav aria-label="Navigation for data visualization section">
+<div  class="nav-wrapper">
+    <nav class:isHidden="{!filterIsClosed}" aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
             <li><a data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
             {/each}
         </ul>
     </nav>
-    <button></button>
+    <button aria-controls="nb-filter-container" on:click="{openFilters}"></button>
    <FilterControl {sections} />
 </div>

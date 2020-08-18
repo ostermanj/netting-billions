@@ -165,6 +165,7 @@ const rules = [{
     },
     {
         test: /\.scss$/,
+        exclude: /src\/css\/styles\.scss$/,
         use: [
             /**
              * MiniCssExtractPlugin doesn't support HMR.
@@ -202,6 +203,44 @@ const rules = [{
             }
         ]
     },
+    {
+            test: /src\/css\/styles\.scss$/,
+            use: [
+                /**
+                 * MiniCssExtractPlugin doesn't support HMR.
+                 * For developing, use 'style-loader' instead.
+                 * */
+                !isDev ? MiniCssExtractPlugin.loader : 'style-loader',
+                {
+                    loader: 'css-loader',
+                    options: {
+                        modules: {
+                            mode: 'global',
+                        },
+                        sourceMap: true,
+                        importLoaders: 1
+                    }
+                },
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        sourceMap: true,
+                        ident: 'postcss',
+                        plugins: [
+                            require('cssnano'),
+                            require('postcss-preset-env')(),
+                            require('autoprefixer'),
+                        ],
+                    }
+                },
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: true
+                    }
+                }
+            ]
+        },
     {
         test: /\.csv$/,
         loader: 'csv-loader',

@@ -2,19 +2,34 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 //import dictionary from '@Project/data/dictionary.json';
-import FilterItem from '@Project/components/filter-item/'
+import FilterItem from '@Project/components/filter-item/';
+import { xOut as XOut } from '@Submodule/UI-Svelte/';
+import { FilterIsClosed } from '@Project/store.js';
 
 export let sections;
 
+let filterIsClosed;
+
+FilterIsClosed.subscribe(v => {
+    filterIsClosed = v;
+});
+
+function closeHandler(){
+    FilterIsClosed.set(true);
+}
 </script>
+
 <style lang="scss">
     @import '../../css/variables.scss';
     .filter-container {
         position: absolute;
         left: 0;
-        top: 0;
+        top: -10px;
         width: 100%;
         z-index: 1;
+        transform: translateX(0);
+        transition: transform 0.25s ease-out;
+
     }
     .full-width-container {
         width: 100vw;
@@ -29,6 +44,7 @@ export let sections;
 
     }
     form {
+        position: relative;
         width: 100%;
         max-width: 990px;
         margin: 0 auto;
@@ -59,9 +75,30 @@ export let sections;
         font-weight: bold;
         margin-bottom: 1.2rem;
     }
+    .filterIsClosed {
+        transform: translateX(101vw);
+        transition-timing-function: ease-in;
+    }
+    .x-out-outer-wrapper {
+        width: 100%;
+        max-width: 850px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+    .x-out-container {
+        position: absolute;
+        top: 10px;
+        right: 7px;
+    }
 </style>
-<div class="filter-container">
+<div id="nb-filter-container" class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed}">
     <div class="full-width-container">
+        <div class="x-out-outer-wrapper">
+            <div hidden="{filterIsClosed}" class="x-out-container" on:click|preventDefault="{closeHandler}">
+                <XOut ariaLabel="Close filter drill-down form" />
+            </div>
+        </div>
         <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data">
             <section class="form-section" id="filter-form" aria-labelledby="filter-form-label">
                 <label class="section-label" id="filter-form-label">Available filters:</label>
