@@ -22,5 +22,14 @@ initCharts({});
 document.dispatchEvent(new Event('custom-render-trigger'));
 
 export function isWorking(bool){
-    appContainer.classList[bool ? 'add' : 'remove']('is-working');
+    if ( bool ){
+        appContainer.classList.add('is-working');
+       // appContainer.classList.add('is-working--transition');
+    } else {
+      //  appContainer.classList.remove('is-working--transition');
+       // setTimeout(() => {
+            appContainer.classList.remove('is-working');
+       // },200);
+    }
+    
 }

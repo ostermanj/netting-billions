@@ -7,6 +7,22 @@
 body {
     overflow-x: hidden;
 }
-.is-working {
-    opacity: 0.2;
+#render-here > section::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255,255,255,0.5);
+    //transition: background-color 0.2s ease-in-out;
+    visibility: hidden;
+    z-index: 4;
 }
+#render-here.is-working > section::before {
+    visibility: visible;
+}
+/*#render-here.is-working.is-working--transition > section::before {
+    background-color: rgba(255,255,255,0.5);
+}*/

@@ -88,6 +88,6 @@ FilterIsClosed.subscribe(v => {
             {/each}
         </ul>
     </nav>
-    <button aria-controls="nb-filter-container" on:click="{openFilters}"></button>
+    <button role="button" aria-controls="nb-filter-container" on:click="{openFilters}"></button>
    <FilterControl {sections} />
 </div>

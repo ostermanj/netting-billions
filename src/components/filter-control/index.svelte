@@ -19,7 +19,7 @@ FilterIsClosed.subscribe(v => {
 OrganizeBy.subscribe(v => {
     console.log(v);
 });
-
+    
 function closeHandler(){
     FilterIsClosed.set(true);
 }

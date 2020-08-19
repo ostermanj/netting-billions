@@ -53,20 +53,18 @@ function _organize(orgBy) {
                 });
                 if (Sections[i][orgBy[i]]) {
                     Sections[i][orgBy[i]].forEach(node => {
+                        var shouldOpenRows = !!orgBy[i + 1];
                         node.section.style.display = 'block';
-                        if (orgBy[i + 1]) {
-                            
-                            node.rows.forEach(row => {
-                                if ( !row.isExpanded ){
-                                    row.dispatchEvent(new MouseEvent('click', {
-                                        view: window,
-                                        bubbles: true,
-                                        cancelable: true
-                                    }));
-                                }
-                            });
-                            isWorking(false);
-                        }
+                        node.rows.forEach(row => {
+                            if ( !row.isExpanded == shouldOpenRows ){
+                                row.dispatchEvent(new MouseEvent('click', {
+                                    view: window,
+                                    bubbles: true,
+                                    cancelable: true
+                                }));
+                            }
+                        });
+                        isWorking(false);
                     });
                 }
             }
