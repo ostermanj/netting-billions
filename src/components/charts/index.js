@@ -7,6 +7,7 @@ import dictionary from '@Project/data/dictionary.json';
 import { fieldValues, returnNestedData } from '@Project/scripts/data.js';
 import { OrganizeBy } from '@Project/store.js';
 import organize from './organize.js';
+import { isWorking } from '@Project/index.js';
 
 var organizeBy;
 
@@ -54,6 +55,7 @@ function _organize(orgBy) {
                     Sections[i][orgBy[i]].forEach(node => {
                         node.section.style.display = 'block';
                         if (orgBy[i + 1]) {
+                            
                             node.rows.forEach(row => {
                                 if ( !row.isExpanded ){
                                     row.dispatchEvent(new MouseEvent('click', {
@@ -63,6 +65,7 @@ function _organize(orgBy) {
                                     }));
                                 }
                             });
+                            isWorking(false);
                         }
                     });
                 }

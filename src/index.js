@@ -6,6 +6,9 @@ import './css/styles.scss';
 import Navigation from '@Project/components/navigation/';
 import { initCharts } from '@Project/components/charts/';
 import { OrganizeBy } from '@Project/store.js';
+
+const appContainer = document.querySelector('#render-here');
+
 if ( module.hot ){
     module.hot.accept('@Project/components/navigation/index.svelte');
 }
@@ -18,3 +21,6 @@ initCharts({});
 //initCharts({filters: [['rfmo','W']]});
 document.dispatchEvent(new Event('custom-render-trigger'));
 
+export function isWorking(bool){
+    appContainer.classList[bool ? 'add' : 'remove']('is-working');
+}

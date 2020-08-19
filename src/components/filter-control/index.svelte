@@ -7,6 +7,7 @@ import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { FilterIsClosed, OrganizeBy } from '@Project/store.js';
 import { Sortable } from '@shopify/draggable';
 import { onMount } from 'svelte';
+import { isWorking } from '@Project/index.js';
 
 export let sections;
 
@@ -30,8 +31,12 @@ onMount(() => {
 
     sortable.on('sortable:stop', e => {
        if ( e.newContainer == draggableContainers[1] || ( e.newContainer == draggableContainers[0] && e.oldContainer == draggableContainers[1] )) {
+            isWorking(true);
             setTimeout(() => {
                 let orgBy = Array.from(draggableContainers[1].children).map(d => d.dataset.key);
+                if (orgBy.length < 2 ){
+                    isWorking(false);
+                }
                 OrganizeBy.set(orgBy);
             });
         }
