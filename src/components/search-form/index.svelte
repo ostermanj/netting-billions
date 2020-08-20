@@ -3,8 +3,9 @@
 /* eslint no-undef: warn */
 import dictionary from '@Project/data/dictionary.json';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
-import { DimensionFilter } from '@Project/store.js';
+import { DimensionFilter, Filters } from '@Project/store.js';
 import { fieldValues } from '@Project/scripts/data.js';
+import { get } from 'svelte/store';
 
 export let section;
 let labels = [];
@@ -49,7 +50,10 @@ function changeHandler(e){
 }
 function formSubmit(){
     selected = dirtySelected.slice(); // slicing to avoid binding by assignation
-    
+    var filters = get(Filters);
+    filters[section] = selected;
+    //TO DO: all checked is same as none checked
+    Filters.set(filters);
     closeHandler();
 }
 function closeHandler(){
