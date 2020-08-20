@@ -6,16 +6,13 @@ import SearchForm from '@Project/components/search-form/';
 import { DimensionFilter } from '@Project/store.js';
 
 export let section;
+
 let selected = [];
-$:filtersApplied = selected.length > 0;
+
+$:hasFiltersApplied = selected.length > 0;
+
 function clickHandler(e){
     DimensionFilter.set(section);
-}
-function toggleSelected(){
-
-}
-function deselectAll(){
-
 }
 
 </script>
@@ -58,13 +55,13 @@ function deselectAll(){
         //position: absolute;
         //top: 4px;
         //right: 35px;
-        opacity: 1;
+        opacity: 0;
         transition: opacity 0.2s ease-in-out;
         line-height: 0;
         margin-right: 5px;
-        /*.filtersApplied & {
+        &.hasFiltersApplied {
             opacity: 1;
-        }*/
+        }
     }
     .filter-count {
         -webkit-appearance: none;
@@ -80,9 +77,9 @@ function deselectAll(){
 </style>
 <div data-key="{section}" class="filter-item">
     <span class="filter-label">{dictionary[section].display}</span>
-    <div class="token-wrapper">
-        <button tabindex="{filtersApplied ? 0 : -1}" title="See selected filters" on:click="{toggleSelected}" class="filter-count">1</button>
+    <div class:hasFiltersApplied class="token-wrapper">
+        <button role="button" disabled="{!hasFiltersApplied}" tabindex="{hasFiltersApplied ? 0 : -1}" title="See selected filters" on:click|preventDefault="{clickHandler}" class="filter-count">{selected.length}</button>
     </div>
     <button class="open-filter" on:click|preventDefault="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button>
-    <SearchForm {section} />
+    <SearchForm {section} bind:selected />
 </div>

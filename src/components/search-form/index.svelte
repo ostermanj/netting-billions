@@ -16,6 +16,9 @@ let data = [...fieldValues[section]].sort().map(v => {
     }
 });
 
+export let selected = [];
+
+
 let isOpen = false;
 DimensionFilter.subscribe(v => {
  isOpen = v == section;
@@ -30,8 +33,11 @@ function plural(key){
 function keydownHandler(){
 
 }
-function changeHandler(){
-
+function changeHandler(e){
+ if ( this.checked ){
+    selected = [...selected, this.name];
+    console.log(selected,e,this);
+ }
 }
 function closeHandler(){
     DimensionFilter.set(undefined);
@@ -127,15 +133,15 @@ function closeHandler(){
 
 </style>
 <div class:isOpen class="form-wrapper">
-    <form>
-        <fieldset>
-            <legend>Select {plural(section)}:</legend>
-            {#each data as datum, i}
-            <label on:keydown="{keydownHandler}" tabindex="0" bind:this="{labels[i]}" data-key="{datum.key}" title="{datum.display}"><input tabindex="-1" on:change="{changeHandler}" name="{datum.key}" type="checkbox" /> {datum.display}</label>
-            {/each}
-        </fieldset>
-    </form>
-    <div class="x-out-wrapper" on:click|preventDefault="{closeHandler}">
-        <XOut ariaLabel="Close {dictionary[section].display} filter options" />
-    </div>
+        <form>
+            <fieldset>
+                <legend>Select {plural(section)}:</legend>
+                {#each data as datum, i}
+                <label on:keydown="{keydownHandler}" tabindex="0" bind:this="{labels[i]}" data-key="{datum.key}" title="{datum.display}"><input tabindex="-1" on:change="{changeHandler}" name="{datum.key}" type="checkbox" /> {datum.display}</label>
+                {/each}
+            </fieldset>
+        </form>
+        <div class="x-out-wrapper" on:click|preventDefault="{closeHandler}">
+            <XOut ariaLabel="Close {dictionary[section].display} filter options" />
+        </div>
 </div>
