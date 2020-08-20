@@ -65,35 +65,43 @@
         "display": "Canning byproducts"
     },
     "lc": {
-        "display": "For loining or canning"
+        "display": "Loining or canning"
     },
     "d": {
-        "display": "For domestic (fresh or processing)"
+        "display": "Domestic (fresh or processing)"
     },
     "fs": {
-        "display": "For fresh sashimi"
+        "display": "Fresh sashimi"
     },
     "zs": {
-        "display": "For frozen sashimi"
+        "display": "Frozen sashimi"
     },
     "r": {
-        "display": "For ranching"
+        "display": "Ranching"
     },
     "rfmo": {
         "display": "RFMO",
-        "description": "Regional fisheries management organizations (RFMOs) are multinational organizations charged with overseeing fisheries for highly migratory species such as tuna."
+        "description": "Regional fisheries management organizations (RFMOs) are multinational organizations charged with overseeing fisheries for highly migratory species such as tuna.",
+        "pluralS": true,
+        "alwaysCaps":true
     },
     "species": {
         "display": "Species",
-        "description": "The seven most commercially important tuna species are skipjack, yellowfin, albacore, bigeye and southern, Atlantic and Pacific bluefin."
+        "description": "The seven most commercially important tuna species are skipjack, yellowfin, albacore, bigeye and southern, Atlantic and Pacific bluefin.",
+        "pluralS": false,
+        "alwaysCaps":false
     },
     "gear": {
         "display": "Gear",
-        "description": "Tunas are caught with many different gear types, from purse seine nets that encircle schools of fish to pole and lines that catch fish one at a time."
+        "description": "Tunas are caught with many different gear types, from purse seine nets that encircle schools of fish to pole and lines that catch fish one at a time.",
+        "pluralS": false,
+        "alwaysCaps":false
     },
     "product": {
         "display": "End product",
-        "description": "At least three-quarters of the tuna caught worldwide each year is processed and sold in cans. However, demand continues to rise for sashimi and other products."
+        "description": "At least three-quarters of the tuna caught worldwide each year is processed and sold in cans. However, demand continues to rise for sashimi and other products.",
+        "pluralS": true,
+        "alwaysCaps":false
     },
     "v": {
         "display": "Volume",

@@ -4,40 +4,29 @@
 import dictionary from '@Project/data/dictionary.json';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { DimensionFilter } from '@Project/store.js';
+import { fieldValues } from '@Project/scripts/data.js';
 
 export let section;
 
 let labels = [];
-let data = [
-    {
-        key: 'item1',
-        display: 'Southern Bluefin'
-    },
-    {
-        key: 'item2',
-        display: 'For canning / loining'
-    },
-    {
-        key: 'item3',
-        display: 'Item 3'
-    },{
-        key: 'item1',
-        display: 'Southern Bluefin'
-    },
-    {
-        key: 'item2',
-        display: 'For canning / loining'
-    },
-    {
-        key: 'item3',
-        display: 'Item 3'
-    },
-];
+let data = [...fieldValues[section]].sort().map(v => {
+    return {
+        key: v,
+        display: dictionary[v].display
+    }
+});
+
 let isOpen = false;
 DimensionFilter.subscribe(v => {
  isOpen = v == section;
 });
-
+function inline(key){
+    return dictionary[key].alwaysCaps ? dictionary[key].display : dictionary[key].display.toLowerCase();
+}
+function plural(key){
+    var _inline = inline(key);
+    return dictionary[key].pluralS ? _inline + 's' : _inline;
+}
 function keydownHandler(){
 
 }
@@ -45,17 +34,19 @@ function changeHandler(){
 
 }
 function closeHandler(){
-
+    DimensionFilter.set(undefined);
 }
 </script>
 <style lang="scss">
     @import '../../css/variables.scss';
     .form-wrapper {
         position: absolute;
-        right: 0;
-        top: 0;
-        display: flex;
-        justify-content: flex-end;
+        right: 6px;
+        top: 7px;
+        min-width: 262px;
+        padding-bottom: 10px;
+        //display: flex;
+        //justify-content: flex-end;
         border: 1px solid $light_gray;
         visibility: hidden;
         z-index: 1;
@@ -64,8 +55,21 @@ function closeHandler(){
         }
     }
     .x-out-wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
         background-color: #fff;
         padding-right: 10px;
+    }
+    fieldset {
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+    legend {
+        color: $dark_gray;
+        font-weight: bold;
+        padding: 0.625rem 9px;
     }
     form {
         //width: 100%;
@@ -81,7 +85,7 @@ function closeHandler(){
             position: relative;
             display: block;
             color: $dark_gray;
-            padding: 8px 5px 8px 32px;
+            padding: 8px 16px 8px 32px;
             line-height: 100%;
             white-space: nowrap;
             overflow-x: hidden;
@@ -124,9 +128,12 @@ function closeHandler(){
 </style>
 <div class:isOpen class="form-wrapper">
     <form>
-        {#each data as datum, i}
-        <label on:keydown="{keydownHandler}" tabindex="0" bind:this="{labels[i]}" data-key="{datum.key}" title="{datum.display}"><input tabindex="-1" on:change="{changeHandler}" name="{datum.key}" type="checkbox" /> {datum.display}</label>
-        {/each}
+        <fieldset>
+            <legend>Select {plural(section)}:</legend>
+            {#each data as datum, i}
+            <label on:keydown="{keydownHandler}" tabindex="0" bind:this="{labels[i]}" data-key="{datum.key}" title="{datum.display}"><input tabindex="-1" on:change="{changeHandler}" name="{datum.key}" type="checkbox" /> {datum.display}</label>
+            {/each}
+        </fieldset>
     </form>
     <div class="x-out-wrapper" on:click|preventDefault="{closeHandler}">
         <XOut ariaLabel="Close {dictionary[section].display} filter options" />
