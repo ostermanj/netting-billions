@@ -8,6 +8,7 @@ import { DimensionFilter } from '@Project/store.js';
 export let section;
 
 let selected = [];
+let isDirty = false;
 
 $:hasFiltersApplied = selected.length > 0;
 
@@ -74,6 +75,15 @@ function clickHandler(e){
         font-weight: bold;
         font-size: 0.75rem;
     }
+    .hasUnsubmittedChanges {
+        position: absolute;
+        right: 5px;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        &.isDirty {
+            opacity: 1;
+        }
+    }
 </style>
 <div data-key="{section}" class="filter-item">
     <span class="filter-label">{dictionary[section].display}</span>
@@ -81,5 +91,6 @@ function clickHandler(e){
         <button role="button" disabled="{!hasFiltersApplied}" tabindex="{hasFiltersApplied ? 0 : -1}" title="See selected filters" on:click|preventDefault="{clickHandler}" class="filter-count">{selected.length}</button>
     </div>
     <button class="open-filter" on:click|preventDefault="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button>
-    <SearchForm {section} bind:selected />
+    <div class:isDirty class="hasUnsubmittedChanges">*</div>
+    <SearchForm {section} bind:selected bind:isDirty />
 </div>

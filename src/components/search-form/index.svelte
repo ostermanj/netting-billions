@@ -7,7 +7,6 @@ import { DimensionFilter } from '@Project/store.js';
 import { fieldValues } from '@Project/scripts/data.js';
 
 export let section;
-
 let labels = [];
 let data = [...fieldValues[section]].sort().map(v => {
     return {
@@ -16,8 +15,13 @@ let data = [...fieldValues[section]].sort().map(v => {
     }
 });
 
-export let selected = [];
-
+export let selected = []; // changes committed to by submitting the form
+export let dirtySelected = []; // changes not yet committed to
+export let isDirty;
+$:isDirty = !( 
+        selected.every(item => dirtySelected.includes(item)) &&
+        dirtySelected.every(item => selected.includes(item))
+    );
 
 let isOpen = false;
 DimensionFilter.subscribe(v => {
@@ -35,9 +39,18 @@ function keydownHandler(){
 }
 function changeHandler(e){
  if ( this.checked ){
-    selected = [...selected, this.name];
-    console.log(selected,e,this);
+    dirtySelected = [...dirtySelected, this.name];
+    console.log(dirtySelected,e,this);
+ } else {
+    let i = dirtySelected.indexOf(this.name);
+    dirtySelected.splice(i,1);
+    dirtySelected = dirtySelected; // need to assign to trigger Svelte to update value
  }
+}
+function formSubmit(){
+    selected = dirtySelected.slice(); // slicing to avoid binding by assignation
+    
+    closeHandler();
 }
 function closeHandler(){
     DimensionFilter.set(undefined);
@@ -51,9 +64,10 @@ function closeHandler(){
         top: 7px;
         min-width: 262px;
         padding-bottom: 10px;
-        //display: flex;
-        //justify-content: flex-end;
+        display: flex;
+        flex-direction: column;
         border: 1px solid $light_gray;
+        background-color: #fff;
         visibility: hidden;
         z-index: 1;
         &.isOpen {
@@ -66,6 +80,21 @@ function closeHandler(){
         right: 0;
         background-color: #fff;
         padding-right: 10px;
+    }
+    .input-wrapper {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: -26px;
+            width: 100%;
+            height: 25px;
+            background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1) );
+        }
     }
     fieldset {
         border: none;
@@ -82,11 +111,12 @@ function closeHandler(){
         max-height: 235px;
         overflow-y: scroll;
         background-color: #fff;
-        padding: 0;
+        padding: 0 0 12px 0;
         display: block;
         font-size: 1rem;
         font-weight: normal;
         text-transform: none;
+        border-bottom: 1px solid $light_gray;
         label {
             position: relative;
             display: block;
@@ -100,7 +130,7 @@ function closeHandler(){
                 background-color: $lightest_gray;
             }
         }
-        input {
+        input[type="checkbox"] {
             position: absolute;
             left: 11px;
             top: 11px;
@@ -113,7 +143,7 @@ function closeHandler(){
             -webkit-appearance: none;
             appearance:none;
         }
-        input:checked::after {
+        input[type="checkbox"]:checked::after {
             top: -1px;
             left: -1px;
             position: absolute;
@@ -130,7 +160,26 @@ function closeHandler(){
             background: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7.67 7.97'%3E%3Cpolyline points='0.35 5 2.55 7.19 7.26 0.28' style='fill:none;stroke:%23333;stroke-miterlimit:10'/%3E%3C/svg%3E") 50% 50% / 75% 75% no-repeat;
         }
     }
-
+    input[type="submit"]{
+        appearance: none;
+        align-self: center;
+        background-color: $pew_blue;
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 900;
+        width: 130px;
+        height: 40px;
+        vertical-align: top;
+        transition: background-color .28s cubic-bezier(.4,0,.2,1);
+        border: none;
+        margin: 10px 0 0; 
+        &[disabled] {
+            background-color: $gray;
+            cursor: not-allowed;
+        }
+    }
 </style>
 <div class:isOpen class="form-wrapper">
         <form>
@@ -141,6 +190,9 @@ function closeHandler(){
                 {/each}
             </fieldset>
         </form>
+        <div class="input-wrapper">
+            <input disabled="{!isDirty}" on:click|preventDefault="{formSubmit}" type="submit" value="Apply changes" />
+        </div>
         <div class="x-out-wrapper" on:click|preventDefault="{closeHandler}">
             <XOut ariaLabel="Close {dictionary[section].display} filter options" />
         </div>
