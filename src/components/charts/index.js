@@ -4,18 +4,24 @@ import d3 from '@Project/d3-importer.js';
 import StringHelpers from '@Submodule/UTILS';
 import s from './styles.scss';
 import dictionary from '@Project/data/dictionary.json';
-import { fieldValues, returnNestedData } from '@Project/scripts/data.js';
-import { OrganizeBy } from '@Project/store.js';
+import { returnFieldValues, returnNestedData } from '@Project/scripts/data.js';
+import { OrganizeBy, Filters } from '@Project/store.js';
 import organize from './organize.js';
 import { isWorking } from '@Project/index.js';
 
 var organizeBy;
-
+var subsequentFilter = false;
+var fieldValues;
 OrganizeBy.subscribe(v => {
     organizeBy = v;
     _organize(v);
 });
-
+Filters.subscribe(() => {
+    if ( subsequentFilter ){
+        updateCharts();
+    }
+    subsequentFilter = true;
+});
 var Sections = [];
 // [{rfmo: [{section: <section>, rows:[<row>,<row>,...],{},...}]}]
 // construct a model of the sections and their rows when they are rendered so that
@@ -185,6 +191,8 @@ function rowClickHandler(d, sortBy, sortDirection) {
 export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null }) {
     // filters = Array of key, value arrays corresponding to the row clicked
     var nestedData = returnNestedData(filters);
+    fieldValues = returnFieldValues();
+    console.log(nestedData);
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     if (filters.length > 0) {
         container
@@ -235,7 +243,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         var _svg = d3.select(svg)
-            .attr('class', s.chartSVG)
+            .attr('class', `js-chart-svg ${s.chartSVG}`)
             .attr('viewBox', '0 0 100 ' + viewBoxHeight)
             //.attr('focusable', false)
             .attr('xmlns', 'http://www.w3.org/2000/svg')
@@ -374,13 +382,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 console.log(_d);
                 return _d ? JSON.stringify([...filters.map(f => f[1]), _d]) : this.getAttribute('data-values');
             });
-
+            rows.exit().remove();
         {
             let entering = rows
                 .enter().append('tr')
                 .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                 .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])) // eg W, IO, IA, etc
-                .attr('class', 'js-row-level-' + filters.length);
+                .attr('class', 'js-row js-row-level-' + filters.length);
 
             if (nestedData.values.length > 1) { // do not do expansion stuff if we're at the last branch of the tree
                 entering
@@ -449,4 +457,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);*/
     return container.node();
+}
+function updateCharts(){
+    initCharts({});
 }

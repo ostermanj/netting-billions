@@ -3,8 +3,17 @@
 /* eslint no-debugger: warn */
 import data from '@Project/data/data.csv';
 import d3 from '@Project/d3-importer.js';
+import { Filters } from '@Project/store.js';
+import { get } from 'svelte/store';
 
 const sections = ['rfmo', 'species', 'gear', 'product'];
+const fieldValues = returnFieldValues(); // original field values
+function returnFilteredData(){
+    var filters = get(Filters);
+    return Object.keys(filters).reduce(function(acc,cur){
+        return filters[cur].length == 0 ? acc : acc.filter(d => filters[cur].includes(d[cur]));
+    },data.slice()); // slicing data to avoid mutating the original array
+}
 
 /*  1. create an object with all fields from the data except `value` as keys and a Set of all values for that field as the values.
     This will be used later to set up <table>s that will house the svg graphs. The data will be nested so that the summaries of the
@@ -19,14 +28,16 @@ const sections = ['rfmo', 'species', 'gear', 'product'];
         year: Set(4)
     }
  */
-const fieldValues = data.reduce((acc, cur) => {
-    Object.keys(cur).forEach(key => {
-        if (key !== 'value') {
-            acc[key] = !acc[key] ? new Set([cur[key]]) : acc[key].add(cur[key]);
-        }
-    });
-    return acc;
-}, {});
+function returnFieldValues(){
+    return returnFilteredData().reduce((acc, cur) => {
+        Object.keys(cur).forEach(key => {
+            if (key !== 'value') {
+                acc[key] = !acc[key] ? new Set([cur[key]]) : acc[key].add(cur[key]);
+            }
+        });
+        return acc;
+    }, {});
+} 
 
 
 
@@ -68,7 +79,7 @@ function returnNestedData(filters){
 function filterData(filters){ // filters = array of arrays(2).  0: key, 1: value
     var _data = filters.reduce(function(acc,cur){
         return acc.filter(d => d[cur[0]] == cur[1]);
-    }, data);
+    }, returnFilteredData());
     return _data;
 }
 
@@ -131,5 +142,5 @@ function summarizeChildren(datum) {
     return datum;
 }
 
-export { fieldValues, returnNestedData} ;
+export { fieldValues, returnFieldValues, returnNestedData} ;
 
