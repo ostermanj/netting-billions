@@ -9,6 +9,7 @@ import { line }                 from 'd3-shape';
 import { timeYear }             from 'd3-time';
 import { timeParse, timeFormat }from 'd3-time-format';
 import tip                      from 'd3-tip';
+import { transition }           from 'd3-transition';
 // TO DO: IMPORT ONLY WHAT'S NEEDED
 export default {
     ascending,
@@ -37,5 +38,6 @@ export default {
     timeParse,
     timeYear,
     tip,
+    transition,
     variance
 };
