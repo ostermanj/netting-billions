@@ -114,6 +114,7 @@ $color-level-3: #000;
         @media screen and (max-width: 399px){
             padding-top: 10px;
         }
+        transition: transform 0.3s ease-in;
     }
     &.isLastSection tr {
         cursor: default;
@@ -457,6 +458,8 @@ $color-level-3: #000;
     position: absolute;
     top: -110px;
 }
-
+.rowIsExiting {
+    transform: translateX(100vw); 
+}
 
 

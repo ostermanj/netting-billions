@@ -239,7 +239,14 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .selectAll('svg')
             .data((datum.descendantValues.every(d => d === 0) ? [] : [1]));
 
-        svg.exit().remove(); // TO DO : ALSO ADD N.A. TEXT TO PARENT ?
+        svg.exit().each(function(){
+            d3.select(this.parentNode)
+                .text('n.a.');
+            d3.select(this).remove();
+        });
+        svg.enter().each(function(){
+            this._parent.textContent = '';
+        });
 
 
         {
@@ -289,7 +296,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .data(d => d); // [{}]
 
             //existing paths
-            path.transition().duration(200).attr('d', valueline);
+            path.transition().duration(750).attr('d', valueline);
 
             {
                 let entering = path.enter()
@@ -319,7 +326,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             // update existing
             circles
                 .classed(s.isLast, (d, i, arr) => i == arr.length - 1)
-                .transition().duration(200)
+                .transition().duration(750)
                 .attr('cx', d => xScale(d.x))
                 .attr('cy', function(d) {
                     return yScale(d.p);
@@ -444,8 +451,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     xScale.domain([years[0], years[years.length - 1]]);
     // TODO STARTING HERE GO THROUGH AND MAKE SURE SELECTALL IS CAPTURING EXISTING LEVELS THROUGHOUT
     var sections = container
-        .selectAll('section')
-        .data(nestedData.values, function(d) { return d ? d.key : this.getAttribute('data-key'); });
+        .selectAll('section.js-chart-section')
+        .data(nestedData.values, function(d) { 
+            return d ? d.key : this.getAttribute('data-key');
+        });
 
     {
         let entering = sections
@@ -497,9 +506,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         sections = sections.merge(entering);
     }
     sections.each(function(data) {
-        var section = d3.select(this);
-        var rows = section.selectAll('tbody')
-            .selectAll('tr')
+        var tbody = d3.select(this).select('tbody');
+        var rows = tbody.selectAll('tr')
             .data(() => {
                 var rtn = [...fieldValues[data.key]].sort(sortFieldValues.bind(undefined, data));
                 return rtn;
@@ -511,7 +519,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 return _d ? JSON.stringify([...filters.map(f => f[1]), _d]) : this.getAttribute('data-values');
             });
             rows.exit()
-                .transition().duration(300)
+                .attr('class', s.rowIsExiting)
+                .transition().duration(1000)
                 .style('opacity',0)
                 .on('end', function(){
                     d3.select(this).remove();
@@ -555,7 +564,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .data(d => {
                 var _d = [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d));
                 return _d;
-            }/*, function(d) { return d ? hashValues(d.values) : this.getAttribute('data-hash'); }*/);
+            });
+            //, function(d) { return d ? hashValues(d.values) : this.getAttribute('data-hash'); }*/
 
         {
             let entering = cells
@@ -563,14 +573,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 /*.attr('data-hash', d => {
                     return hashValues(d.values);
                 })*/
-                .attr('class', d => s[d.parent.key])
-                .each(createSVG);
+                .attr('class', d => s[d.parent.key]);
 
             cells = cells.merge(entering);
-            //cells.exit().remove();
-            cells.each(initTooltips);
 
         }
+        cells.each(createSVG); // calling createSVG for all cells to update ones already existing
+        cells.each(initTooltips);
         /* cells.selectAll('svg.' + s.chartSVG)
              .call(tip);
          
