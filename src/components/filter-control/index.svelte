@@ -10,7 +10,7 @@ import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
 
 export let sections;
-
+export let selecteds;
 let filterIsClosed;
 let draggableContainers = [];
 FilterIsClosed.subscribe(v => {
@@ -47,13 +47,14 @@ onMount(() => {
 <style lang="scss">
     @import '../../css/variables.scss';
     .filter-container {
-        position: absolute;
+        position: sticky;
         left: 0;
-        top: -10px;
+        top: 101px;
         width: 100%;
-        z-index: 1;
+        z-index: 5;
         transform: translateX(0);
         transition: transform 0.25s ease-out;
+        margin-top: -172px;
 
     }
     .full-width-container {
@@ -76,7 +77,7 @@ onMount(() => {
         display: flex;
         flex-wrap: wrap;
         align-items: stretch;
-        padding: 2.5rem 0; 
+        padding: 80px 0 40px;
     }
     .form-section {
         flex-grow: 1;
@@ -111,34 +112,43 @@ onMount(() => {
         margin: 0 auto;
         position: relative;
         z-index: 1;
+        top: 40px;
     }
     .x-out-container {
         position: absolute;
-        top: 10px;
+        top: 1px;
         right: 7px;
+    }
+    .inner-container {
+        position: absolute;
+        width: 100%;
+        background-color: #fff;
+        border-bottom: 1px solid $gray;
     }
 </style>
 <div id="nb-filter-container" class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed}">
     <div class="full-width-container">
-        <div class="x-out-outer-wrapper">
-            <div hidden="{filterIsClosed}" class="x-out-container" on:click|preventDefault="{closeHandler}">
-                <XOut ariaLabel="Close filter drill-down form" />
+        <div class="inner-container">
+            <div class="x-out-outer-wrapper">
+                <div hidden="{filterIsClosed}" class="x-out-container" on:click|preventDefault="{closeHandler}">
+                    <XOut ariaLabel="Close filter drill-down form" />
+                </div>
             </div>
+            <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data">
+                <section class="form-section" id="filter-form" aria-labelledby="filter-form-label">
+                    <label class="section-label" id="filter-form-label">Available filters:</label>
+                    <div bind:this="{draggableContainers[0]}" class="filter-items-container">
+                       {#each sections as section, i }
+                        <FilterItem {section} bind:selected="{selecteds[i]}"/>
+                        {/each}
+                    </div>
+                </section>
+                <section class="form-section" id="drill-down-form" aria-labelledby="drill-down-label">
+                    <label class="section-label" id="drill-down-label">Organize by:</label>
+                    <div bind:this="{draggableContainers[1]}" class="filter-items-container filter-items-container--organize">
+                    </div>
+                </section>
+            </form>
         </div>
-        <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data">
-            <section class="form-section" id="filter-form" aria-labelledby="filter-form-label">
-                <label class="section-label" id="filter-form-label">Available filters:</label>
-                <div bind:this="{draggableContainers[0]}" class="filter-items-container">
-                   {#each sections as section }
-                    <FilterItem {section} />
-                    {/each}
-                </div>
-            </section>
-            <section class="form-section" id="drill-down-form" aria-labelledby="drill-down-label">
-                <label class="section-label" id="drill-down-label">Organize by:</label>
-                <div bind:this="{draggableContainers[1]}" class="filter-items-container filter-items-container--organize">
-                </div>
-            </section>
-        </form>
     </div>
 </div>

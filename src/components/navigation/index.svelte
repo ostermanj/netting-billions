@@ -3,18 +3,23 @@
 /* eslint no-undef: warn */
 import dictionary from '@Project/data/dictionary.json';
 import FilterControl from '@Project/components/filter-control/';
-import { FilterIsClosed } from '@Project/store.js';
+import FilterButton from '@Project/components/filter-button/';
+import { FilterIsClosed, HasFiltersApplied } from '@Project/store.js';
 
 let sections = ['rfmo','species','gear','product']; 
 let anchors = {};
 let filterIsClosed;
+let selecteds = sections.map(() => []);
+$: hasFiltersApplied = (function(){
+    var bool = selecteds.reduce((acc,cur) => acc + cur.length, 0) > 0;
+    HasFiltersApplied.set(bool);
+    return bool;
+}());
 function clickHandler(){
   anchors[this.dataset.key] = anchors[this.dataset.key] || document.querySelector(`#head-${this.dataset.key}`);
   anchors[this.dataset.key].scrollIntoView(true);
 } 
-function openFilters(){
-    FilterIsClosed.set(false);
-}
+
 FilterIsClosed.subscribe(v => {
     filterIsClosed = v;
 });
@@ -24,7 +29,10 @@ FilterIsClosed.subscribe(v => {
     .nav-wrapper {
         display: flex;
         align-items: center;
-        margin-bottom: 6rem;
+        margin-bottom: 96px;
+        padding-right: 25px;
+        margin-right: 25px;
+        background-color: #fff;
     }
     nav {
         margin: 0;
@@ -61,26 +69,11 @@ FilterIsClosed.subscribe(v => {
             color: $pew_blue;
         }
     }
-    button {
-        appearance:none;
-        border: none;
-
-        padding: 0;
-        margin: 0 0 0 30px;
-        width: 28px;
-        height: 28px;
-        background: transparent url('./filter.svg') 50% 50% / 24px no-repeat;
-        filter: brightness(0.3);
-        transition: filter 0.2s ease-in-out;
-        &:hover, &:focus {
-            filter: brightness(1);
-        }
-    }
     .isHidden {
         visibility: hidden;
     }
 </style>
-<div  class="nav-wrapper">
+<div class="nav-wrapper">
     <nav class:isHidden="{!filterIsClosed}" aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
@@ -88,6 +81,5 @@ FilterIsClosed.subscribe(v => {
             {/each}
         </ul>
     </nav>
-    <button role="button" aria-controls="nb-filter-container" on:click="{openFilters}"></button>
-   <FilterControl {sections} />
 </div>
+<FilterControl {sections} bind:selecteds/>

@@ -9,3 +9,4 @@ export const Filters = writable({
     gear: [],
     product: []
 });
+export const HasFiltersApplied = writable(false);

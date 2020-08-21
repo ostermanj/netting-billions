@@ -4,16 +4,27 @@
 import './css/styles.scss';
 //import { fieldValues, returnNestedData } from './scripts/data.js';
 import Navigation from '@Project/components/navigation/';
+import StickyFilterButton from '@Project/components/sticky-filter-button/'
 import { initCharts } from '@Project/components/charts/';
-import { OrganizeBy } from '@Project/store.js';
+import { HasFiltersApplied } from '@Project/store.js';
+
 
 const appContainer = document.querySelector('#render-here');
+
+
 
 if ( module.hot ){
     module.hot.accept('@Project/components/navigation/index.svelte');
 }
+
+HasFiltersApplied.subscribe(v => {
+      appContainer.classList[v ? 'add' : 'remove']('has-filters-applied');
+});
+new StickyFilterButton({
+  target: appContainer
+});
 new Navigation({
-    target: document.querySelector('#render-here'),
+  target: appContainer
    // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
 });
 initCharts({});

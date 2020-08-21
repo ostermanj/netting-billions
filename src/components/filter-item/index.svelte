@@ -7,7 +7,7 @@ import { DimensionFilter } from '@Project/store.js';
 
 export let section;
 
-let selected = [];
+export let selected = [];
 let isDirty = false;
 
 $:hasFiltersApplied = selected.length > 0;
@@ -45,11 +45,11 @@ function clickHandler(e){
         margin: 0 12px 0 0;
         width: 28px;
         height: 28px;
-        background: transparent url('./filter.svg') 50% 50% / 18px no-repeat;
-        filter: brightness(6);
+        background: transparent url('./../filter-button/filter.svg') 50% 50% / 18px no-repeat;
+        filter: brightness(20);
         transition: filter 0.2s ease-in-out;
         &:hover, &:focus {
-            filter: brightness(1);
+            filter: brightness(2);
         }
     }
     .token-wrapper {

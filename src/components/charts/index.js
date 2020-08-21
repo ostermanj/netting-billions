@@ -5,7 +5,7 @@ import StringHelpers from '@Submodule/UTILS';
 import s from './styles.scss';
 import dictionary from '@Project/data/dictionary.json';
 import { returnFieldValues, returnNestedData } from '@Project/scripts/data.js';
-import { OrganizeBy, Filters } from '@Project/store.js';
+import { OrganizeBy, Filters, HasFiltersApplied } from '@Project/store.js';
 import organize from './organize.js';
 import { isWorking } from '@Project/index.js';
 
@@ -22,6 +22,7 @@ Filters.subscribe(() => {
     }
     subsequentFilter = true;
 });
+
 var Sections = [];
 // [{rfmo: [{section: <section>, rows:[<row>,<row>,...],{},...}]}]
 // construct a model of the sections and their rows when they are rendered so that
