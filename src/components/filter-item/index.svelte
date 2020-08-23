@@ -32,6 +32,8 @@ function clickHandler(e){
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        max-width: 420px;
 
     }
     .filter-label {
@@ -83,6 +85,13 @@ function clickHandler(e){
         &.isDirty {
             opacity: 1;
         }
+    }
+    :global(.draggable-source--is-dragging){
+        opacity: 0.5;
+    }
+    :global(.draggable-mirror){
+        z-index: 1;
+        box-shadow: 4px 4px 4px rgba(0,0,0,0.3), -1px -1px 0px rgba(255,255,255,1) ;
     }
 </style>
 <div data-key="{section}" class="filter-item">

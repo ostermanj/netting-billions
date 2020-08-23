@@ -52,7 +52,6 @@ onMount(() => {
         top: 101px;
         width: 100%;
         z-index: 5;
-        transform: translateX(0);
         transition: transform 0.25s ease-out;
         margin-top: -172px;
 
