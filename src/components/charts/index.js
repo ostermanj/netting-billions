@@ -586,7 +586,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 /*.attr('data-hash', d => {
                     return hashValues(d.values);
                 })*/
-                .attr('class', d => s[d.parent.key]);
+                .attr('class', d => s[d.parent.key])
+                .text('n.a'); // put in 'n.a.' for all cells. to be replaced by VSG in createSVG if data calls for it
 
             cells = cells.merge(entering);
 
