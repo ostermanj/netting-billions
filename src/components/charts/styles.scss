@@ -14,7 +14,6 @@ $color-level-3: #000;
 .chartSection {
     width: 100%;
     max-width: 650px;
-    background-color: $lightest_gray;
     margin: 0;
 
     &.chartSection0 {
@@ -28,7 +27,9 @@ $color-level-3: #000;
         }
     }
     &:not(.chartSection0) {
-
+        tr {
+            background-color: $lightest_gray;
+        }
         th[scope="row"]::after {
             left: 14px;
             background-color: $color-level-2;
@@ -460,6 +461,11 @@ $color-level-3: #000;
 }
 .rowIsExiting {
     transform: translateX(100vw); 
+//    outline: 1px solid red;
+}
+.isEntering {
+    //transform: translateX(100vw); 
+    //outline: 1px solid green;
 }
 
 

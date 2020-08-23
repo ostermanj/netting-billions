@@ -150,6 +150,9 @@ function units(key) {
 }
 
 function returnSubcontainer(parent) {
+    if ( parent.expansionChild ) {
+        return parent.expansionChild;
+    }
     var row = document.createElement('tr');
     var cell = document.createElement('td');
     cell.setAttribute('colspan', fieldValues.property.size + 1);
@@ -183,10 +186,10 @@ function rowClickHandler(d, sortBy, sortDirection) {
     });
     var rowKeys = JSON.parse(this.dataset.keys);
     var rowValues = JSON.parse(this.dataset.values);
-    var rowFilters = rowKeys.map((key, i) => [key, rowValues[i]]);
+    this.rowFilters = rowKeys.map((key, i) => [key, rowValues[i]]);
     this.button = this.querySelector('.js-expand-button');
     this.classList.add('js-child-is-loaded');
-    this.expansionChild = initCharts({ filters: rowFilters, sortBy, sortDirection, appendAfter: this });
+    this.expansionChild = initCharts({ filters: this.rowFilters, sortBy, sortDirection, appendAfter: this });
     this.isExpanded = true;
 }
 export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null }) {
@@ -452,7 +455,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     xScale.domain([years[0], years[years.length - 1]]);
     // TODO STARTING HERE GO THROUGH AND MAKE SURE SELECTALL IS CAPTURING EXISTING LEVELS THROUGHOUT
     var sections = container
-        .selectAll('section.js-chart-section')
+        .selectAll(`section.js-chart-section${filters.length}`)
         .data(nestedData.values, function(d) { 
             return d ? d.key : this.getAttribute('data-key');
         });
@@ -508,7 +511,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     }
     sections.each(function(data) {
         var tbody = d3.select(this).select('tbody');
-        var rows = tbody.selectAll('tr')
+        var rows = tbody.selectAll(`tr.js-row-level-${filters.length}`)
             .data(() => {
                 var rtn = [...fieldValues[data.key]].sort(sortFieldValues.bind(undefined, data));
                 return rtn;
@@ -516,13 +519,14 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 // needs to be IDd so that on page load the prerendered elements are not rerendered
                 // `_d` is undefined for the prerendered elements captured by selectAll, so return that `data-value`
                 // attribute instead.
-                console.log(_d);
-                return _d ? JSON.stringify([...filters.map(f => f[1]), _d]) : this.getAttribute('data-values');
+                var rtn = _d ? JSON.stringify([...filters.map(f => f[1]), _d]) : this.getAttribute('data-values');
+                console.log(filters, rtn);
+                return rtn;
             });
+            rows.classed(s.isEntering, false);
             rows.exit()
                 .attr('class', s.rowIsExiting)
-                .transition().duration(1000)
-                .style('opacity',0)
+                .transition().duration(500)
                 .on('end', function(){
                     d3.select(this).remove();
                 });
@@ -531,7 +535,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .enter().append('tr')
                 .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                 .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])) // eg W, IO, IA, etc
-                .attr('class', 'js-row js-row-level-' + filters.length);
+                .attr('class', s.isEntering + ' js-row js-row-level-' + filters.length);
 
             if (nestedData.values.length > 1) { // do not do expansion stuff if we're at the last branch of the tree
                 entering
@@ -551,7 +555,11 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             }
 
             rows = rows.merge(entering);
-            
+            rows.each(function(){
+                if ( this.expansionChild ){
+                    initCharts({ filters: this.rowFilters, sortBy, sortDirection, appendAfter: this });
+                }
+            });
             if (nestedData.values.length > 1) {
                 rows.on('click', function(d) {
                     rowClickHandler.call(this, d, sortBy, sortDirection);
