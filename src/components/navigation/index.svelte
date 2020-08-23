@@ -19,9 +19,16 @@ function clickHandler(){
   anchors[this.dataset.key] = anchors[this.dataset.key] || document.querySelector(`#head-${this.dataset.key}`);
   anchors[this.dataset.key].scrollIntoView(true);
 } 
-
+function bodyClickFn(){
+    FilterIsClosed.set(true);
+}
 FilterIsClosed.subscribe(v => {
     filterIsClosed = v;
+    if ( !filterIsClosed ){
+        document.body.addEventListener('click', bodyClickFn);
+    } else {
+        document.body.removeEventListener('click', bodyClickFn);
+    }
 });
 </script>
 <style lang="scss">
@@ -77,7 +84,7 @@ FilterIsClosed.subscribe(v => {
     <nav class:isHidden="{!filterIsClosed}" aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
-            <li><a data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
+            <li><a data-key="{section}" on:click|preventDefault|stopPropagation="{clickHandler}" href="#">{dictionary[section].display}</a></li>
             {/each}
         </ul>
     </nav>

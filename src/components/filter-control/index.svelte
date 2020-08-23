@@ -126,7 +126,7 @@ onMount(() => {
         border-bottom: 1px solid $gray;
     }
 </style>
-<div id="nb-filter-container" class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed}">
+<div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed}">
     <div class="full-width-container">
         <div class="inner-container">
             <div class="x-out-outer-wrapper">

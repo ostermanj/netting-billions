@@ -43,4 +43,4 @@
         }
     }
 </style>
-<button class:hasFiltersApplied role="button" aria-controls="nb-filter-container" on:click="{openFilters}"></button>
+<button class:hasFiltersApplied role="button" aria-controls="nb-filter-container" on:click|stopPropagation="{openFilters}"></button>
