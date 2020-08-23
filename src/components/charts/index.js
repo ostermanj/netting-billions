@@ -167,7 +167,13 @@ d3.formatLocale({
     grouping: [3],
     currency: ['$', '']
 });
-
+function removeNode(selection){
+    selection.attr('class', s.rowIsExiting)
+    .transition().duration(500)
+    .on('end', function(){
+        selection.remove();
+    });
+}
 function rowClickHandler(d, sortBy, sortDirection) {
     if (this.classList.contains('js-child-is-loaded')) {
         this.isExpanded = !this.isExpanded;
@@ -524,12 +530,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 return rtn;
             });
             rows.classed(s.isEntering, false);
-            rows.exit()
-                .attr('class', s.rowIsExiting)
-                .transition().duration(500)
-                .on('end', function(){
-                    d3.select(this).remove();
-                });
+            rows.exit().each(function(){
+                d3.select(this).call(removeNode);
+                d3.select(this.expansionChild).call(removeNode);
+            });
         {
             let entering = rows
                 .enter().append('tr')
