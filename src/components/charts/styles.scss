@@ -470,13 +470,13 @@ $color-level-3: #000;
 .arrowMarker {
     fill: $gray;
 }
-.legendAxis, .legendCenter {
+.legendAxis, .legendCenter, .ticks line, .yTicks line {
     stroke: $gray;
     stroke-width: 1px;
 }
-.legendText {
+.legendText, .ticks text, .yTicks text {
     font-size: 10px;
-    color: $a11y;
+    fill: $a11y;
 }
 
 

@@ -202,6 +202,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     // filters = Array of key, value arrays corresponding to the row clicked
     var nestedData = returnNestedData(filters);
     fieldValues = returnFieldValues();
+    var sortedFieldValues = nestedData.values.reduce(function(acc,cur){
+        acc[cur.key] = [...fieldValues[cur.key]].sort(sortFieldValues.bind(undefined, cur));
+        return acc;
+    },{});
     console.log(nestedData);
     var container = !appendAfter ? d3.select('#render-here') : d3.select(returnSubcontainer(appendAfter));
     if (filters.length > 0) {
@@ -296,7 +300,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     .attr('orient', 'auto')
                     .attr('markerWidth', 3)
                     .attr('markerHeight', 6)
-                    .attr('refX', 0.1)
+                    .attr('refX', 3.1)
                     .attr('refY', 3)
                         .append('path')
                         .attr('d', 'M0,0 V6 L3,3 Z')
@@ -433,37 +437,36 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 dummyRects = dummyRects.merge(entering);
             }
 
-        if ( cellIndex == 2 ){
+        if ( cellIndex == 2 && datum.rowIndex == 0 ){
             let legendGroup = svg.selectAll('g.legend-group')
-                .data([1]);
+                .data([datum]);
 
             { 
                 let entering = legendGroup.enter()
                     .append('g')
-                    .attr('class', `${s.legendGroup} legend-group`)
-                    .attr('transform', 'translate(-2 0)');
+                    .attr('class', `${s.legendGroup} legend-group`);
 
-                entering.append('line')
+              /*  entering.append('line')
                     .attr('class', s.legendAxis)
-                    .attr('x1', margin.left - 8)
-                    .attr('x2', margin.left - 8)
-                    .attr('y1', margin.top * 2)
-                    .attr('y2', height)
+                    .attr('x1', margin.left / 2 - 6)
+                    .attr('x2', margin.left / 2 - 6)
+                    .attr('y1', margin.top + 0.125 * height)
+                    .attr('y2', margin.top + 0.875 * height )
                     .attr('marker-start','url("#start-arrow")')
-                    .attr('marker-end','url("#end-arrow")');
+                    .attr('marker-end','url("#end-arrow")');*/
                 
                 entering.append('line')
                     .attr('class', s.legendCenter)
-                    .attr('x1', margin.left - 5)
-                    .attr('x2', margin.left - 11)
+                    .attr('x1', margin.left - 6)
+                    .attr('x2', margin.left - 12)
                     .attr('y1', margin.top + height / 2)
                     .attr('y2', margin.top + height / 2);
                     
-                let text = entering.append('text')
+           /*     let text = entering.append('text')
                     .attr('text-anchor','end')
                     .attr('class', s.legendText)
                     .attr('y', margin.top + height / 2)
-                    .attr('dy', '-0.4em');
+                    .attr('dy', '-0.2em');
 
                 text
                     .append('tspan')
@@ -476,10 +479,57 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     .text('change')
                     .attr('dx', '-0.8em')
                     .attr('x', 0)
-                    .attr('dy', '1.2em');
+                    .attr('dy', '1em'); */
 
                 legendGroup = legendGroup.merge(entering);
             }
+
+            let ticks = legendGroup.selectAll('g.ticks')
+                .data(d => d.values);
+
+                {
+                    let entering = ticks.enter()
+                        .append('g')
+                        .attr('class', s.ticks)
+                        .attr('transform', (d,i) => `translate(${margin.left + xScale(+d.key)} ${ i % 2 ? 0 : margin.top + height})`);
+
+                    entering.append('text')
+                        .attr('text-anchor', 'middle')
+                        .attr('y',(d,i) => i % 2 ? 0 : 4)
+                        .attr('dy', (d,i) => i % 2 ? 0 : '0.5em')
+                        .text(d => d.key);
+
+                    entering.append('line')
+                        .attr('x1', 0)
+                        .attr('x2', 0)
+                        .attr('y1', 0)
+                        .attr('y2', 10)
+                        .attr('transform', (d,i) => `translate(0 ${ i % 2 ? 3 : -12})`);
+                }
+
+            let yTicks = legendGroup.selectAll('g.y-ticks')
+                .data(yScale.domain());//.map( d => d / 2));
+
+                {
+                    let entering = yTicks.enter()
+                        .append('g')
+                        .attr('transform', d =>  {
+                            return `translate(${margin.left / 2 - 9} ${margin.top + yScale(d)})`;
+                        })
+                        .attr('class', `${s.yTicks} y-ticks`);
+
+                    entering.append('line')
+                        .attr('x1',0)
+                        .attr('x2',6)
+                        .attr('y1', 0)
+                        .attr('y2', 0);
+
+                    entering.append('text')
+                        .attr('text-anchor', 'end')
+                        .attr('dx', '-0.3em')
+                        .attr('dy', '0.4em')
+                        .text(d => d3.format('+,.0%')(d).replace('-','–'));
+                }
 
 
         }
@@ -546,7 +596,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         var tbody = d3.select(this).select('tbody');
         var rows = tbody.selectAll(`tr.js-row-level-${filters.length}`)
             .data(() => {
-                var rtn = [...fieldValues[data.key]].sort(sortFieldValues.bind(undefined, data));
+                var rtn = sortedFieldValues[data.key];
                 return rtn;
             }, function(_d) { // this second parameter of `.data()` sets the key by which to identify each data-bound element
                 // needs to be IDd so that on page load the prerendered elements are not rerendered
@@ -602,7 +652,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         // have to manually find the data needed for each the cells of each row
         var cells = rows.selectAll('td') // TODO: seems this setup must not be right. why call hashValues twice?
             .data(d => {
-                var _d = [...fieldValues.property].map(p => data.values.find(_d => _d.key == p).values.find(__d => __d.key == d));
+                var _d = [...fieldValues.property].map(p => {
+                    var rtn =  data.values.find(_d => _d.key == p).values.find(__d => __d.key == d);
+                    rtn.rowIndex = sortedFieldValues[rtn.parent.parent.key].indexOf(rtn.key); // add a rowIndex to the 
+                                                                                             // datum so we can target the legend
+                                                                                             // for first rows only
+                    return rtn;
+                });
                 return _d;
             });
             //, function(d) { return d ? hashValues(d.values) : this.getAttribute('data-hash'); }*/
