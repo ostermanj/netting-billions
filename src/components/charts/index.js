@@ -168,11 +168,12 @@ d3.formatLocale({
     currency: ['$', '']
 });
 function removeNode(selection){
-    selection.attr('class', s.rowIsExiting)
+    /*selection.attr('class', s.rowIsExiting)
     .transition().duration(500)
     .on('end', function(){
         selection.remove();
-    });
+    });*/
+    selection.remove();
 }
 function rowClickHandler(d, sortBy, sortDirection) {
     if (this.classList.contains('js-child-is-loaded')) {
@@ -197,6 +198,13 @@ function rowClickHandler(d, sortBy, sortDirection) {
     this.classList.add('js-child-is-loaded');
     this.expansionChild = initCharts({ filters: this.rowFilters, sortBy, sortDirection, appendAfter: this });
     this.isExpanded = true;
+}
+function returnNiceValues(domain){
+    var powerTen = Math.floor(Math.log10(domain[1]));
+    var simplified = domain[1] / 10 ** powerTen;
+    var decimals = simplified % 1;
+    var posValue = ( Math.floor(simplified) + Math.floor(decimals / 0.25) * 0.25 ) * ( 10 ** powerTen);
+    return [posValue, -posValue];
 }
 export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null }) {
     // filters = Array of key, value arrays corresponding to the row clicked
@@ -437,7 +445,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 dummyRects = dummyRects.merge(entering);
             }
 
-        if ( cellIndex == 2 && datum.rowIndex == 0 ){
+        if ( !(cellIndex == 2 && datum.rowIndex == 0) ){
+            svg.select('g.legend-group').remove();
+        } else {
             let legendGroup = svg.selectAll('g.legend-group')
                 .data([datum]);
 
@@ -508,13 +518,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 }
 
             let yTicks = legendGroup.selectAll('g.y-ticks')
-                .data(yScale.domain());//.map( d => d / 2));
-
+                .data(returnNiceValues(yScale.domain()));
+// TODO; SAME FOR EXISTING AS FOR ENTERING
                 {
                     let entering = yTicks.enter()
                         .append('g')
                         .attr('transform', d =>  {
-                            return `translate(${margin.left / 2 - 9} ${margin.top + yScale(d)})`;
+                            return `translate(${margin.left / 2 - 9} 0)`;
                         })
                         .attr('class', `${s.yTicks} y-ticks`);
 
@@ -527,11 +537,19 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     entering.append('text')
                         .attr('text-anchor', 'end')
                         .attr('dx', '-0.3em')
-                        .attr('dy', '0.4em')
-                        .text(d => d3.format('+,.0%')(d).replace('-','–'));
+                        .attr('dy', '0.4em');
+                        
+
+                    yTicks = yTicks.merge(entering);
                 }
 
+            yTicks
+                .attr('transform', d =>  {
+                    return `translate(${margin.left / 2 - 9} ${margin.top + yScale(d)})`;
+                });
 
+            yTicks.select('text')
+                .text(d => d3.format('+,.0%')(d).replace('-','–'));
         }
     }
     var years = Array.from(fieldValues.year.values()).sort();
@@ -616,6 +634,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .enter().append('tr')
                 .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                 .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])) // eg W, IO, IA, etc
+                .attr('data-index', (d,i) => i)
                 .attr('class', s.isEntering + ' js-row js-row-level-' + filters.length);
 
             if (nestedData.values.length > 1) { // do not do expansion stuff if we're at the last branch of the tree
@@ -684,7 +703,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
              .on('mouseover', tip.show)
              .on('mouseout', tip.hide);*/
 
-
+        // the d3 slection of rows has it in order based on data (sortedFieldValues),
+        // but the DOM order is based on the first rendering. subsequent filtering
+        // will require changing the order of the rows. FLIP.
+        FLIP(rows);
 
     });
     sections.each(logSection.bind(undefined, filters.length));
@@ -696,6 +718,47 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);*/
     return container.node();
+}
+function FLIP($rows){
+    var rows = $rows.nodes();
+    First(rows);
+    Last(rows);
+    Invert(rows);
+    requestAnimationFrame(function(){
+        Play(rows);
+    });
+}
+function First(rows){
+    rows.forEach(row => {
+        row.style.transitionDuration = '0s';
+
+        row.yPos0 = row.getBoundingClientRect().top;
+    });
+}
+function Last(rows){
+    var parent = rows[0].parentNode;
+    var frag = new DocumentFragment();
+    rows.forEach(row => {
+        frag.appendChild(row);
+    });
+    parent.appendChild(frag);
+    rows.forEach(row => {
+        row.yPos1 = row.getBoundingClientRect().top;
+    });
+}
+function Invert(rows){
+    rows.forEach(row => {
+        row.style.transform = `translateY(${ row.yPos0 - row.yPos1 }px)`; 
+        
+    });
+}
+function Play(rows){
+    rows.forEach(row => {
+        row.style.transitionDuration = '0.3s';
+    });
+        rows.forEach(row => {
+            row.style.transform = `translateY(0px)`; 
+        });   
 }
 function updateCharts(){
     initCharts({});
