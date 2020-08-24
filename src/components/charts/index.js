@@ -242,7 +242,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         return sortDirection == 'desc' ? ab[1] - ab[0] : ab[0] - ab[1];
     }
 
-    function createSVG(datum) {
+    function createSVG(datum, cellIndex) {
         var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
         yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
         var svg = d3.select(this)
@@ -285,6 +285,36 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         return acc + `${cur.key}: ${abbrev({value: cur.value, type: cur.parent.parent.key, precision: 3})}${ j < datum.values.length - 1 ? '; ' :''}`;
                     }, '');
                 });
+
+            let defs = entering
+                .append('defs');
+
+                defs
+                    .append('marker')
+                    .attr('class',s.arrowMarker)
+                    .attr('id', 'end-arrow')
+                    .attr('orient', 'auto')
+                    .attr('markerWidth', 3)
+                    .attr('markerHeight', 6)
+                    .attr('refX', 0.1)
+                    .attr('refY', 3)
+                        .append('path')
+                        .attr('d', 'M0,0 V6 L3,3 Z')
+                        //.attr('fill', '$b0b0b0');
+
+                defs
+                    .append('marker')
+                    .attr('class',s.arrowMarker)
+                    .attr('id', 'start-arrow')
+                    .attr('orient', 'auto')
+                    .attr('markerWidth', 3)
+                    .attr('markerHeight', 6)
+                    .attr('refX', 0.1)
+                    .attr('refY', 3)
+                        .append('path')
+                        .attr('d', 'M0,3 L3,0 V6 Z')
+                        //.attr('fill', '$b0b0b0');
+
 
             svg = svg.merge(entering);
         }
@@ -403,59 +433,56 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 dummyRects = dummyRects.merge(entering);
             }
 
+        if ( cellIndex == 2 ){
+            let legendGroup = svg.selectAll('g.legend-group')
+                .data([1]);
+
+            { 
+                let entering = legendGroup.enter()
+                    .append('g')
+                    .attr('class', `${s.legendGroup} legend-group`)
+                    .attr('transform', 'translate(-2 0)');
+
+                entering.append('line')
+                    .attr('class', s.legendAxis)
+                    .attr('x1', margin.left - 8)
+                    .attr('x2', margin.left - 8)
+                    .attr('y1', margin.top * 2)
+                    .attr('y2', height)
+                    .attr('marker-start','url("#start-arrow")')
+                    .attr('marker-end','url("#end-arrow")');
+                
+                entering.append('line')
+                    .attr('class', s.legendCenter)
+                    .attr('x1', margin.left - 5)
+                    .attr('x2', margin.left - 11)
+                    .attr('y1', margin.top + height / 2)
+                    .attr('y2', margin.top + height / 2);
+                    
+                let text = entering.append('text')
+                    .attr('text-anchor','end')
+                    .attr('class', s.legendText)
+                    .attr('y', margin.top + height / 2)
+                    .attr('dy', '-0.4em');
+
+                text
+                    .append('tspan')
+                    .text('percentage')
+                    .attr('dx', '-0.8em')
+                    .attr('class', s.legendText)
+                    .attr('x', 0);
+                text
+                    .append('tspan')
+                    .text('change')
+                    .attr('dx', '-0.8em')
+                    .attr('x', 0)
+                    .attr('dy', '1.2em');
+
+                legendGroup = legendGroup.merge(entering);
+            }
 
 
-        /* OLD BELOW */
-       /* console.log('in createSVG');
-        if (datum.descendantValues.every(d => d === 0)) {
-            this.textContent = 'n.a.';
-            return;
         }
-        var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
-        yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
-
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        var _svg = d3.select(svg)
-            .attr('class', `js-chart-svg ${s.chartSVG}`)
-            .attr('viewBox', '0 0 100 ' + viewBoxHeight)
-            //.attr('focusable', false)
-            .attr('xmlns', 'http://www.w3.org/2000/svg')
-            .attr('version', '1.1')
-            .attr('role', 'img')
-            .attr('aria-labelledby', `title-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key} ` +
-                `desc-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key}`);
-
-        _svg.append('title')
-            .attr('id', `title-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key}`)
-            .text(() => {
-                return `Line graph showing the ${display(datum.parent.key)} of tuna caught ` +
-                    `in each of ${datum.values.length} years for ${display(datum.parent.parent.key)}: ` +
-                    `${display(datum.key)}.`;
-            });
-
-        _svg.append('desc')
-            .attr('id', `desc-${filters.map(f => f[1]).join('-')}-${datum.parent.parent.key}-${datum.key}-${datum.parent.key}`)
-            .text(() => {
-                return datum.values.reduce(function(acc, cur, j) {
-                    return acc + `${cur.key}: ${abbrev({value: cur.value, type: cur.parent.parent.key, precision: 3})}${ j < datum.values.length - 1 ? '; ' :''}`;
-                }, '');
-            });
-        var g = _svg
-            .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`)
-            .datum(returnDatum(datum));
-
-        g.append('path')
-            .attr('d', valueline)
-            .attr('class', `${s.sparkline} ${s[datum.parent.key]}`); //parent key to get class of column, not row
-        this.appendChild(svg);
-*/
-
-        
-       
-        
-
-
     }
     var years = Array.from(fieldValues.year.values()).sort();
     xScale.domain([years[0], years[years.length - 1]]);

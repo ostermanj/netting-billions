@@ -84,7 +84,7 @@ FilterIsClosed.subscribe(v => {
     <nav class:isHidden="{!filterIsClosed}" aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
-            <li><a data-key="{section}" on:click|preventDefault|stopPropagation="{clickHandler}" href="#">{dictionary[section].display}</a></li>
+            <li><a data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
             {/each}
         </ul>
     </nav>

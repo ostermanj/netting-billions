@@ -467,5 +467,16 @@ $color-level-3: #000;
     //transform: translateX(100vw); 
     //outline: 1px solid green;
 }
+.arrowMarker {
+    fill: $gray;
+}
+.legendAxis, .legendCenter {
+    stroke: $gray;
+    stroke-width: 1px;
+}
+.legendText {
+    font-size: 10px;
+    color: $a11y;
+}
 
 
