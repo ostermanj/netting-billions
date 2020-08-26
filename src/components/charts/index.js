@@ -534,10 +534,22 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('y1', 0)
                         .attr('y2', 0);
 
-                    entering.append('text')
+                    let tickText = entering.append('text')
                         .attr('text-anchor', 'end')
                         .attr('dx', '-0.3em')
                         .attr('dy', '0.4em');
+                        
+                    tickText 
+                        .append('tspan')
+                        .attr('class','tick-label');
+                        
+                    
+                    tickText 
+                        .append('tspan')
+                        .attr('class', `y-axis-title ${s.yAxisTitle}`)
+                        .attr('y',0)
+                        .attr('x',0)
+                        .attr('dy', '-0.9em');
                         
 
                     yTicks = yTicks.merge(entering);
@@ -548,19 +560,15 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     return `translate(${margin.left / 2 - 9} ${margin.top + yScale(d)})`;
                 });
 
-            let tickText = yTicks.select('text');
-
-
-            tickText // need to put this where it won't be done over and over again
-                .append('tspan')
+            yTicks.select('.tick-label')
                 .text((d,i) => i == 1 ? '0' : d3.format('+,.0%')(d).replace('-','–'));
-            tickText // need to put this where it won't be done over and over again
-                .append('tspan')
-                .attr('class', s.yAxisTitle)
-                .attr('y',0)
-                .attr('x',0)
-                .attr('dy', '-0.9em')
+
+            yTicks.select('.y-axis-title')
                 .text((d,i) => i == 0 ? '% change' : '');
+
+
+
+
         }
     }
     var years = Array.from(fieldValues.year.values()).sort();
