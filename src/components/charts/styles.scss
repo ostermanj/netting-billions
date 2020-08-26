@@ -481,7 +481,9 @@ $color-level-3: #000;
 .yTicks {
     transition: transform 0.3s ease-in-out;
 }
-
+.yAxisTitle {
+    font-style: italic;
+}
 .clone {
     opacity: 0.5;
 }
