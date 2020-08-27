@@ -6,7 +6,7 @@
         display: flex;
         justify-content: flex-end;
         position: sticky;
-        top: 143px;
+        top: 121px;
         margin-bottom: -33px;
     }
 </style>

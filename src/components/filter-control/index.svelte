@@ -122,7 +122,7 @@ onMount(() => {
     .x-out-container {
         position: absolute;
         top: 1px;
-        right: 7px;
+        right: 16px;
     }
     .inner-container {
         position: absolute;
