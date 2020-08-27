@@ -751,11 +751,11 @@ console.log(years);
 }
 function FLIP($rows){
     var rows = $rows.nodes();
-    First(rows);
+   // First(rows);
     Last(rows);
-    Invert(rows);
+   // Invert(rows);
     requestAnimationFrame(function(){
-        Play(rows);
+   //     Play(rows);
     });
 }
 function First(rows){
@@ -770,6 +770,9 @@ function Last(rows){
     var frag = new DocumentFragment();
     rows.forEach(row => {
         frag.appendChild(row);
+        if ( row.expansionChild ){ // expansionChild is the <td> need to move the parent <tr>
+            frag.appendChild(row.expansionChild.parentNode);
+        }
     });
     parent.appendChild(frag);
     rows.forEach(row => {
