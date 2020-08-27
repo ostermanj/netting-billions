@@ -41,7 +41,6 @@ function logSection(depth, d, i, arr) {
 }
 
 function _organize(orgBy) {
-    // TOOO somewhere, open the children is orgBy array warrant it
     if (orgBy == undefined) {
         return;
     }
@@ -67,7 +66,7 @@ function _organize(orgBy) {
                             if ( !row.isExpanded == shouldOpenRows ){
                                 row.dispatchEvent(new MouseEvent('click', {
                                     view: window,
-                                    bubbles: true,
+                                    bubbles: false,
                                     cancelable: true
                                 }));
                             }
