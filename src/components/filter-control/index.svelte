@@ -11,10 +11,14 @@ import { isWorking } from '@Project/index.js';
 
 export let sections;
 export let selecteds;
-let filterIsClosed;
+let filterIsClosing = true;
+let filterIsClosed = true;
 let draggableContainers = [];
 FilterIsClosed.subscribe(v => {
-    filterIsClosed = v;
+    filterIsClosing = v;
+    setTimeout(() => {
+        filterIsClosed = v;
+    }, v ? 250 : 0);
 });
 OrganizeBy.subscribe(v => {
     console.log(v);
@@ -53,7 +57,7 @@ onMount(() => {
         width: 100%;
         z-index: 5;
         transition: transform 0.25s ease-out;
-        margin-top: -172px;
+        margin-top: -176px;
         @media screen and (max-width: 910px) {
             top: 98px;            
         }
@@ -107,9 +111,12 @@ onMount(() => {
         font-weight: bold;
         margin-bottom: 1.2rem;
     }
-    .filterIsClosed {
+    .filterIsClosing {
         transform: translateX(101vw);
         transition-timing-function: ease-in;
+    }
+    .filterIsClosed {
+        visibility: hidden;
     }
     .x-out-outer-wrapper {
         width: 100%;
@@ -131,7 +138,7 @@ onMount(() => {
         border-bottom: 1px solid $gray;
     }
 </style>
-<div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed}">
+<div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
     <div class="full-width-container">
         <div class="inner-container">
             <div class="x-out-outer-wrapper">

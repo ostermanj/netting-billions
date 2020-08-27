@@ -190,12 +190,18 @@ $color-level-3: #000;
                 z-index: 3;
             }
             h4.sectionHead {
-                top: 142px;
+                top: 141px;
                 z-index: 2;
+                @media screen and (max-width: 910px){
+                    top: 139px; 
+                }
             }
             h5.sectionHead {
-                top: 184px;
+                top: 182px;
                 z-index: 1;
+                @media screen and (max-width: 910px){
+                    top: 180px; 
+                }
             }
             table {
                 //margin-top: -62px;

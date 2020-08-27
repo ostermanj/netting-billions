@@ -7,7 +7,9 @@
         justify-content: flex-end;
         position: sticky;
         top: 121px;
-        margin-bottom: -33px;
+        margin-top: 21px;
+        margin-bottom: 0;
+        height: 0;
     }
 </style>
 

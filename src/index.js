@@ -21,12 +21,12 @@ if ( module.hot ){
 HasFiltersApplied.subscribe(v => {
       appContainer.classList[v ? 'add' : 'remove']('has-filters-applied');
 });
-new StickyFilterButton({
-  target: appContainer
-});
 new Navigation({
   target: appContainer
    // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
+});
+new StickyFilterButton({
+  target: appContainer
 });
 initCharts({});
 //initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});
