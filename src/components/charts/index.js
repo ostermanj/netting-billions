@@ -202,10 +202,16 @@ function rowClickHandler(d, sortBy, sortDirection) {
     this.isExpanded = true;
 }
 function returnNiceValues(domain){
-    var powerTen = Math.floor(Math.log10(domain[1]));
-    var simplified = domain[1] / 10 ** powerTen;
-    var decimals = simplified % 1;
-    var posValue = ( Math.floor(simplified) + Math.floor(decimals / 0.25) * 0.25 ) * ( 10 ** powerTen);
+    //domain[1] = 0.24968
+    var powerTen = Math.floor(Math.log10(domain[1])); // -1
+    var simplified = domain[1] / 10 ** powerTen; // 2.24968
+    var decimals = simplified % 1; // 0.24968
+    var posValue;
+    if ( powerTen > -1 ){
+        posValue = ( Math.floor(simplified) + Math.floor(decimals / 0.25) * 0.25 ) * ( 10 ** powerTen);
+    } else {
+        posValue = ( Math.floor(simplified) + Math.floor(decimals / 0.5) * 0.5 ) * ( 10 ** powerTen);
+    }
     return [posValue, -posValue];
 }
 export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc', appendAfter = null }) {
