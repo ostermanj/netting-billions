@@ -10,6 +10,7 @@
         margin-top: 21px;
         margin-bottom: 0;
         height: 0;
+        z-index: 4;
     }
 </style>
 
