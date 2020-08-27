@@ -425,7 +425,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
         var dummyBarGroup = g.selectAll('g.dummy-bars')
             .data(d => d);
-
+console.log(years);
             {
                 let entering = dummyBarGroup.enter()
                     .append('g')
@@ -435,14 +435,15 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             }
 
         var dummyRects = dummyBarGroup.selectAll('rect')
-            .data(d => d);
+            .data(d => d, _d => _d.x);
             dummyRects.exit().remove();
 
             {
                 let entering  = dummyRects.enter()
                 .append('rect')
-                .attr('x', (d, i, arr) => xScale(d.x) - ((width) / (arr.length - 1)) / 2)
-                .attr('width', (d, i, arr) => (width) / (arr.length - 1))
+                .attr('data-year', d => d.x)
+                .attr('x', (d, i, arr) => xScale(d.x) - ( ( width / (years.length - 1) ) / 2 ) )// - ((width) / (years.length - 1)) / 2)
+                .attr('width', (d, i, arr) => width / (years.length - 1))
                 .attr('height', height);
 
                 dummyRects = dummyRects.merge(entering);
