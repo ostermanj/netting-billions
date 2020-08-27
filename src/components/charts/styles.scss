@@ -57,7 +57,7 @@ $color-level-3: #000;
             top: 0;
             bottom: 0;
             background-color: #fff;
-            //z-index: 2;
+            z-index: 1;
         }
     }
     &.chartSection3::before {
@@ -152,6 +152,7 @@ $color-level-3: #000;
                     top: 0;
                     bottom: 0;
                     background-color: #000;
+                    z-index: 1;
                 }
 
             }

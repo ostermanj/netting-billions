@@ -503,7 +503,7 @@ console.log(years);
                 {
                     let entering = ticks.enter()
                         .append('g')
-                        .attr('class', s.ticks)
+                        .attr('class', `ticks ${s.ticks}`)
                         .attr('transform', (d,i) => `translate(${margin.left + xScale(+d.key)} ${ i % 2 ? 0 : margin.top + height})`);
 
                     entering.append('text')

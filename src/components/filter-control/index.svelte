@@ -54,6 +54,9 @@ onMount(() => {
         z-index: 5;
         transition: transform 0.25s ease-out;
         margin-top: -172px;
+        @media screen and (max-width: 910px) {
+            top: 98px;            
+        }
 
     }
     .full-width-container {
@@ -77,6 +80,9 @@ onMount(() => {
         flex-wrap: wrap;
         align-items: stretch;
         padding: 80px 0 40px;
+        @media screen and (max-width: 1020px) {
+            padding: 80px 20px 40px;
+        }
     }
     .form-section {
         flex-grow: 1;
