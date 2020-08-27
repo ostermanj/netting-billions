@@ -8,6 +8,7 @@ import { returnFieldValues, returnNestedData } from '@Project/scripts/data.js';
 import { OrganizeBy, Filters, HasFiltersApplied } from '@Project/store.js';
 import organize from './organize.js';
 import { isWorking } from '@Project/index.js';
+import tippy from 'tippy.js';
 
 var organizeBy;
 var subsequentFilter = false;
@@ -127,7 +128,9 @@ function hashValues(d) {
 function display(key) {
     return dictionary[key].display;
 }
-
+function textTooltip(key){
+    return dictionary[key] ? dictionary[key].description || null : null;
+}
 function displayFilters(filters) {
     if (filters.length == 0) {
         return '';
@@ -616,6 +619,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .data(d => ['', ...fieldValues.property])
                 .enter().append('th')
                 .attr('scope', (d, i) => i == 0 ? null : 'column')
+                .attr('data-tippy-content', d => textTooltip(d))
                 .attr('class', d => s[d])
                 .classed(s.sortedBy, d => {
                     return d == sortBy;
@@ -665,7 +669,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
             let th = entering.append('th');
 
-            th.attr('scope', 'row');
+            th
+                .attr('scope', 'row')
+                .attr('data-tippy-content', d => textTooltip(d));
             th.text(d => display(d));
             if (nestedData.values.length > 1) {
                 th.append('button')
@@ -728,6 +734,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         FLIP(rows);
 
     });
+    tippy('[data-tippy-content]',
+        {
+            offset: [0,-10]
+        });
     sections.each(logSection.bind(undefined, filters.length));
     /*
         d3.selectAll('svg.' + s.chartSVG)

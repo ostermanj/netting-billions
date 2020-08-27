@@ -2,6 +2,7 @@
 /* eslint no-undef: warn */
 /* global BUILDTYPE */
 import './css/styles.scss';
+import 'tippy.js/dist/tippy.css';
 //import { fieldValues, returnNestedData } from './scripts/data.js';
 import Navigation from '@Project/components/navigation/';
 import StickyFilterButton from '@Project/components/sticky-filter-button/'
