@@ -86,7 +86,7 @@ if (module.hot) {
 
 const margin = {
     top: 12,
-    right: 43,
+    right: 51,
     bottom: 12,
     left: 46
 };
@@ -496,30 +496,31 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('transform', (d,i) => `translate(0 ${ i % 2 ? 3 : -12})`);
                 }
 
-            let yTicks = svg.selectAll('g.y-ticks')
+            let yTicks = legendGroup.selectAll('g.y-ticks')
                 .data([returnNiceValues(yScale.domain())[0], 0, returnNiceValues(yScale.domain())[1]]);
 
                 {
                     let entering = yTicks.enter()
                         .append('g')
                         .attr('transform', d =>  {
-                            return `translate(${0} 0)`;
+                            return `translate(${margin.left - r - strokeWidth} 0)`;
                         })
                         .attr('class', `${s.yTicks} y-ticks`);
 
                     entering.append('line')
                         .attr('x1',0)
-                        .attr('x2',6)
+                        .attr('x2', -tickLength)
                         .attr('y1', 0)
                         .attr('y2', 0);
 
                     let tickText = entering.append('text')
                         .attr('text-anchor', 'end')
-                        //.attr('dx', '-0.3em')
                         .attr('dy', '0.4em');
                         
                     tickText 
                         .append('tspan')
+                        .attr('x',-tickLength)
+                        .attr('dx', '-0.2em')
                         .attr('class','tick-label');
                         
                     
@@ -527,7 +528,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .append('tspan')
                         .attr('class', `y-axis-title ${s.yAxisTitle}`)
                         .attr('y',0)
-                        .attr('x',0)
+                        .attr('x',-tickLength)
+                        .attr('dx', '-0.2em')
                         .attr('dy', '-0.9em');
                         
 
@@ -536,7 +538,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
             yTicks
                 .attr('transform', d =>  {
-                    return `translate(${0} ${margin.top + yScale(d)})`;
+                    return `translate(${margin.left - r - strokeWidth} ${margin.top + yScale(d)})`;
                 });
 
             yTicks.select('.tick-label')
