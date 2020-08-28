@@ -2,11 +2,10 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 import dictionary from '@Project/data/dictionary.json';
-import FilterControl from '@Project/components/filter-control/';
 import FilterButton from '@Project/components/filter-button/';
 import { FilterIsClosed, HasFiltersApplied } from '@Project/store.js';
 
-let sections = ['rfmo','species','gear','product']; 
+let sections = ['rfmo','species','gear','product'];
 let anchors = {};
 let filterIsClosed;
 let selecteds = sections.map(() => []);
@@ -89,4 +88,3 @@ FilterIsClosed.subscribe(v => {
         </ul>
     </nav>
 </div>
-<FilterControl {sections} bind:selecteds/>

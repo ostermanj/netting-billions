@@ -5,11 +5,14 @@ import './css/styles.scss';
 import 'tippy.js/dist/tippy.css';
 //import { fieldValues, returnNestedData } from './scripts/data.js';
 import Navigation from '@Project/components/navigation/';
-import StickyFilterButton from '@Project/components/sticky-filter-button/'
+import StickyFilterButton from '@Project/components/sticky-filter-button/';
+import FilterControl from '@Project/components/filter-control/';
 import { initCharts } from '@Project/components/charts/';
 import { HasFiltersApplied } from '@Project/store.js';
 
 
+const navContainer = document.querySelector('#render-nav-here');
+const filterContainer = document.querySelector('#render-filter-here');
 const appContainer = document.querySelector('#render-here');
 
 
@@ -22,7 +25,11 @@ HasFiltersApplied.subscribe(v => {
       appContainer.classList[v ? 'add' : 'remove']('has-filters-applied');
 });
 new Navigation({
-  target: appContainer
+  target: navContainer
+   // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
+});
+new FilterControl({
+  target: filterContainer
    // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
 });
 new StickyFilterButton({

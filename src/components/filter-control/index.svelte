@@ -9,8 +9,8 @@ import { Sortable } from '@shopify/draggable';
 import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
 
-export let sections;
-export let selecteds;
+let sections = ['rfmo','species','gear','product']; 
+let selecteds = sections.map(() => []);
 let filterIsClosing = true;
 let filterIsClosed = true;
 let draggableContainers = [];
@@ -50,10 +50,13 @@ onMount(() => {
 
 <style lang="scss">
     @import '../../css/variables.scss';
-    .filter-container {
+    :global(#render-filter-here){
         position: sticky;
-        left: 0;
         top: 101px;
+        z-index: 5;
+    }
+    .filter-container {
+        left: 0;
         width: 100%;
         z-index: 5;
         transition: transform 0.25s ease-out;
