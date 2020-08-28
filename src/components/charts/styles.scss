@@ -28,7 +28,7 @@ $color-level-3: #000;
     }
     &:not(.chartSection0) {
         tr {
-            background-color: $lightest_gray;
+            background-color: #f8f8f8;
         }
         th[scope="row"]::before {
             left: 14px;
@@ -132,10 +132,12 @@ $color-level-3: #000;
         height: 62px;
         text-align: center;
         &.v  {
-            color: darken($teal, 20%);
+            //color: darken($teal, 20%);
+            color: #6e9b54;
         }
         &.dv  {
-            color: darken($orange, 10%);
+            //color: darken($orange, 10%);
+            color: #f57d4b;
         }
         &.ev  {
             color: $red;
@@ -291,10 +293,12 @@ $color-level-3: #000;
             content: ' \2191'; //down arrow
         }
         &.v::before  {
-            color: darken($teal, 20%);
+            //color: darken($teal, 20%);
+            color: #6e9b54;
         }
         &.dv::before  {
-            color: darken($orange, 10%);
+            //color: darken($orange, 10%);
+            color: #f57d4b;
         }
         &.ev::before  {
             color: $red;
@@ -319,15 +323,19 @@ $color-level-3: #000;
     stroke-width: 2.3px;   
     fill: none;
     &.v {
-        stroke: darken($teal, 20%);
+        //stroke: darken($teal, 20%);
+        stroke: #6e9b54;
         &.isLast {
-            fill: darken($teal, 20%);
+            //fill: darken($teal, 20%);
+            fill: #6e9b54;
         }
     }
     &.dv {
-        stroke: darken($orange, 10%);
+        //stroke: darken($orange, 10%);
+        stroke: #f57d4b;
         &.isLast {
-            fill: darken($orange, 10%);
+            //fill: darken($orange, 10%);
+            fill: #f57d4b;
         }
     }
     &.ev {
@@ -344,10 +352,12 @@ $color-level-3: #000;
 }
 .dataPoint {
     &.v {
-        fill: darken($teal, 20%);
+        //fill: darken($teal, 20%);
+        fill: #6e9b54;
     }
     &.dv {
-        fill: darken($orange, 10%);
+        //fill: darken($orange, 10%);
+        fill: #f57d4b;
     }
     &.ev {
         fill: $red;
@@ -373,10 +383,12 @@ $color-level-3: #000;
     font-size: 0.85rem;
     margin: 0 0 0.25em 0;
     .v & {
-        color: darken($teal, 20%);
+        //color: darken($teal, 20%);
+        color: #6e9b54;
     }
     .dv & {
-        color: darken($orange, 10%);
+        //color: darken($orange, 10%);
+        color: #f57d4b;
     }
     .ev & {
         color: $red;
@@ -386,10 +398,12 @@ $color-level-3: #000;
     font-weight: 600;
     color: $dark_gray;
    /* .v & {
-        color: darken($teal, 20%);
+        //color: darken($teal, 20%);
+        color: #6e9b54;
     }
     .dv & {
-        color: darken($orange, 10%);
+        //color: darken($orange, 10%);
+        color: #f57d4b;
     }
     .ev & {
         color: $red;
