@@ -17,23 +17,20 @@ const appContainer = document.querySelector('#render-here');
 
 
 
-if ( module.hot ){
-    module.hot.accept('@Project/components/navigation/index.svelte');
-}
-
 HasFiltersApplied.subscribe(v => {
       appContainer.classList[v ? 'add' : 'remove']('has-filters-applied');
 });
 new Navigation({
-  target: navContainer
-   // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
+  target: navContainer,
+    hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
 });
 new FilterControl({
-  target: filterContainer
-   // hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
+  target: filterContainer,
+    hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
 });
 new StickyFilterButton({
-  target: appContainer
+  target: appContainer,
+   hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
 });
 initCharts({});
 //initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});

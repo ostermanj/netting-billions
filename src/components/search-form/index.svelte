@@ -115,7 +115,7 @@ function closeHandler(){
         max-height: 235px;
         overflow-y: scroll;
         background-color: #fff;
-        padding: 0 0 12px 0;
+        padding: 0 0 20px 0;
         display: block;
         font-size: 1rem;
         font-weight: normal;

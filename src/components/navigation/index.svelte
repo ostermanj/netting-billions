@@ -8,12 +8,7 @@ import { FilterIsClosed, HasFiltersApplied } from '@Project/store.js';
 let sections = ['rfmo','species','gear','product'];
 let anchors = {};
 let filterIsClosed;
-let selecteds = sections.map(() => []);
-$: hasFiltersApplied = (function(){
-    var bool = selecteds.reduce((acc,cur) => acc + cur.length, 0) > 0;
-    HasFiltersApplied.set(bool);
-    return bool;
-}());
+
 function clickHandler(){
   anchors[this.dataset.key] = anchors[this.dataset.key] || document.querySelector(`#head-${this.dataset.key}`);
   anchors[this.dataset.key].scrollIntoView(true);

@@ -4,13 +4,21 @@
 //import dictionary from '@Project/data/dictionary.json';
 import FilterItem from '@Project/components/filter-item/';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
-import { FilterIsClosed, OrganizeBy } from '@Project/store.js';
+import { FilterIsClosed, OrganizeBy, HasFiltersApplied } from '@Project/store.js';
 import { Sortable } from '@shopify/draggable';
 import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
 
 let sections = ['rfmo','species','gear','product']; 
 let selecteds = sections.map(() => []);
+let orgBy = [];
+$:hasFiltersSelected = (function(){
+    if ( selecteds.some(d => d.length > 0) ){
+        HasFiltersApplied.set(true);
+    } else {
+        HasFiltersApplied.set(orgBy.length > 0);
+    }
+})();
 let filterIsClosing = true;
 let filterIsClosed = true;
 let draggableContainers = [];
@@ -20,9 +28,7 @@ FilterIsClosed.subscribe(v => {
         filterIsClosed = v;
     }, v ? 250 : 0);
 });
-OrganizeBy.subscribe(v => {
-    console.log(v);
-});
+
     
 function closeHandler(){
     FilterIsClosed.set(true);
@@ -30,14 +36,16 @@ function closeHandler(){
 
 onMount(() => {
     var sortable = new Sortable(draggableContainers, {
-        draggable: '.filter-item'
+        draggable: '.filter-item',
+        distance: 5,
+        handle: '*:not(.form-wrapper)'
     });
 
     sortable.on('sortable:stop', e => {
        if ( e.newContainer == draggableContainers[1] || ( e.newContainer == draggableContainers[0] && e.oldContainer == draggableContainers[1] )) {
             isWorking(true);
             setTimeout(() => {
-                let orgBy = Array.from(draggableContainers[1].children).map(d => d.dataset.key);
+                orgBy = Array.from(draggableContainers[1].children).map(d => d.dataset.key);
                 if (orgBy.length < 2 ){
                     isWorking(false);
                 }
