@@ -121,7 +121,7 @@ $color-level-3: #000;
         cursor: default;
     }
     th, td {
-        padding: 12px 10px 8px;
+       
         background-color: inherit;
         border: none;
     }
@@ -129,6 +129,7 @@ $color-level-3: #000;
         padding: 10px;
     }
     td {
+        padding: 0;
         height: 62px;
         text-align: center;
         &.v  {
@@ -320,7 +321,6 @@ $color-level-3: #000;
 }
 .sparkline, .circles circle {
     stroke: #000;
-    stroke-width: 2.3px;   
     fill: none;
     &.v {
         //stroke: darken($teal, 20%);
@@ -351,6 +351,7 @@ $color-level-3: #000;
     font-weight: normal;
 }
 .dataPoint {
+    font-size: 14px;
     &.v {
         //fill: darken($teal, 20%);
         fill: #6e9b54;
@@ -415,10 +416,11 @@ $color-level-3: #000;
 
 .chartSVG {
     width: 100%;
-    max-width: 85px;
+    max-width: 150px;
     display: block;
     margin: 0 auto;
     overflow: visible !important;
+    outline: 1px solid cyan;
 }
 .isExpanded {
     & > th[scope="row"] {

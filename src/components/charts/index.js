@@ -85,14 +85,18 @@ if (module.hot) {
 }
 
 const margin = {
-    top: 5,
-    right: 35,
-    bottom: 5,
-    left: 5
+    top: 12,
+    right: 43,
+    bottom: 12,
+    left: 46
 };
-const viewBoxHeight = 50;
+const r = 2.7; 
+const strokeWidth = 2.2            ;
+const viewBoxWidth = 150;
+const viewBoxHeight = 64;
+const tickLength = 6;
 const height = viewBoxHeight - margin.top - margin.bottom;
-const width = 100 - margin.left - margin.right;
+const width = viewBoxWidth - margin.left - margin.right;
 const yScale = d3.scaleLinear().range([height, 0]);
 const xScale = d3.scaleLinear().range([0, width]);
 const valueline = d3.line()
@@ -283,7 +287,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             let entering = svg.enter()
                 .append('svg')
                 .attr('class', `js-chart-svg ${s.chartSVG}`)
-                .attr('viewBox', '0 0 100 ' + viewBoxHeight)
+                .attr('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
                 .attr('xmlns', 'http://www.w3.org/2000/svg')
                 .attr('version', '1.1')
                 .attr('role', 'img')
@@ -355,17 +359,20 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         var path = g.selectAll('path.sparkline')
             .data(d => d); // [{}]
 
-            //existing paths
-            path.transition().duration(750).attr('d', valueline);
+            
 
             {
                 let entering = path.enter()
                     .append('path')
                     .attr('class', `sparkline ${s.sparkline} ${s[datum.parent.key]}`) //parent key to get class of column, not row
-                    .attr('d', valueline);
+                    .attr('stroke-width', strokeWidth)
+                    .attr('d', `M0,${yScale(0)}L${width},${yScale(0)}`);
 
                 path = path.merge(entering);
             }
+
+            //existing paths
+            path.transition().duration(750).attr('d', valueline);
 
         var gCircles = g.selectAll('g.circles')
             .data(d => d);
@@ -383,31 +390,42 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .data(d => d);
             
             circles.exit().remove(); //TODO KEY BY YEAR TO PREVENT TRANSITIONING ALONG XAXIS
-            // update existing
-            circles
-                .classed(s.isLast, (d, i, arr) => i == arr.length - 1)
-                .transition().duration(750)
-                .attr('cx', d => xScale(d.x))
-                .attr('cy', function(d) {
-                    return yScale(d.p);
-                });
 
             {
                 let entering = circles.enter()
                     .append('circle')
                     .attr('cx', d => xScale(d.x))
                     .attr('cy', function(d) {
-                        return yScale(d.p);
+                        return yScale(0);
                     })
-                    .attr('r', 3)
-                    .attr('class', s[datum.parent.key]) //parent key to get class of column, not row
-                    .classed(s.isLast, (d, i, arr) => i == arr.length - 1);
+                    .attr('r', r)
+                    .attr('stroke-width', strokeWidth)
+                    .attr('class', s[datum.parent.key]); //parent key to get class of column, not row
 
                 circles = circles.merge(entering);
             }
+            // update existing
+            circles
+                .classed(s.isLast, (d, i, arr) => i == arr.length - 1)
+                .transition().duration(750)
+                .attr('cy', function(d) {
+                    return yScale(d.p);
+                });
 
          var datalabel = g.selectAll('text')
             .data(d => d);
+
+            {
+            let entering = datalabel.enter()
+                .append('text')
+                .attr('class', `${s.dataPoint} ${s[datum.parent.key]}`)
+                .attr('x', d => xScale(d[d.length - 1].x))
+                .attr('dy', '0.3em')
+                .attr('dx', '0.5em');
+
+                datalabel = datalabel.merge(entering);
+            }
+
             //update existing
             datalabel
                 .text(d => abbrev({ value: d[d.length - 1].y, type: datum.parent.key, precision: 3 }))
@@ -415,22 +433,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     .attr('x', d => xScale(d[d.length - 1].x))
                     .attr('y', d => yScale(d[d.length - 1].p));
 
-            {
-            let entering = datalabel.enter()
-                .append('text')
-                .attr('class', `${s.dataPoint} ${s[datum.parent.key]}`)
-                .attr('x', d => xScale(d[d.length - 1].x))
-                .attr('y', d => yScale(d[d.length - 1].p))
-                .attr('dy', '0.3em')
-                .attr('dx', '0.5em')
-                .text(d => abbrev({ value: d[d.length - 1].y, type: datum.parent.key, precision: 3 }));
-
-                datalabel = datalabel.merge(entering);
-            }
-
         var dummyBarGroup = g.selectAll('g.dummy-bars')
             .data(d => d);
-console.log(years);
             {
                 let entering = dummyBarGroup.enter()
                     .append('g')
@@ -465,40 +469,6 @@ console.log(years);
                     .append('g')
                     .attr('class', `${s.legendGroup} legend-group`);
 
-              /*  entering.append('line')
-                    .attr('class', s.legendAxis)
-                    .attr('x1', margin.left / 2 - 6)
-                    .attr('x2', margin.left / 2 - 6)
-                    .attr('y1', margin.top + 0.125 * height)
-                    .attr('y2', margin.top + 0.875 * height )
-                    .attr('marker-start','url("#start-arrow")')
-                    .attr('marker-end','url("#end-arrow")');*/
-                
-                entering.append('line')
-                    .attr('class', s.legendCenter)
-                    .attr('x1', margin.left - 6)
-                    .attr('x2', margin.left - 12)
-                    .attr('y1', margin.top + height / 2)
-                    .attr('y2', margin.top + height / 2);
-                    
-           /*     let text = entering.append('text')
-                    .attr('text-anchor','end')
-                    .attr('class', s.legendText)
-                    .attr('y', margin.top + height / 2)
-                    .attr('dy', '-0.2em');
-
-                text
-                    .append('tspan')
-                    .text('percentage')
-                    .attr('dx', '-0.8em')
-                    .attr('class', s.legendText)
-                    .attr('x', 0);
-                text
-                    .append('tspan')
-                    .text('change')
-                    .attr('dx', '-0.8em')
-                    .attr('x', 0)
-                    .attr('dy', '1em'); */
 
                 legendGroup = legendGroup.merge(entering);
             }
@@ -522,18 +492,18 @@ console.log(years);
                         .attr('x1', 0)
                         .attr('x2', 0)
                         .attr('y1', 0)
-                        .attr('y2', 10)
+                        .attr('y2', tickLength)
                         .attr('transform', (d,i) => `translate(0 ${ i % 2 ? 3 : -12})`);
                 }
 
-            let yTicks = legendGroup.selectAll('g.y-ticks')
+            let yTicks = svg.selectAll('g.y-ticks')
                 .data([returnNiceValues(yScale.domain())[0], 0, returnNiceValues(yScale.domain())[1]]);
-// TODO; SAME FOR EXISTING AS FOR ENTERING
+
                 {
                     let entering = yTicks.enter()
                         .append('g')
                         .attr('transform', d =>  {
-                            return `translate(${margin.left / 2 - 9} 0)`;
+                            return `translate(${0} 0)`;
                         })
                         .attr('class', `${s.yTicks} y-ticks`);
 
@@ -545,7 +515,7 @@ console.log(years);
 
                     let tickText = entering.append('text')
                         .attr('text-anchor', 'end')
-                        .attr('dx', '-0.3em')
+                        //.attr('dx', '-0.3em')
                         .attr('dy', '0.4em');
                         
                     tickText 
@@ -566,7 +536,7 @@ console.log(years);
 
             yTicks
                 .attr('transform', d =>  {
-                    return `translate(${margin.left / 2 - 9} ${margin.top + yScale(d)})`;
+                    return `translate(${0} ${margin.top + yScale(d)})`;
                 });
 
             yTicks.select('.tick-label')
@@ -574,9 +544,6 @@ console.log(years);
 
             yTicks.select('.y-axis-title')
                 .text((d,i) => i == 0 ? '% change' : '');
-
-
-
 
         }
     }
