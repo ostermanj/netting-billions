@@ -85,16 +85,17 @@ if (module.hot) {
 }
 
 const margin = {
-    top: 12,
+    top: 13,
     right: 51,
-    bottom: 12,
-    left: 46
+    bottom: 14,
+    left: 45
 };
 const r = 2.7; 
 const strokeWidth = 2.2            ;
 const viewBoxWidth = 150;
 const viewBoxHeight = 64;
 const tickLength = 6;
+const safety = 2;
 const height = viewBoxHeight - margin.top - margin.bottom;
 const width = viewBoxWidth - margin.left - margin.right;
 const yScale = d3.scaleLinear().range([height, 0]);
@@ -146,9 +147,11 @@ function displayFilters(filters) {
 function description(key) {
     return dictionary[key].description;
 }
-
+String.prototype._replaceAbbrev = function(){
+    return this.replace('G', 'B');
+}
 function abbrev({ value, type, precision }) {
-    return d3.format(formatTypes(precision)[type])(value).replace('G', 'B');
+    return d3.format(formatTypes(precision)[type])(value)._replaceAbbrev();
 }
 
 function units(key) {
@@ -353,6 +356,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     .attr('class', 'margin')
                     .attr('transform', `translate(${margin.left},${margin.top})`);
 
+   //             entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
+  //              entering.append('rect').attr('x', 0).attr('y', 0 - r - strokeWidth).attr('width', width).attr('height', height + 2 * r + 2 * strokeWidth).attr('stroke', 'cyan').attr('fill', 'none').attr('stroke-width','0.5px');
+
                 g = g.merge(entering);
             }
 
@@ -480,20 +486,38 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     let entering = ticks.enter()
                         .append('g')
                         .attr('class', `ticks ${s.ticks}`)
-                        .attr('transform', (d,i) => `translate(${margin.left + xScale(+d.key)} ${ i % 2 ? 0 : margin.top + height})`);
+                        .attr('transform', (d,i) => `translate(${margin.left + xScale(+d.key)} 0)`);
 
                     entering.append('text')
                         .attr('text-anchor', 'middle')
-                        .attr('y',(d,i) => i % 2 ? 0 : 4)
-                        .attr('dy', (d,i) => i % 2 ? 0 : '0.5em')
+                        .attr('y', (d,i) => i % 2 ? safety : viewBoxHeight - safety)
+                        .attr('dy', (d,i) => i % 2 ? '0.6em' : 0 )
                         .text(d => d.key);
 
                     entering.append('line')
                         .attr('x1', 0)
                         .attr('x2', 0)
-                        .attr('y1', 0)
-                        .attr('y2', tickLength)
-                        .attr('transform', (d,i) => `translate(0 ${ i % 2 ? 3 : -12})`);
+                        .attr('y1', (d,i) => i % 2 ? margin.top / 1.3 : margin.top + height + margin.bottom - tickLength - margin.bottom / 1.3 )
+                        .attr('y2', (d,i) => i % 2 ? margin.top / 1.3 + tickLength : margin.top + height + margin.bottom -  margin.bottom / 1.3 );
+
+
+                        
+                }
+
+            let axisTitle = legendGroup.selectAll('.y-axis-title')
+                .data([1]); 
+
+                {
+                    let entering = axisTitle.enter()
+                        .append('text')
+                        .attr('class', `y-axis-title ${s.yAxisTitle}`)
+                        .classed(s.isChild, filters.length > 0)
+                        .attr('y',0)
+                        .attr('x', margin.left - tickLength)
+                        .attr('text-anchor', 'end')
+                        .text('% change')
+                        .attr('dy', '0.6em');
+
                 }
 
             let yTicks = legendGroup.selectAll('g.y-ticks')
@@ -524,14 +548,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('class','tick-label');
                         
                     
-                    tickText 
-                        .append('tspan')
-                        .attr('class', `y-axis-title ${s.yAxisTitle}`)
-                        .attr('y',0)
-                        .attr('x',-tickLength)
-                        .attr('dx', '-0.2em')
-                        .attr('dy', '-0.9em');
-                        
+                   
 
                     yTicks = yTicks.merge(entering);
                 }
@@ -542,10 +559,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 });
 
             yTicks.select('.tick-label')
-                .text((d,i) => i == 1 ? '0' : d3.format('+,.0%')(d).replace('-','–'));
+                .text((d,i) => i == 1 ? '0' : d3.format('+.3~s')(d * 100).replace('-','–') + '%'._replaceAbbrev());
 
-            yTicks.select('.y-axis-title')
-                .text((d,i) => i == 0 ? '% change' : '');
+          /*  yTicks.select('.y-axis-title')
+                .text((d,i) => i == 0 ? '% change' : ''); */
 
         }
     }

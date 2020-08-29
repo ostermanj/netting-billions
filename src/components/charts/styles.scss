@@ -420,7 +420,7 @@ $color-level-3: #000;
     display: block;
     margin: 0 auto;
     overflow: visible !important;
-    outline: 1px solid cyan;
+    //outline: 1px solid cyan;
 }
 .isExpanded {
     & > th[scope="row"] {
@@ -526,7 +526,7 @@ $color-level-3: #000;
     stroke: $gray;
     stroke-width: 1px;
 }
-.legendText, .ticks text, .yTicks text {
+.legendText, .ticks text, .yTicks text, .yAxisTitle {
     font-size: 10px;
     fill: $a11y;
 }
@@ -535,6 +535,9 @@ $color-level-3: #000;
 }
 .yAxisTitle {
     font-style: italic;
+    &.isChild {
+        display: none;
+    }
 }
 .clone {
     opacity: 0.5;
