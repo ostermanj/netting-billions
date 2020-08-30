@@ -346,124 +346,6 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             svg = svg.merge(entering);
         }
 
-        var g = svg
-            .selectAll('g.margin')
-            .data([[returnDatum(datum)]]);
-
-            {
-                let entering = g.enter()
-                    .append('g')
-                    .attr('class', 'margin')
-                    .attr('transform', `translate(${margin.left},${margin.top})`);
-
-   //             entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
-  //              entering.append('rect').attr('x', 0).attr('y', 0 - r - strokeWidth).attr('width', width).attr('height', height + 2 * r + 2 * strokeWidth).attr('stroke', 'cyan').attr('fill', 'none').attr('stroke-width','0.5px');
-
-                g = g.merge(entering);
-            }
-
-        var path = g.selectAll('path.sparkline')
-            .data(d => d); // [{}]
-
-            
-
-            {
-                let entering = path.enter()
-                    .append('path')
-                    .attr('class', `sparkline ${s.sparkline} ${s[datum.parent.key]}`) //parent key to get class of column, not row
-                    .attr('stroke-width', strokeWidth)
-                    .attr('d', `M0,${yScale(0)}L${width},${yScale(0)}`);
-
-                path = path.merge(entering);
-            }
-
-            //existing paths
-            path.transition().duration(750).attr('d', valueline);
-
-        var gCircles = g.selectAll('g.circles')
-            .data(d => d);
-
-            {
-                let entering = gCircles.enter()
-                    .append('g')
-                    .attr('class', `circles ${s.circles}`);
-
-                gCircles = gCircles.merge(entering);
-            }
-
-        var circles = gCircles
-            .selectAll('circle')
-            .data(d => d);
-            
-            circles.exit().remove(); //TODO KEY BY YEAR TO PREVENT TRANSITIONING ALONG XAXIS
-
-            {
-                let entering = circles.enter()
-                    .append('circle')
-                    .attr('cx', d => xScale(d.x))
-                    .attr('cy', function(d) {
-                        return yScale(0);
-                    })
-                    .attr('r', r)
-                    .attr('stroke-width', strokeWidth)
-                    .attr('class', s[datum.parent.key]); //parent key to get class of column, not row
-
-                circles = circles.merge(entering);
-            }
-            // update existing
-            circles
-                .classed(s.isLast, (d, i, arr) => i == arr.length - 1)
-                .transition().duration(750)
-                .attr('cy', function(d) {
-                    return yScale(d.p);
-                });
-
-         var datalabel = g.selectAll('text')
-            .data(d => d);
-
-            {
-            let entering = datalabel.enter()
-                .append('text')
-                .attr('class', `${s.dataPoint} ${s[datum.parent.key]}`)
-                .attr('x', d => xScale(d[d.length - 1].x))
-                .attr('dy', '0.3em')
-                .attr('dx', '0.5em');
-
-                datalabel = datalabel.merge(entering);
-            }
-
-            //update existing
-            datalabel
-                .text(d => abbrev({ value: d[d.length - 1].y, type: datum.parent.key, precision: 3 }))
-                .transition().duration(200)
-                    .attr('x', d => xScale(d[d.length - 1].x))
-                    .attr('y', d => yScale(d[d.length - 1].p));
-
-        var dummyBarGroup = g.selectAll('g.dummy-bars')
-            .data(d => d);
-            {
-                let entering = dummyBarGroup.enter()
-                    .append('g')
-                    .attr('class', `dummy-bars ${s.dummyBars}`);
-
-                dummyBarGroup = dummyBarGroup.merge(entering);
-            }
-
-        var dummyRects = dummyBarGroup.selectAll('rect')
-            .data(d => d, _d => _d.x);
-            dummyRects.exit().remove();
-
-            {
-                let entering  = dummyRects.enter()
-                .append('rect')
-                .attr('data-year', d => d.x)
-                .attr('x', (d, i, arr) => xScale(d.x) - ( ( width / (years.length - 1) ) / 2 ) )// - ((width) / (years.length - 1)) / 2)
-                .attr('width', (d, i, arr) => width / (years.length - 1))
-                .attr('height', height);
-
-                dummyRects = dummyRects.merge(entering);
-            }
-
         if ( !(cellIndex == 2 && datum.rowIndex == 0) ){
             svg.select('g.legend-group').remove();
         } else {
@@ -472,7 +354,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
             { 
                 let entering = legendGroup.enter()
-                    .append('g')
+                    .insert('g', ':first-child')
                     .attr('class', `${s.legendGroup} legend-group`);
 
 
@@ -497,8 +379,14 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     entering.append('line')
                         .attr('x1', 0)
                         .attr('x2', 0)
-                        .attr('y1', (d,i) => i % 2 ? margin.top / 1.3 : margin.top + height + margin.bottom - tickLength - margin.bottom / 1.3 )
-                        .attr('y2', (d,i) => i % 2 ? margin.top / 1.3 + tickLength : margin.top + height + margin.bottom -  margin.bottom / 1.3 );
+                        .attr('y1', (d,i) => {
+                            var datum = returnDatum(d.parent).find(_d => _d.x == d.key);
+                            return i % 2 ? margin.top / 1.3 : margin.top + yScale(datum.p);
+                        })
+                        .attr('y2', (d,i) => {
+                            var datum = returnDatum(d.parent).find(_d => _d.x == d.key);
+                            return i % 2 ? margin.top + yScale(datum.p) : margin.top + height + margin.bottom -  margin.bottom / 1.3;
+                        });
 
 
                         
@@ -565,7 +453,130 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .text((d,i) => i == 0 ? '% change' : ''); */
 
         }
-    }
+
+        var g = svg
+            .selectAll('g.margin')
+            .data([[returnDatum(datum)],[returnDatum(datum)]]);
+
+            {
+                let entering = g.enter()
+                    .append('g')
+                    .attr('class', 'margin')
+                    .classed(s.dummyGroup, (d,i) => i == 0)
+                    .attr('transform', `translate(${margin.left},${margin.top})`);
+
+   //             entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
+  //              entering.append('rect').attr('x', 0).attr('y', 0 - r - strokeWidth).attr('width', width).attr('height', height + 2 * r + 2 * strokeWidth).attr('stroke', 'cyan').attr('fill', 'none').attr('stroke-width','0.5px');
+
+                g = g.merge(entering);
+            }
+        g.each(function(gData, gIndex){
+            var g = d3.select(this);
+            var path = g.selectAll('path.sparkline')
+                .data(d => d); // [{}]
+                {
+                    let entering = path.enter()
+                        .append('path')
+                        .attr('class', `sparkline ${s.sparkline} ${s[datum.parent.key]}`) //parent key to get class of column, not row
+                        .classed(s.dummyLine, gIndex == 0)
+                        .attr('stroke-width', gIndex == 0 ? strokeWidth * 2 : strokeWidth)
+                        .attr('d', `M0,${yScale(0)}L${width},${yScale(0)}`);
+
+                    path = path.merge(entering);
+                }
+
+                //existing paths
+                path.transition().duration(750).attr('d', valueline);
+
+            var gCircles = g.selectAll('g.circles')
+                .data(d => d);
+
+                {
+                    let entering = gCircles.enter()
+                        .append('g')
+                        .attr('class', `circles ${s.circles}`);
+                        
+
+                    gCircles = gCircles.merge(entering);
+                }
+
+            var circles = gCircles
+                .selectAll('circle')
+                .data(d => d);
+                
+                circles.exit().remove(); //TODO KEY BY YEAR TO PREVENT TRANSITIONING ALONG XAXIS
+
+                {
+                    let entering = circles.enter()
+                        .append('circle')
+                        .attr('cx', d => xScale(d.x))
+                        .attr('cy', function(d) {
+                            return yScale(0);
+                        })
+                        .attr('r', gIndex == 0 ? 2 * r : r)
+                        .attr('stroke-width', strokeWidth)
+                        .attr('class', s[datum.parent.key]) //parent key to get class of column, not row
+                        .classed(s.dummyCircle, gIndex == 0);
+
+                    circles = circles.merge(entering);
+                }
+                // update existing
+                circles
+                    .classed(s.isLast, (d, i, arr) => i == arr.length - 1)
+                    .transition().duration(750)
+                    .attr('cy', function(d) {
+                        return yScale(d.p);
+                    });
+            if ( gIndex == 1 ){
+                 let datalabel = g.selectAll('text')
+                    .data(d => d);
+
+                    {
+                    let entering = datalabel.enter()
+                        .append('text')
+                        .attr('class', `${s.dataPoint} ${s[datum.parent.key]}`)
+                        .attr('x', d => xScale(d[d.length - 1].x))
+                        .attr('dy', '0.3em')
+                        .attr('dx', '0.5em');
+
+                        datalabel = datalabel.merge(entering);
+                    }
+
+                    //update existing
+                    datalabel
+                        .text(d => abbrev({ value: d[d.length - 1].y, type: datum.parent.key, precision: 3 }))
+                        .transition().duration(200)
+                            .attr('x', d => xScale(d[d.length - 1].x))
+                            .attr('y', d => yScale(d[d.length - 1].p));
+
+                let dummyBarGroup = g.selectAll('g.dummy-bars')
+                    .data(d => d);
+                    {
+                        let entering = dummyBarGroup.enter()
+                            .append('g')
+                            .attr('class', `dummy-bars ${s.dummyBars}`);
+
+                        dummyBarGroup = dummyBarGroup.merge(entering);
+                    }
+
+                let dummyRects = dummyBarGroup.selectAll('rect')
+                    .data(d => d, _d => _d.x);
+                    dummyRects.exit().remove();
+
+                    {
+                        let entering  = dummyRects.enter()
+                        .append('rect')
+                        .attr('data-year', d => d.x)
+                        .attr('x', (d, i, arr) => xScale(d.x) - ( ( width / (years.length - 1) ) / 2 ) )// - ((width) / (years.length - 1)) / 2)
+                        .attr('width', (d, i, arr) => width / (years.length - 1))
+                        .attr('height', height);
+
+                        dummyRects = dummyRects.merge(entering);
+                    }
+
+            }
+        }); // end g.each()
+    } // end createSVG
     var years = Array.from(fieldValues.year.values()).sort();
     xScale.domain([years[0], years[years.length - 1]]);
     // TODO STARTING HERE GO THROUGH AND MAKE SURE SELECTALL IS CAPTURING EXISTING LEVELS THROUGHOUT

@@ -319,9 +319,11 @@ $color-level-3: #000;
     margin: 0 auto;
     margin-bottom: 2em;
 }
-.sparkline, .circles circle {
-    stroke: #000;
+.sparkline {
     fill: none;
+}
+.sparkline:not(.dummyLine), .circles circle:not(.dummyCircle):not(.dummyCircle) {
+    stroke: #000;
     &.v {
         //stroke: darken($teal, 20%);
         stroke: #6e9b54;
@@ -367,7 +369,21 @@ $color-level-3: #000;
         font-size: 0.85rem;
     }
 }
-
+.dummyLine {
+    stroke: #fff;
+    fill: none;
+    .childCell & {
+        stroke: #f8f8f8;
+    }
+}
+.dummyCircle {
+    stroke: #fff;
+    fill: #fff;
+    .childCell & {
+        stroke: #f8f8f8;
+        fill: #f8f8f8;
+    }
+}
 .dummyBars rect {
     fill: transparent;
 }
@@ -410,7 +426,7 @@ $color-level-3: #000;
         color: $red;
     }*/
 }
-.circles circle {
+.circles circle:not(.dummyCircle) {
     fill: #fff;
 }
 
@@ -525,6 +541,9 @@ $color-level-3: #000;
 .legendAxis, .legendCenter, .ticks line, .yTicks line {
     stroke: $gray;
     stroke-width: 1px;
+}
+.ticks line {
+    stroke-dasharray: 2px 2px;
 }
 .legendText, .ticks text, .yTicks text, .yAxisTitle {
     font-size: 10px;
