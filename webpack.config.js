@@ -88,8 +88,8 @@ const devToolPlugins = [new webpack.SourceMapDevToolPlugin({
 })];
 const plugins = [
     new HtmlWebpackPlugin({
-        title: 'Netting Billions',
-        subtitle: 'Tuna catches',
+        title: 'Netting Billions 2020: Global Values and Trends for Tuna Fisheries',
+        subtitle: 'Explore catch and revenue data for the seven most commercially important tunas',
         template: isProd ? './src/index.html' : './src/index-dev.html',
         inject: false,
     }),
