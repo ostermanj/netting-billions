@@ -133,12 +133,12 @@ $color-level-3: #000;
         height: 62px;
         text-align: center;
         &.v  {
-            //color: darken($teal, 20%);
-            color: #6e9b54;
+            //color: darken($blue, 20%);
+            color: $blue;
         }
         &.dv  {
             //color: darken($orange, 10%);
-            color: #f57d4b;
+            color: $orange;
         }
         &.ev  {
             color: $red;
@@ -294,12 +294,12 @@ $color-level-3: #000;
             content: ' \2191'; //down arrow
         }
         &.v::before  {
-            //color: darken($teal, 20%);
-            color: #6e9b54;
+            //color: darken($blue, 20%);
+            color: $blue;
         }
         &.dv::before  {
             //color: darken($orange, 10%);
-            color: #f57d4b;
+            color: $orange;
         }
         &.ev::before  {
             color: $red;
@@ -325,19 +325,19 @@ $color-level-3: #000;
 .sparkline:not(.dummyLine), .circles circle:not(.dummyCircle):not(.dummyCircle) {
     stroke: #000;
     &.v {
-        //stroke: darken($teal, 20%);
-        stroke: #6e9b54;
+        //stroke: darken($blue, 20%);
+        stroke: $blue;
         &.isLast {
-            //fill: darken($teal, 20%);
-            fill: #6e9b54;
+            //fill: darken($blue, 20%);
+            fill: $blue;
         }
     }
     &.dv {
         //stroke: darken($orange, 10%);
-        stroke: #f57d4b;
+        stroke: $orange;
         &.isLast {
             //fill: darken($orange, 10%);
-            fill: #f57d4b;
+            fill: $orange;
         }
     }
     &.ev {
@@ -355,12 +355,12 @@ $color-level-3: #000;
 .dataPoint {
     font-size: 14px;
     &.v {
-        //fill: darken($teal, 20%);
-        fill: #6e9b54;
+        //fill: darken($blue, 20%);
+        fill: $blue;
     }
     &.dv {
         //fill: darken($orange, 10%);
-        fill: #f57d4b;
+        fill: $orange;
     }
     &.ev {
         fill: $red;
@@ -400,12 +400,12 @@ $color-level-3: #000;
     font-size: 0.85rem;
     margin: 0 0 0.25em 0;
     .v & {
-        //color: darken($teal, 20%);
-        color: #6e9b54;
+        //color: darken($blue, 20%);
+        color: $blue;
     }
     .dv & {
         //color: darken($orange, 10%);
-        color: #f57d4b;
+        color: $orange;
     }
     .ev & {
         color: $red;
@@ -415,12 +415,12 @@ $color-level-3: #000;
     font-weight: 600;
     color: $dark_gray;
    /* .v & {
-        //color: darken($teal, 20%);
-        color: #6e9b54;
+        //color: darken($blue, 20%);
+        color: $blue;
     }
     .dv & {
         //color: darken($orange, 10%);
-        color: #f57d4b;
+        color: $orange;
     }
     .ev & {
         color: $red;
