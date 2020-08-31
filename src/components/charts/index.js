@@ -524,6 +524,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 circles
                     .classed(s.isLast, (d, i, arr) => i == arr.length - 1)
                     .transition().duration(750)
+                    .attr('cx', d => xScale(d.x))
                     .attr('cy', function(d) {
                         return yScale(d.p);
                     });
