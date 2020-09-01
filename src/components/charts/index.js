@@ -196,8 +196,9 @@ function rowClickHandler(d, sortBy, sortDirection) {
             this._isExpanded = value;
             this.setAttribute('aria-expanded', value);
             this.classList[value ? 'add' : 'remove'](s.isExpanded);
-            this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild)
+            this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild);
             this.button.setAttribute('aria-label', value ? 'Click to collapse row' : 'Click to expand row');
+            this.setAttribute('title', value ? 'Click to collapse' : 'Click to expand');
         }
     });
     var rowKeys = JSON.parse(this.dataset.keys);
