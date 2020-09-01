@@ -105,14 +105,14 @@ $color-level-3: #000;
     }
     table {
         width: 100%;
-        @media screen and (min-width: 400px){
+        @media screen and (min-width: 500px){
             table-layout: fixed;
         }
 
     }
     tr {
         cursor: pointer;
-        @media screen and (max-width: 399px){
+        @media screen and (max-width: 499px){
             padding-top: 10px;
         }
         transition: transform 0.3s ease-in;
@@ -228,7 +228,7 @@ $color-level-3: #000;
         color: #fff;
     }
     th:not([scope="row"]), td {
-        @media screen and (max-width: 399px) {
+        @media screen and (max-width: 499px) {
             padding-top: 1rem;   
         }
     }
@@ -248,7 +248,7 @@ $color-level-3: #000;
         }
         
 
-        @media screen and (max-width: 399px){
+        @media screen and (max-width: 499px){
             /* working in Chrome and FF -- need to check others */
             display: block;
             position: relative;
