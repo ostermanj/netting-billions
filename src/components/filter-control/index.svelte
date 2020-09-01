@@ -10,6 +10,7 @@ import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
 
 let sections = ['rfmo','species','gear','product']; 
+let container = document.querySelector('#render-filter-here');
 let selecteds = sections.map(() => []);
 let orgBy = [];
 $:hasFiltersSelected = (function(){
@@ -19,13 +20,14 @@ $:hasFiltersSelected = (function(){
         HasFiltersApplied.set(orgBy.length > 0);
     }
 })();
-let filterIsClosing = true;
-let filterIsClosed = true;
+let filterIsClosing = false;
+let filterIsClosed = false;
 let draggableContainers = [];
 FilterIsClosed.subscribe(v => {
     filterIsClosing = v;
     setTimeout(() => {
         filterIsClosed = v;
+        container.classList[v ? 'add' : 'remove']('filterIsClosed');
     }, v ? 250 : 0);
 });
 
@@ -122,11 +124,11 @@ onMount(() => {
         font-weight: bold;
         margin-bottom: 1.2rem;
     }
-    .filterIsClosing {
+    .filter-container.filterIsClosing {
         transform: translateX(101vw);
         transition-timing-function: ease-in;
     }
-    .filterIsClosed {
+    .filter-container.filterIsClosed {
         visibility: hidden;
     }
     .x-out-outer-wrapper {
@@ -147,6 +149,10 @@ onMount(() => {
         width: 100%;
         background-color: #fff;
         border-bottom: 1px solid $gray;
+    }
+    :global(#render-filter-here.filterIsClosed) {
+        overflow-x: hidden;
+        margin-bottom: -174px;
     }
 </style>
 <div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
