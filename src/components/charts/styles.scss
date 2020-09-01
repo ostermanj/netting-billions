@@ -10,6 +10,9 @@ $a11y_on_teal: #CFCFCF;
 $color-level-2: #000;
 $color-level-3: #000;
 
+* {
+   // outline: 1px solid cyan;
+}
 
 .chartSection {
     width: 100%;
@@ -420,6 +423,10 @@ $color-level-3: #000;
 }
 .dataPoint {
     font-size: 14px;
+    @media screen and (max-width: 400px) {
+        font-size: 16px;
+
+    }
     &.v {
         //fill: darken($blue, 20%);
         fill: $blue;
@@ -432,7 +439,7 @@ $color-level-3: #000;
         fill: $red;
     }
     @media screen and (max-width: 399px){
-        font-size: 0.85rem;
+       // font-size: 0.85rem;
     }
 }
 .dummyLine {
