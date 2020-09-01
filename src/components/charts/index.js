@@ -702,6 +702,19 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 });
             }
         }
+        rows.each(function(d){
+            this.querySelector('.js-expand-button').addEventListener('click', e => {
+                e.stopPropagation();
+                rowClickHandler.call(this, d, sortBy, sortDirection);
+            });
+        });
+        rows.selectAll('th').each(function(){
+            this.addEventListener('click', function(e){
+                if ( !document.body.classList.contains('has-hover') ){
+                    e.stopPropagation();
+                }
+            })
+        });
 
         // remember the rendering of the tables follows a different sequence then the nesting of the data so we
         // have to manually find the data needed for each the cells of each row
