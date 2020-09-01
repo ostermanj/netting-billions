@@ -13,7 +13,7 @@
     <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script>
     <script async="" src="https://www.google-analytics.com/analytics.js"></script>
     <script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-W2Z5TT"></script>
-    <script src="https://connect.facebook.net/signals/config/1833360170048391?v=2.9.23&amp;r=stable" async=""></script>
+    <script src="https://connect.facebook.net/signals/config/1833360170048391?v=2.9.24&amp;r=stable" async=""></script>
     <script async="" src="https://connect.facebook.net/en_US/fbevents.js"></script>
     <script type="text/javascript" async="" src="https://snap.licdn.com/li.lms-analytics/insight.min.js"></script>
     <script async="" src="//static.ads-twitter.com/uwt.js"></script>
@@ -116,7 +116,7 @@
 
   </head>
 
-  <body class=" ">
+  <body class="has-hover">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2Z5TT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
@@ -496,16 +496,16 @@ Data Visualization
                   </nav>
                 </div>
               </div>
-              <div id="render-filter-here">
-                <div id="nb-filter-container" class="filter-container svelte-114m7e2 filterIsClosing filterIsClosed" aria-hidden="true">
-                  <div class="full-width-container svelte-114m7e2">
-                    <div class="inner-container svelte-114m7e2">
-                      <div class="x-out-outer-wrapper svelte-114m7e2">
-                        <div hidden="" class="x-out-container svelte-114m7e2"><button aria-label="Close filter drill-down form" class="x-out svelte-ld55ag"></button></div>
+              <div id="render-filter-here" class="filterIsClosed">
+                <div id="nb-filter-container" class="filter-container svelte-w3is6c filterIsClosing filterIsClosed" aria-hidden="true">
+                  <div class="full-width-container svelte-w3is6c">
+                    <div class="inner-container svelte-w3is6c">
+                      <div class="x-out-outer-wrapper svelte-w3is6c">
+                        <div class="x-out-container svelte-w3is6c" hidden=""><button aria-label="Close filter drill-down form" class="x-out svelte-ld55ag"></button></div>
                       </div>
-                      <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data" class="svelte-114m7e2">
-                        <section class="form-section svelte-114m7e2" id="filter-form" aria-labelledby="filter-form-label"><label class="section-label svelte-114m7e2" id="filter-form-label">Available filters:</label>
-                          <div class="filter-items-container svelte-114m7e2" tabindex="0">
+                      <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data" class="svelte-w3is6c">
+                        <section class="form-section svelte-w3is6c" id="filter-form" aria-labelledby="filter-form-label"><label class="section-label svelte-w3is6c" id="filter-form-label">Available filters:</label>
+                          <div class="filter-items-container svelte-w3is6c" tabindex="0">
                             <div data-key="rfmo" class="filter-item svelte-fde8ct" tabindex="0"><span class="filter-label svelte-fde8ct">RFMO</span>
                               <div class="token-wrapper svelte-fde8ct"><button role="button" disabled="" tabindex="-1" title="See selected filters" class="filter-count svelte-fde8ct">0</button></div> <button class="open-filter svelte-fde8ct" role="button" aria-label="Filter RFMO options"></button>
                               <div class="hasUnsubmittedChanges svelte-fde8ct">*</div>
@@ -560,8 +560,8 @@ Data Visualization
                             </div>
                           </div>
                         </section>
-                        <section class="form-section svelte-114m7e2" id="drill-down-form" aria-labelledby="drill-down-label"><label class="section-label svelte-114m7e2" id="drill-down-label">Organize by:</label>
-                          <div class="filter-items-container filter-items-container--organize svelte-114m7e2" tabindex="0"></div>
+                        <section class="form-section svelte-w3is6c" id="drill-down-form" aria-labelledby="drill-down-label"><label class="section-label svelte-w3is6c" id="drill-down-label">Organize by:</label>
+                          <div class="filter-items-container filter-items-container--organize svelte-w3is6c" tabindex="0"></div>
                         </section>
                       </form>
                     </div>
@@ -569,7 +569,7 @@ Data Visualization
                 </div>
               </div>
               <div id="render-here">
-                <div class="sticky-btn-container svelte-chh4jn"><button role="button" aria-controls="nb-filter-container" class="svelte-1uf47d4"></button></div>
+                <div class="sticky-btn-container svelte-z733tk"><button role="button" aria-controls="nb-filter-container" class="svelte-13qgqf"></button></div>
                 <section class="js-chart-section js-chart-section0 chartSection--1bTwy chartSection0--WJSYV" data-key="rfmo" style="display: block;">
                   <h2 class="sectionHead--2jHu7"><a id="head-rfmo" class="headAnchor--2LGJg"></a><span>RFMO</span> <span class="filtersDisplay--1nrZJ"></span></h2>
                   <p class="intro---X6wB">Regional fisheries management organizations (RFMOs) are multinational organizations charged with overseeing fisheries for highly migratory species such as tuna.</p>
@@ -579,6 +579,7 @@ Data Visualization
                       <th scope="column" class="v--9HteW">Volume <span class="units--3a0pE">(tons)</span></th>
                       <th scope="column" data-tippy-content="the amount paid to fishers for their catch" class="dv---a4E5">Dock value</th>
                       <th scope="column" data-tippy-content="the amount paid by final customers" class="ev--3Df9- sortedBy--2xO0I">End value</th>
+                      <th scope="column" width="20px"></th>
                     </thead>
                     <tbody>
                       <tr data-keys="[&quot;rfmo&quot;]" data-values="[&quot;W&quot;]" data-index="0" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="W">
@@ -720,6 +721,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;rfmo&quot;]" data-values="[&quot;IO&quot;]" data-index="1" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="IO">
                         <th scope="row" data-tippy-content="Indian Ocean Tuna Commission">IOTC<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -831,6 +833,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;rfmo&quot;]" data-values="[&quot;IC&quot;]" data-index="2" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="IC">
                         <th scope="row" data-tippy-content="International Commission for the Conservation of Atlantic Tunas">ICCAT<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -942,6 +945,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;rfmo&quot;]" data-values="[&quot;IA&quot;]" data-index="3" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="IA">
                         <th scope="row" data-tippy-content="Inter-American Tropical Tuna Commission">IATTC<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1053,6 +1057,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;rfmo&quot;]" data-values="[&quot;C&quot;]" data-index="4" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="C">
                         <th scope="row" data-tippy-content="Commission for the Conservation of Southern Bluefin Tuna">CCSBT<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1164,6 +1169,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -1177,6 +1183,7 @@ Data Visualization
                       <th scope="column" class="v--9HteW">Volume <span class="units--3a0pE">(tons)</span></th>
                       <th scope="column" data-tippy-content="the amount paid to fishers for their catch" class="dv---a4E5">Dock value</th>
                       <th scope="column" data-tippy-content="the amount paid by final customers" class="ev--3Df9- sortedBy--2xO0I">End value</th>
+                      <th scope="column" width="20px"></th>
                     </thead>
                     <tbody>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;SKJ&quot;]" data-index="0" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="SKJ">
@@ -1318,6 +1325,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;YFT&quot;]" data-index="1" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="YFT">
                         <th scope="row">Yellowfin<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1429,6 +1437,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;BET&quot;]" data-index="2" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="BET">
                         <th scope="row">Bigeye<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1540,6 +1549,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;ALB&quot;]" data-index="3" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="ALB">
                         <th scope="row">Albacore<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1651,6 +1661,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;BFT&quot;]" data-index="4" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="BFT">
                         <th scope="row">Bluefin<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1762,6 +1773,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;PBF&quot;]" data-index="5" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="PBF">
                         <th scope="row">Pacific Bluefin<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1873,6 +1885,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;species&quot;]" data-values="[&quot;SBF&quot;]" data-index="6" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="SBF">
                         <th scope="row">Southern Bluefin<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -1984,6 +1997,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -1997,6 +2011,7 @@ Data Visualization
                       <th scope="column" class="v--9HteW">Volume <span class="units--3a0pE">(tons)</span></th>
                       <th scope="column" data-tippy-content="the amount paid to fishers for their catch" class="dv---a4E5">Dock value</th>
                       <th scope="column" data-tippy-content="the amount paid by final customers" class="ev--3Df9- sortedBy--2xO0I">End value</th>
+                      <th scope="column" width="20px"></th>
                     </thead>
                     <tbody>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;PS&quot;]" data-index="0" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="PS">
@@ -2138,6 +2153,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;LL&quot;]" data-index="1" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="LL">
                         <th scope="row">Longline<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -2249,6 +2265,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;HL&quot;]" data-index="2" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="HL">
                         <th scope="row">Handline<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -2360,6 +2377,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;O&quot;]" data-index="3" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="O">
                         <th scope="row">Other<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -2471,6 +2489,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;BB&quot;]" data-index="4" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="BB">
                         <th scope="row">Pole &amp; line<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -2582,6 +2601,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;GN&quot;]" data-index="5" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="GN">
                         <th scope="row">Gillnet<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -2693,6 +2713,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;gear&quot;]" data-values="[&quot;TR&quot;]" data-index="6" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="TR">
                         <th scope="row">Troll<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -2804,6 +2825,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -2817,6 +2839,7 @@ Data Visualization
                       <th scope="column" class="v--9HteW">Volume <span class="units--3a0pE">(tons)</span></th>
                       <th scope="column" data-tippy-content="the amount paid to fishers for their catch" class="dv---a4E5">Dock value</th>
                       <th scope="column" data-tippy-content="the amount paid by final customers" class="ev--3Df9- sortedBy--2xO0I">End value</th>
+                      <th scope="column" width="20px"></th>
                     </thead>
                     <tbody>
                       <tr data-keys="[&quot;product&quot;]" data-values="[&quot;lc&quot;]" data-index="0" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="lc">
@@ -2958,6 +2981,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;product&quot;]" data-values="[&quot;zs&quot;]" data-index="1" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="zs">
                         <th scope="row">Frozen sashimi<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -3069,6 +3093,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;product&quot;]" data-values="[&quot;fs&quot;]" data-index="2" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="fs">
                         <th scope="row">Fresh sashimi<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -3180,6 +3205,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;product&quot;]" data-values="[&quot;d&quot;]" data-index="3" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="d">
                         <th scope="row">Domestic (fresh or processing)<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -3291,6 +3317,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                       <tr data-keys="[&quot;product&quot;]" data-values="[&quot;r&quot;]" data-index="4" class="undefined js-row js-row-level-0" title="Click to expand" aria-expanded="false" aria-controls="r">
                         <th scope="row">Ranching<button class="js-expand-button expandButton--1Y-dF" aria-label="Click to expand row"></button></th>
@@ -3402,6 +3429,7 @@ Data Visualization
                               </g>
                             </g>
                           </svg></td>
+                        <td width="20px"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -3410,7 +3438,7 @@ Data Visualization
             </div>
             <div class="clearfix"></div>
 
-            <script class="emitted-bundle" src="index.js?v=54ff8c"></script>
+            <script class="emitted-bundle" src="index.js?v=c785ea"></script>
 
 
 
@@ -3794,7 +3822,7 @@ Data Visualization
         console.error(a.message)
       };
     </script>
-    <script src="https://analytics.twitter.com/i/adsct?type=javascript&amp;version=1.1.0&amp;p_id=Twitter&amp;p_user_id=0&amp;txn_id=nzc7z&amp;events=%5B%5B%22pageview%22%2Cnull%5D%5D&amp;tw_sale_amount=0&amp;tw_order_quantity=0&amp;tw_iframe_status=0&amp;tpx_cb=twttr.conversion.loadPixels&amp;tw_document_href=http%3A%2F%2Flocalhost%3A8000%2F" type="text/javascript"></script>
+    <script src="https://analytics.twitter.com/i/adsct?type=javascript&amp;version=1.1.0&amp;p_id=Twitter&amp;p_user_id=0&amp;txn_id=nzc7z&amp;events=%5B%5B%22pageview%22%2Cnull%5D%5D&amp;tw_sale_amount=0&amp;tw_order_quantity=0&amp;tw_iframe_status=0&amp;tpx_cb=twttr.conversion.loadPixels&amp;tw_document_href=http%3A%2F%2Flocalhost%3A8001%2F" type="text/javascript"></script>
   </body>
 
 </html>
