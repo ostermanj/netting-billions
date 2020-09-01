@@ -164,7 +164,7 @@ function returnSubcontainer(parent) {
     }
     var row = document.createElement('tr');
     var cell = document.createElement('td');
-    cell.setAttribute('colspan', fieldValues.property.size + 1);
+    cell.setAttribute('colspan', fieldValues.property.size + 2);
     cell.classList.add(s.childCell);
     row.appendChild(cell);
     parent.insertAdjacentElement('afterend', row);
@@ -250,6 +250,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     }
 
     function initTooltips(datum) {
+        if ( datum == '' ){
+            return;
+        }
         var cell = d3.select(this);
         var svg = cell.select('svg');
         var bars = svg.selectAll('.' + s.dummyBars + ' rect');
@@ -269,7 +272,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         return sortDirection == 'desc' ? ab[1] - ab[0] : ab[0] - ab[1];
     }
 
-    function createSVG(datum, cellIndex) {
+    function createSVG(datum, cellIndex, arr) {
+        if ( cellIndex == arr.length - 1 ){
+            return;
+        }
         var greatestExtent = Math.max(Math.abs(datum.parent.parent.parent.minP), Math.abs(datum.parent.parent.parent.maxP));
         yScale.domain([-greatestExtent, greatestExtent]); // scale each line based on min.max domain from parent pValues
         var svg = d3.select(this)
@@ -620,7 +626,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         if (filters.length === 0) { // table headers only if no filters applied, ie, main tables
             table.append('thead')
                 .selectAll('th')
-                .data(d => ['', ...fieldValues.property])
+                .data(d => ['', ...fieldValues.property,''])
                 .enter().append('th')
                 .attr('scope', (d, i) => i == 0 ? null : 'column')
                 .attr('data-tippy-content', d => textTooltip(d))
@@ -629,6 +635,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     return d == sortBy;
                 })
                 .classed(s.asc, d => d == sortBy && sortDirection == 'asc')
+                .attr('width', (d,i,arr) => i == arr.length - 1 ? '10px' : null)
                 .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}` : '');
         }
 
@@ -707,7 +714,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                                                                                              // for first rows only
                     return rtn;
                 });
-                return _d;
+                return [..._d, ''];
             });
             //, function(d) { return d ? hashValues(d.values) : this.getAttribute('data-hash'); }*/
 
@@ -717,8 +724,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 /*.attr('data-hash', d => {
                     return hashValues(d.values);
                 })*/
-                .attr('class', d => s[d.parent.key])
-                .text('n.a'); // put in 'n.a.' for all cells. to be replaced by VSG in createSVG if data calls for it
+                .attr('class', (d,i,arr) => i == arr.length - 1 ? null : s[d.parent.key])
+                .attr('width', (d,i, arr) => i == arr.length - 1 ? '10px' : null)
+                .text((d,i,arr) => i == arr.length - 1 ? null : 'n.a'); // put in 'n.a.' for all cells. to be replaced by VSG in createSVG if data calls for it
 
             cells = cells.merge(entering);
 
