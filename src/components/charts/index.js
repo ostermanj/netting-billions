@@ -635,7 +635,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     return d == sortBy;
                 })
                 .classed(s.asc, d => d == sortBy && sortDirection == 'asc')
-                .attr('width', (d,i,arr) => i == arr.length - 1 ? '10px' : null)
+                .attr('width', (d,i,arr) => i == arr.length - 1 ? '20px' : null)
                 .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}` : '');
         }
 
@@ -725,7 +725,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     return hashValues(d.values);
                 })*/
                 .attr('class', (d,i,arr) => i == arr.length - 1 ? null : s[d.parent.key])
-                .attr('width', (d,i, arr) => i == arr.length - 1 ? '10px' : null)
+                .attr('width', (d,i, arr) => i == arr.length - 1 ? '20px' : null)
                 .text((d,i,arr) => i == arr.length - 1 ? null : 'n.a'); // put in 'n.a.' for all cells. to be replaced by VSG in createSVG if data calls for it
 
             cells = cells.merge(entering);
