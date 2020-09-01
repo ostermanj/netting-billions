@@ -22,6 +22,7 @@
         width: 50px;
         height: 50px;
         top: 20px;
+        left: 1.125rem;
         &::after {
             content: '';
             position: absolute;

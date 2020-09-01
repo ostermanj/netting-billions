@@ -62,8 +62,11 @@ onMount(() => {
     @import '../../css/variables.scss';
     :global(#render-filter-here){
         position: sticky;
-        top: 101px;
+        top: 76px;
         z-index: 5;
+        @media screen and (max-width: 910px) {
+            top: 73px;
+        }
     }
     .filter-container {
         left: 0;
@@ -86,6 +89,9 @@ onMount(() => {
         background-color: #fff;
         border-top: 1px solid $gray;
         border-bottom: 1px solid $gray;
+        top: 25px;
+        position: relative;
+
 
     }
     form {
@@ -96,9 +102,15 @@ onMount(() => {
         display: flex;
         flex-wrap: wrap;
         align-items: stretch;
-        padding: 80px 0 40px;
+        padding: 22px 0 30px;
+        max-height: calc(100vh - 120px);
+        
+
         @media screen and (max-width: 1020px) {
-            padding: 80px 20px 40px;
+            padding: 22px 20px 30px;
+        }
+        @media screen and (max-width: 579px) {
+            overflow-y: auto;
         }
     }
     .form-section {
@@ -107,6 +119,8 @@ onMount(() => {
         margin-right: 20px;
         display: flex;
         flex-direction: column;
+        width: 250px;
+
     }
     .filter-items-container {
         display: flex;
@@ -141,14 +155,21 @@ onMount(() => {
     }
     .x-out-container {
         position: absolute;
-        top: 1px;
+        top: -22px;
         right: 16px;
+        @media screen and (max-width: 1020px) {
+            right: 0;
+        }
+        @media screen and (max-width: 922px) {
+            right: 18px;
+        }
     }
     .inner-container {
         position: absolute;
         width: 100%;
         background-color: #fff;
         border-bottom: 1px solid $gray;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     :global(#render-filter-here.filterIsClosed) {
         overflow-x: hidden;
