@@ -142,7 +142,7 @@ $color-level-3: #000;
         cursor: default;
     }
     th, td {
-       
+        background-clip: padding-box;
         background-color: inherit;
         border: none;
     }
@@ -226,7 +226,7 @@ $color-level-3: #000;
                 }
             }
             h4.sectionHead {
-                top: 141px;
+                top: 142px;
                 z-index: 2;
                 @media screen and (max-width: 910px){
                     top: 139px; 
@@ -236,7 +236,7 @@ $color-level-3: #000;
                 }
             }
             h5.sectionHead {
-                top: 182px;
+                top: 184px;
                 z-index: 1;
                 @media screen and (max-width: 910px){
                     top: 180px; 
