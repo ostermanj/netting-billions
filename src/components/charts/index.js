@@ -704,10 +704,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             }
         }
         rows.each(function(d){
-            this.querySelector('.js-expand-button').addEventListener('click', e => {
-                e.stopPropagation();
-                rowClickHandler.call(this, d, sortBy, sortDirection);
-            });
+            var btn = this.querySelector('.js-expand-button'); //final rows do not have buttons
+            if ( btn ){
+                btn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    rowClickHandler.call(this, d, sortBy, sortDirection);
+                });
+            }
         });
         rows.selectAll('th').each(function(){
             this.addEventListener('click', function(e){
