@@ -12,7 +12,7 @@ import { isWorking } from '@Project/index.js';
 let sections = ['rfmo','species','gear','product']; 
 let container = document.querySelector('#render-filter-here');
 let selecteds = sections.map(() => []);
-let orgBy = [];
+let orgBy = sections.slice(); // taking a copy
 $:hasFiltersSelected = (function(){
     if ( selecteds.some(d => d.length > 0) ){
         HasFiltersApplied.set(true);
@@ -22,7 +22,7 @@ $:hasFiltersSelected = (function(){
 })();
 let filterIsClosing = false;
 let filterIsClosed = false;
-let draggableContainers = [];
+let draggableContainer
 FilterIsClosed.subscribe(v => {
     filterIsClosing = v;
     setTimeout(() => {
@@ -37,30 +37,33 @@ function closeHandler(){
 }
 
 onMount(() => {
-    var sortable = new Sortable(draggableContainers, {
+    var sortable = new Sortable(draggableContainer, {
         draggable: '.filter-item',
         distance: 5,
         handle: '*:not(.form-wrapper)'
     });
     sortable.on('sortable:stop', e => {
         // if dragged to right container or dragged to left container from right container
-       if ( e.newContainer == draggableContainers[1] || ( e.newContainer == draggableContainers[0] && e.oldContainer == draggableContainers[1] )) {
-            isWorking(true);
-            orgBy = Array.from(draggableContainers[1].children)
+        var _orgBy = Array.from(draggableContainer.children)
                 .filter(node => !['draggable--original','draggable-mirror']
                     .some(className => node.classList.contains(className)))
                         .map(n => n.dataset.key);
+
+        if (_orgBy.join() !== orgBy.join){ // is a new order
+            isWorking(true);
+            orgBy = _orgBy.slice(); // take a copy to avoid mutating later
             if (orgBy.length < 2 ){
                 isWorking(false);
             }
             if ( window.requestIdleCallback ){
-                OrganizeBy.set(orgBy);
-             //   requestIdleCallback(() => OrganizeBy.set(orgBy),{timeout: 500});
+            // OrganizeBy.set(orgBy);
+                requestIdleCallback(() => OrganizeBy.set(orgBy),{timeout: 500});
             } else {
                 setTimeout(() => {
                     OrganizeBy.set(orgBy);
                 });
             }
+
         }
     });
 }); 
@@ -105,11 +108,8 @@ onMount(() => {
     form {
         position: relative;
         width: 100%;
-        max-width: 990px;
+        max-width: 650px;
         margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: stretch;
         padding: 22px 0 30px;
         max-height: calc(100vh - 120px);
         
@@ -123,24 +123,23 @@ onMount(() => {
     }
     .form-section {
         flex-grow: 1;
-        max-width: 420px;
         margin-right: 20px;
         display: flex;
         flex-direction: column;
-        width: 250px;
+        width: 100%;
 
     }
     .filter-items-container {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-    }
-    .filter-items-container--organize {
         background-color: $light_gray;
         height: 230px;
         padding: 10px;
         position: relative;
         bottom: 10px;
+    }
+    .filter-items-container--organize {
     }
     .section-label {
         font-weight: bold;
@@ -183,6 +182,44 @@ onMount(() => {
         overflow-x: hidden;
         margin-bottom: -174px;
     }
+    .org-by-label {
+        position: relative;
+        display: block;
+        color: $dark_gray;
+        padding: 8px 16px 8px 32px;
+        line-height: 100%;
+        white-space: nowrap;
+        overflow-x: hidden;
+    }
+    input[type="checkbox"] {
+        position: absolute;
+        left: 11px;
+        top: 10px;
+        width: 12px;
+        height: 12px;
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+        border: 1px solid $gray;
+        -webkit-appearance: none;
+        appearance:none;
+    }
+    input[type="checkbox"]:checked::after {
+        top: -1px;
+        left: -1px;
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        display: block;
+        content: " ";
+        font-size: .625rem;
+        line-height: 1;
+        background-color: $pew_blue;
+        color: #fff;
+        text-align: center;
+        background: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7.67 7.97'%3E%3Cpolyline points='0.35 5 2.55 7.19 7.26 0.28' style='fill:none;stroke:%23333;stroke-miterlimit:10'/%3E%3C/svg%3E") 50% 50% / 75% 75% no-repeat;
+    }
 </style>
 <div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
     <div class="full-width-container">
@@ -192,20 +229,17 @@ onMount(() => {
                     <XOut ariaLabel="Close filter drill-down form" />
                 </div>
             </div>
-            <form id="filter-drill-down-form" aria-label="Set filters and drill-down into data">
-                <section class="form-section" id="filter-form" aria-labelledby="filter-form-label">
-                    <label class="section-label" id="filter-form-label">Available filters:</label>
-                    <div bind:this="{draggableContainers[0]}" class="filter-items-container">
-                       {#each sections as section, i }
-                        <FilterItem {section} bind:selected="{selecteds[i]}"/>
-                        {/each}
+            <form id="filter-drill-down-form" aria-labelled-by="filter-form-label">
+                <p class="filter-form-label" id="filter-form-label"><strong>Use the filters to select which data to include.<br />Drag and drop the categories to change how the data is organized.</strong></p>
+                    
+                    <div class="form-section" id="filter-form" aria-labelledby="filter-form-label">
+                        <div bind:this="{draggableContainer}" class="filter-items-container">
+                           {#each sections as section, i }
+                            <FilterItem {section} bind:selected="{selecteds[i]}"/>
+                            {/each}
+                        </div>
                     </div>
-                </section>
-                <section class="form-section" id="drill-down-form" aria-labelledby="drill-down-label">
-                    <label class="section-label" id="drill-down-label">Organize by:</label>
-                    <div bind:this="{draggableContainers[1]}" class="filter-items-container filter-items-container--organize">
-                    </div>
-                </section>
+            <label class="org-by-label"><input type="checkbox" /> Organize data as shown above</label>
             </form>
         </div>
     </div>

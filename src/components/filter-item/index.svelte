@@ -33,7 +33,6 @@ function clickHandler(e){
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        max-width: 420px;
 
     }
     .filter-label {
@@ -50,6 +49,8 @@ function clickHandler(e){
         background: transparent url('./../filter-button/filter.svg') 50% 50% / 18px no-repeat;
         filter: brightness(20);
         transition: filter 0.2s ease-in-out;
+        position: relative;
+        vertical-align: middle;
         &:hover, &:focus {
             filter: brightness(2);
         }
@@ -93,13 +94,20 @@ function clickHandler(e){
         z-index: 1;
         box-shadow: 4px 4px 4px rgba(0,0,0,0.3), -1px -1px 0px rgba(255,255,255,1) ;
     }
+    .filter-button-label {
+        font-size: 0.75rem;
+        top: 3px;
+        position: relative;
+        letter-spacing: 0.5px;
+    }
+    
 </style>
 <div data-key="{section}" class="filter-item">
     <span class="filter-label">{dictionary[section].display}</span>
     <div class:hasFiltersApplied class="token-wrapper">
         <button role="button" disabled="{!hasFiltersApplied}" tabindex="{hasFiltersApplied ? 0 : -1}" title="See selected filters" on:click|preventDefault="{clickHandler}" class="filter-count">{selected.length}</button>
     </div>
-    <button class="open-filter" on:click|preventDefault="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button>
+    <label class="filter-button-label">Filter <button class="open-filter" on:click|preventDefault="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button></label>
     <div class:isDirty class="hasUnsubmittedChanges">*</div>
     <SearchForm {section} bind:selected bind:isDirty />
 </div>
