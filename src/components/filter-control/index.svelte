@@ -42,17 +42,25 @@ onMount(() => {
         distance: 5,
         handle: '*:not(.form-wrapper)'
     });
-
     sortable.on('sortable:stop', e => {
+        // if dragged to right container or dragged to left container from right container
        if ( e.newContainer == draggableContainers[1] || ( e.newContainer == draggableContainers[0] && e.oldContainer == draggableContainers[1] )) {
             isWorking(true);
-            setTimeout(() => {
-                orgBy = Array.from(draggableContainers[1].children).map(d => d.dataset.key);
-                if (orgBy.length < 2 ){
-                    isWorking(false);
-                }
+            orgBy = Array.from(draggableContainers[1].children)
+                .filter(node => !['draggable--original','draggable-mirror']
+                    .some(className => node.classList.contains(className)))
+                        .map(n => n.dataset.key);
+            if (orgBy.length < 2 ){
+                isWorking(false);
+            }
+            if ( window.requestIdleCallback ){
                 OrganizeBy.set(orgBy);
-            });
+             //   requestIdleCallback(() => OrganizeBy.set(orgBy),{timeout: 500});
+            } else {
+                setTimeout(() => {
+                    OrganizeBy.set(orgBy);
+                });
+            }
         }
     });
 }); 
