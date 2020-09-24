@@ -185,6 +185,9 @@ function removeNode(selection){
     selection.remove();
 }
 function rowClickHandler(d, sortBy, sortDirection) {
+    if ( this.classList.contains('js-has-no-values') ){
+        return;
+    }
     if (this.classList.contains('js-child-is-loaded')) {
         this.isExpanded = !this.isExpanded;
         return; // here handle the expanding/collapsing of already loaded children
@@ -669,7 +672,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .enter().append('tr')
                 .attr('data-keys', JSON.stringify([...filters.map(f => f[0]), data.key]))
                 .attr('data-values', d => JSON.stringify([...filters.map(f => f[1]), d])) // eg W, IO, IA, etc
-                .attr('data-index', (d,i) => i)
+                .attr('data-index', function(d,i) {
+                    return i;
+                })
                 .attr('class', s.isEntering + ' js-row js-row-level-' + filters.length);
 
             if (nestedData.values.length > 1) { // do not do expansion stuff if we're at the last branch of the tree
@@ -686,32 +691,36 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .attr('data-tippy-content', d => textTooltip(d));
             th.text(d => display(d));
             if (nestedData.values.length > 1) {
-                th.append('button')
+                let btn = th.append('button')
                     .attr('class', 'js-expand-button ' + s.expandButton)
                     .attr('aria-label', 'Click to expand row');
+
+                btn.each(function(d){
+                    this.addEventListener('click', function(e){
+                        console.log(this.parentElement.parentElement);
+                        e.stopPropagation();
+                        rowClickHandler.call(this.parentElement.parentElement, d, sortBy, sortDirection);
+                    });
+                });
             }
 
             rows = rows.merge(entering);
-            rows.each(function(){
+            rows.each(function(d){
+                var allRowValues = data.values.reduce(function(acc, column){
+                    acc.push(...column.values.find(v => v.key == d).values.map(v => v.value));
+                    return acc;
+                },[]);
+                this.classList[allRowValues.length > 0 ? 'remove' : 'add'](s.hasNoValues, 'js-has-no-values');
                 if ( this.expansionChild ){
                     initCharts({ filters: this.rowFilters, sortBy, sortDirection, appendAfter: this });
                 }
             });
-            if (nestedData.values.length > 1) {
+            if (nestedData.values.length > 1) { 
                 rows.on('click', function(d) {
                     rowClickHandler.call(this, d, sortBy, sortDirection);
                 });
             }
         }
-        rows.each(function(d){
-            var btn = this.querySelector('.js-expand-button'); //final rows do not have buttons
-            if ( btn ){
-                btn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    rowClickHandler.call(this, d, sortBy, sortDirection);
-                });
-            }
-        });
         rows.selectAll('th').each(function(){
             this.addEventListener('click', function(e){
                 if ( !document.body.classList.contains('has-hover') ){

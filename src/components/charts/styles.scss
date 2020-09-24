@@ -345,7 +345,7 @@ $color-level-3: #000;
         }
     }
     th[scope="row"][data-tippy-content]::after {
-        bottom: calc(50% - 4px);
+        bottom: calc(50% - 6px);
         @media screen and (max-width: 499px){
             bottom: calc(50% - 5px);
             margin-left: 0.2em;
@@ -646,6 +646,34 @@ $color-level-3: #000;
 .clone {
     opacity: 0.5;
 }
+
+.hasNoValues {
+    cursor: not-allowed !important;
+    font-weight: 300;
+    filter: grayscale(1);
+    opacity: 0.65;
+    th {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: inherit;
+        padding: 0 0 0 15px;
+        &::after {
+            display: none !important;
+        }
+    }
+    td {
+        height: 0;
+    }
+    button {
+        display: none;
+    }
+}
+
+.hasNoValues ~ .hasNoValues {
+    border-top-width: 0 !important;
+}
+
 
 /* tippy overrides */
 
