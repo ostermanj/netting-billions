@@ -14,11 +14,13 @@ let container = document.querySelector('#render-filter-here');
 let selecteds = sections.map(() => []);
 let orgBy = sections.slice(); // taking a copy
 let hasBeenReorganized = false;
+// orBy length is > 0 at page load so we need to trigger a hasBeenReorganized gate
+$:reorgIsActive = orgBy.length > 0 && hasBeenReorganized == true;
 $:hasFiltersSelected = (function(){
     if ( selecteds.some(d => d.length > 0) ){
         HasFiltersApplied.set(true);
     } else {
-        HasFiltersApplied.set(orgBy.length > 0 && hasBeenReorganized == true);
+        HasFiltersApplied.set(reorgIsActive);
     }
 })();
 let filterIsClosing = false;
@@ -32,9 +34,39 @@ FilterIsClosed.subscribe(v => {
     }, v ? 250 : 0);
 });
 
+function reorgChangeHandler(e){
+    console.log(e,this, this.value);
+    if (this.value == 'on' && !hasBeenReorganized) hasBeenReorganized = true;
+    reorganize(e, this.value == 'off');
+}
     
 function closeHandler(){
     FilterIsClosed.set(true);
+}
+
+function reorganize(e, reset){
+    var _orgBy = reset ? [] : Array.from(draggableContainer.children)
+            .filter(node => !['draggable--original','draggable-mirror']
+                .some(className => node.classList.contains(className)))
+                    .map(n => n.dataset.key);
+
+    if (_orgBy.join() !== orgBy.join){ // is a new order
+        hasBeenReorganized = true;
+        isWorking(true);
+        orgBy = _orgBy.slice(); // take a copy to avoid mutating later
+        if (orgBy.length < 2 ){
+            isWorking(false);
+        }
+        if ( window.requestIdleCallback ){
+        // OrganizeBy.set(orgBy);
+            requestIdleCallback(() => OrganizeBy.set(orgBy),{timeout: 500});
+        } else {
+            setTimeout(() => {
+                OrganizeBy.set(orgBy);
+            });
+        }
+
+    }
 }
 
 onMount(() => {
@@ -43,31 +75,7 @@ onMount(() => {
         distance: 5,
         handle: '*:not(.form-wrapper)'
     });
-    sortable.on('sortable:stop', e => {
-        // if dragged to right container or dragged to left container from right container
-        var _orgBy = Array.from(draggableContainer.children)
-                .filter(node => !['draggable--original','draggable-mirror']
-                    .some(className => node.classList.contains(className)))
-                        .map(n => n.dataset.key);
-
-        if (_orgBy.join() !== orgBy.join){ // is a new order
-            hasBeenReorganized = true;
-            isWorking(true);
-            orgBy = _orgBy.slice(); // take a copy to avoid mutating later
-            if (orgBy.length < 2 ){
-                isWorking(false);
-            }
-            if ( window.requestIdleCallback ){
-            // OrganizeBy.set(orgBy);
-                requestIdleCallback(() => OrganizeBy.set(orgBy),{timeout: 500});
-            } else {
-                setTimeout(() => {
-                    OrganizeBy.set(orgBy);
-                });
-            }
-
-        }
-    });
+    sortable.on('sortable:stop', reorganize);
 }); 
 </script>
 
@@ -124,18 +132,19 @@ onMount(() => {
         }
     }
     .form-section {
+        position: relative;
         flex-grow: 1;
         margin-right: 20px;
         display: flex;
-        background-color: $light_gray;
+        background-color: $lightest_gray;
         width: 100%;
-        padding: 20px 10px 10px;
+        padding: 37px 10px 0px;
     }
     .filter-items-container {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        background-color: $light_gray;
+        background-color: $lightest_gray;
         padding: 10px;
         position: relative;
         bottom: 10px;
@@ -183,13 +192,22 @@ onMount(() => {
         overflow-x: hidden;
         margin-bottom: -174px;
     }
-    .org-by-label {
-        position: relative;
-        display: block;
-        color: $dark_gray;
-        padding: 8px 16px 8px 21px;
-        line-height: 100%;
-        margin-bottom: -20px;
+    .org-by-toggle {
+        position: absolute;
+        top: 5px;
+        left: 28px;
+        p {
+            font-weight: bold;
+        }
+        p, label {
+            margin-right: 0.5em;
+            display: inline-block;
+        }
+        input {
+            position: relative;
+            top: 1px;
+            margin-right: 0.125em;
+        }
     }
     input[type="checkbox"] {
         position: absolute;
@@ -238,10 +256,14 @@ onMount(() => {
     .filter-position-labels {
         display: flex;
         flex-direction: column;
+        font-weight: bold;
+        &.inactive {
+            color: #999;
+        }
+
         div {
             height: 50px;
             margin-bottom: 2px;
-            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -267,17 +289,19 @@ onMount(() => {
                     <p class="filter-form-label" id="filter-form-label"><strong class="filters-text">Filter</strong> to select which data to  include.<br /><strong class="drag-drop-text">Drag and drop</strong> the categories to select a specific view and change how the data is organized.</p>
                                     
                     <div class="form-section" id="filter-form" aria-labelledby="filter-form-label">
-                        <div class="filter-position-labels">
+                        <div class:inactive="{!reorgIsActive}" class="filter-position-labels">
                             <div><p>View by:</p></div>
                             <div><p>Drill down by:</p></div>
                             <div><p>Then:</p></div>
                             <div><p>Then:</p></div>
                         </div>
+                        <div class="org-by-toggle">
+                            <p>Reorganize:</p><label><input on:change="{reorgChangeHandler}" checked="{reorgIsActive}" type="radio" name="reorganize" value="on">On</label><label><input on:change="{reorgChangeHandler}" checked="{!reorgIsActive}" type="radio" name="reorganize" value="off">Off</label>
+                        </div>
                         <div bind:this="{draggableContainer}" class="filter-items-container">
                            {#each sections as section, i }
                             <FilterItem {section} bind:selected="{selecteds[i]}"/>
                             {/each}
-                        <label class="org-by-label"><input type="checkbox" /> Organize data as shown above</label>
                         </div>
                     </div>
                 </div>
