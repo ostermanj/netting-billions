@@ -73,7 +73,7 @@ onMount(() => {
     var sortable = new Sortable(draggableContainer, {
         draggable: '.filter-item',
         distance: 5,
-        handle: '*:not(.form-wrapper)'
+        handle: '.filter-label'
     });
     sortable.on('sortable:stop', reorganize);
 }); 

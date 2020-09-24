@@ -24,7 +24,7 @@ function clickHandler(e){
         height: 50px;
         background: $pew_blue url('./handle.svg') left / 25px no-repeat;
         margin-bottom: 2px;
-        padding: 0 0 0 25px;
+        padding: 0;
         color: #fff;
         text-transform: uppercase;
         font-weight: bold;
@@ -32,11 +32,15 @@ function clickHandler(e){
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
+        max-width: 680px;
+        width: calc(100vw - 182px);
 
     }
     .filter-label {
         flex-grow: 1;
+        height: 100%;
+        padding: 0 0 0 25px;
+        line-height: 50px;
     }
     .open-filter {
         appearance:none;
