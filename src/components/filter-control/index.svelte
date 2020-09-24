@@ -173,7 +173,7 @@ onMount(() => {
     .x-out-container {
         position: absolute;
         top: -22px;
-        right: 16px;
+        right: 6px;
         @media screen and (max-width: 1020px) {
             right: 0;
         }
