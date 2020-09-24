@@ -3,11 +3,12 @@
 /* eslint no-undef: warn */
 import dictionary from '@Project/data/dictionary.json';
 import FilterButton from '@Project/components/filter-button/';
-import { FilterIsClosed, HasFiltersApplied } from '@Project/store.js';
+import { FilterIsClosed, HasFiltersApplied, OrganizeBy } from '@Project/store.js';
 
 let sections = ['rfmo','species','gear','product'];
 let anchors = {};
 let filterIsClosed;
+let activeSection;
 
 function clickHandler(){
   anchors[this.dataset.key] = anchors[this.dataset.key] || document.querySelector(`#head-${this.dataset.key}`);
@@ -16,6 +17,14 @@ function clickHandler(){
 function bodyClickFn(){
     FilterIsClosed.set(true);
 }
+OrganizeBy.subscribe(v => {
+    if ( v && v.length > 0 ){
+        activeSection = v[0];
+    } else {
+        activeSection = undefined;
+    }
+    console.log(activeSection);
+});
 FilterIsClosed.subscribe(v => {
     filterIsClosed = v;
     if ( !filterIsClosed ){
@@ -69,6 +78,15 @@ FilterIsClosed.subscribe(v => {
         &:hover {
             color: $pew_blue;
         }
+        &[disabled] {
+            color: $a11y !important;
+            cursor: not-allowed;
+            text-decoration: none !important;
+        }
+        &.active {
+           // color: $pew_blue;
+            text-decoration: underline;
+        }
     }
     .isHidden {
         visibility: hidden;
@@ -78,7 +96,7 @@ FilterIsClosed.subscribe(v => {
     <nav class:isHidden="{!filterIsClosed}" aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
-            <li><a data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
+            <li><a class:active="{activeSection && activeSection === section}" disabled="{activeSection && activeSection !== section ? 'disabled' : null}" title="{activeSection && activeSection !== section ? 'Filters applied: view not available' : null}" data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
             {/each}
         </ul>
     </nav>
