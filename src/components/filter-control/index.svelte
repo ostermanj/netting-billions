@@ -13,11 +13,12 @@ let sections = ['rfmo','species','gear','product'];
 let container = document.querySelector('#render-filter-here');
 let selecteds = sections.map(() => []);
 let orgBy = sections.slice(); // taking a copy
+let hasBeenReorganized = false;
 $:hasFiltersSelected = (function(){
     if ( selecteds.some(d => d.length > 0) ){
         HasFiltersApplied.set(true);
     } else {
-        HasFiltersApplied.set(orgBy.length > 0);
+        HasFiltersApplied.set(orgBy.length > 0 && hasBeenReorganized == true);
     }
 })();
 let filterIsClosing = false;
@@ -50,6 +51,7 @@ onMount(() => {
                         .map(n => n.dataset.key);
 
         if (_orgBy.join() !== orgBy.join){ // is a new order
+            hasBeenReorganized = true;
             isWorking(true);
             orgBy = _orgBy.slice(); // take a copy to avoid mutating later
             if (orgBy.length < 2 ){
@@ -108,7 +110,7 @@ onMount(() => {
     form {
         position: relative;
         width: 100%;
-        max-width: 650px;
+        max-width: 990px;
         margin: 0 auto;
         padding: 22px 0 30px;
         max-height: calc(100vh - 120px);
@@ -125,16 +127,15 @@ onMount(() => {
         flex-grow: 1;
         margin-right: 20px;
         display: flex;
-        flex-direction: column;
+        background-color: $light_gray;
         width: 100%;
-
+        padding: 20px 10px 10px;
     }
     .filter-items-container {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
         background-color: $light_gray;
-        height: 230px;
         padding: 10px;
         position: relative;
         bottom: 10px;
@@ -186,14 +187,13 @@ onMount(() => {
         position: relative;
         display: block;
         color: $dark_gray;
-        padding: 8px 16px 8px 32px;
+        padding: 8px 16px 8px 21px;
         line-height: 100%;
-        white-space: nowrap;
-        overflow-x: hidden;
+        margin-bottom: -20px;
     }
     input[type="checkbox"] {
         position: absolute;
-        left: 11px;
+        left: 0;
         top: 10px;
         width: 12px;
         height: 12px;
@@ -220,6 +220,39 @@ onMount(() => {
         text-align: center;
         background: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7.67 7.97'%3E%3Cpolyline points='0.35 5 2.55 7.19 7.26 0.28' style='fill:none;stroke:%23333;stroke-miterlimit:10'/%3E%3C/svg%3E") 50% 50% / 75% 75% no-repeat;
     }
+    .filters-text::before {
+        content: '';
+        display: inline-block;
+        width: 28px;
+        height: 19px;
+        height: 1lh;
+        background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 19 19'%3E %3Cline stroke='%23333' stroke-width='2' class='st0' x1='1' y1='2' x2='18' y2='2'/%3E %3Cpath stroke='%23333' stroke-width='3' class='st1' d='M9.5,18V6V18z'/%3E %3Cpath stroke='%23333' fill='%23333' class='st2' d='M16.5,5l-6.9,9l-6.9-9H16z'/%3E %3C/svg%3E") 50% 50%/18px no-repeat;
+    }
+    .drag-drop-text::before {
+        content: '';
+        display: inline-block;
+        width: 28px;
+        height: 23px;
+        background: transparent url('./handle.svg') 2px / 25px no-repeat;
+    }
+    .filter-position-labels {
+        display: flex;
+        flex-direction: column;
+        div {
+            height: 50px;
+            margin-bottom: 2px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            p {
+                margin: 0;
+            }
+        }
+    }
+    .form-inner-wrapper {
+        max-width: 820px;
+    }
 </style>
 <div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
     <div class="full-width-container">
@@ -230,16 +263,24 @@ onMount(() => {
                 </div>
             </div>
             <form id="filter-drill-down-form" aria-labelled-by="filter-form-label">
-                <p class="filter-form-label" id="filter-form-label"><strong>Use the filters to select which data to include.<br />Drag and drop the categories to change how the data is organized.</strong></p>
-                    
+                <div class="form-inner-wrapper">
+                    <p class="filter-form-label" id="filter-form-label"><strong class="filters-text">Filter</strong> to select which data to  include.<br /><strong class="drag-drop-text">Drag and drop</strong> the categories to select a specific view and change how the data is organized.</p>
+                                    
                     <div class="form-section" id="filter-form" aria-labelledby="filter-form-label">
+                        <div class="filter-position-labels">
+                            <div><p>View by:</p></div>
+                            <div><p>Drill down by:</p></div>
+                            <div><p>Then:</p></div>
+                            <div><p>Then:</p></div>
+                        </div>
                         <div bind:this="{draggableContainer}" class="filter-items-container">
                            {#each sections as section, i }
                             <FilterItem {section} bind:selected="{selecteds[i]}"/>
                             {/each}
+                        <label class="org-by-label"><input type="checkbox" /> Organize data as shown above</label>
                         </div>
                     </div>
-            <label class="org-by-label"><input type="checkbox" /> Organize data as shown above</label>
+                </div>
             </form>
         </div>
     </div>

@@ -100,7 +100,7 @@ function clickHandler(e){
         position: relative;
         letter-spacing: 0.5px;
     }
-    
+
 </style>
 <div data-key="{section}" class="filter-item">
     <span class="filter-label">{dictionary[section].display}</span>
