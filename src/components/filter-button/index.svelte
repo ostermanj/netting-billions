@@ -23,37 +23,30 @@
         height: 50px;
         top: 20px;
         left: 1.125rem;
-        &::after {
-            content: '';
+        background: transparent url('./filter.svg') 50% 5px / 24px no-repeat;
+        &::before, &::after {
             position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent url('./filter.svg') 50% 5px / 24px no-repeat;
-            filter: brightness(0.3);
-            transition: filter 0.2s ease-in-out;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: $dark_gray;
+            font-weight: bold;
+            text-transform: uppercase;
         }
-        &:hover, &:focus {
-            &::after {
-                filter: brightness(1);
+        &::before {
+            content: 'filters';
+            top: -9px;
+        }
+        &:hover, &:focus, &.hasFiltersApplied {
+            background-image: url('./filter-blue.svg');
+            &::before, &::after {
+                color: $pew_blue;
             }
         }
         &.hasFiltersApplied {
             &::after {
-                filter: brightness(1);
-            }
-            &::before {
-                content: 'filtered';
-                position: absolute;
-                left: 50%;
+                content: 'applied';
                 bottom:5px;
-                transform: translateX(-50%);
-                font-size: 10px;
-                color: $pew_blue;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: -0.4px;
             }
         }
     }
