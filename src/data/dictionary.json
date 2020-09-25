@@ -87,7 +87,7 @@
     },
     "species": {
         "display": "Species",
-        "description": "The seven most commercially important tuna species are skipjack, yellowfin, albacore, bigeye and southern, Atlantic and Pacific bluefin.",
+        "description": "The seven most commercially important tuna species are skipjack, yellowfin, albacore, bigeye and southern, Atlantic and Pacific bluefins.",
         "pluralS": false,
         "alwaysCaps":false
     },

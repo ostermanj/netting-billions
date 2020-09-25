@@ -1,5 +1,9 @@
 @import './variables.scss';
 
+a[href=""] {
+    outline: 1px solid magenta;
+}
+
 #pew-app {
     max-width: 850px;
     margin: 0 auto;
