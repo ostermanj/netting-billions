@@ -193,17 +193,6 @@ function rowClickHandler(d, sortBy, sortDirection) {
         return; // here handle the expanding/collapsing of already loaded children
         // include aria-expanded, etc.
     }
-    Object.defineProperty(this, 'isExpanded', {
-        get: function() { return this._isExpanded; },
-        set: function(value) {
-            this._isExpanded = value;
-            this.setAttribute('aria-expanded', value);
-            this.classList[value ? 'add' : 'remove'](s.isExpanded);
-            this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild);
-            this.button.setAttribute('aria-label', value ? 'Click to collapse row' : 'Click to expand row');
-            this.setAttribute('title', value ? 'Click to collapse' : 'Click to expand');
-        }
-    });
     var rowKeys = JSON.parse(this.dataset.keys);
     var rowValues = JSON.parse(this.dataset.values);
     this.rowFilters = rowKeys.map((key, i) => [key, rowValues[i]]);
@@ -677,6 +666,20 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 })
                 .attr('class', s.isEntering + ' js-row js-row-level-' + filters.length);
 
+            entering.each(function(){
+                Object.defineProperty(this, 'isExpanded', {
+                    get: function() { return this._isExpanded; },
+                    set: function(value) {
+                        this._isExpanded = value;
+                        this.setAttribute('aria-expanded', value);
+                        this.classList[value ? 'add' : 'remove'](s.isExpanded);
+                        this.expansionChild.classList[value ? 'add' : 'remove'](s.isExpandedChild);
+                        this.button.setAttribute('aria-label', value ? 'Click to collapse row' : 'Click to expand row');
+                        this.setAttribute('title', value ? 'Click to collapse' : 'Click to expand');
+                    }
+                });
+            });
+
             if (nestedData.values.length > 1) { // do not do expansion stuff if we're at the last branch of the tree
                 entering
                     .attr('title', 'Click to expand')
@@ -711,6 +714,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     return acc;
                 },[]);
                 this.classList[allRowValues.length > 0 ? 'remove' : 'add'](s.hasNoValues, 'js-has-no-values');
+                if ( allRowValues.length == 0 && this.isExpanded ){
+                    this.isExpanded = false;
+                }
                 if ( this.expansionChild ){
                     initCharts({ filters: this.rowFilters, sortBy, sortDirection, appendAfter: this });
                 }
