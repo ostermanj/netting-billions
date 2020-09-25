@@ -192,7 +192,7 @@ function closeHandler(){
         }
     }
 </style>
-<div class:isOpen class="form-wrapper">
+<div on:click|stopPropagation="{() => {}}" class:isOpen class="form-wrapper">
         <form>
             <fieldset>
                 <legend>Select {plural(section)}:</legend>

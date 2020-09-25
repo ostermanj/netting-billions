@@ -4,7 +4,7 @@
 //import dictionary from '@Project/data/dictionary.json';
 import FilterItem from '@Project/components/filter-item/';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
-import { FilterIsClosed, OrganizeBy, HasFiltersApplied } from '@Project/store.js';
+import { FilterIsClosed, OrganizeBy, HasFiltersApplied, DimensionFilter } from '@Project/store.js';
 import { Sortable } from '@shopify/draggable';
 import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
@@ -27,7 +27,12 @@ $:hasFiltersSelected = (function(){ // despite name hasFiltersApplid is true if 
 })();
 let filterIsClosing = false;
 let filterIsClosed = false;
+let filterFormIsOpen = false;
 let draggableContainer;
+
+DimensionFilter.subscribe(v => {
+    filterFormIsOpen = !!v;
+});
 
 FilterIsClosed.subscribe(v => {
     filterIsClosing = v;
@@ -48,7 +53,9 @@ function reorgChangeHandler(e){
 function closeHandler(){
     FilterIsClosed.set(true);
 }
-
+function containerClick(){
+    if ( filterFormIsOpen ) DimensionFilter.set(undefined);
+}
 function reorganize(e, reset){
     var _orgBy = reset ? [] : Array.from(draggableContainer.children)
             .filter(node => !['draggable--original','draggable-mirror']
@@ -308,7 +315,7 @@ onMount(() => {
         }
     }
 </style>
-<div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
+<div on:click|stopPropagation="{containerClick}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
     <div class="full-width-container">
         <div class="inner-container">
             <div class="x-out-outer-wrapper">

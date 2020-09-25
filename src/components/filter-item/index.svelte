@@ -111,7 +111,7 @@ function clickHandler(e){
     <div class:hasFiltersApplied class="token-wrapper">
         <button role="button" disabled="{!hasFiltersApplied}" tabindex="{hasFiltersApplied ? 0 : -1}" title="See selected filters" on:click|preventDefault="{clickHandler}" class="filter-count">{selected.length}</button>
     </div>
-    <label class="filter-button-label">Filter <button class="open-filter" on:click|preventDefault="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button></label>
+    <label class="filter-button-label">Filter <button class="open-filter" on:click|preventDefault|stopPropagation="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button></label>
     <div class:isDirty class="hasUnsubmittedChanges">*</div>
     <SearchForm {section} bind:selected bind:clearAll bind:isDirty />
 </div>
