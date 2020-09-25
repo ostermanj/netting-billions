@@ -8,7 +8,7 @@ import { fieldValues } from '@Project/scripts/data.js';
 import { get } from 'svelte/store';
 
 export let section;
-let labels = [];
+let inputs = [];
 let data = [...fieldValues[section]].sort().map(v => {
     return {
         key: v,
@@ -28,6 +28,11 @@ let isOpen = false;
 DimensionFilter.subscribe(v => {
  isOpen = v == section;
 });
+function clearAll(){
+    dirtySelected = [];
+    inputs.forEach(ip => ip.checked = false);
+    formSubmit();
+}
 function inline(key){
     return dictionary[key].alwaysCaps ? dictionary[key].display : dictionary[key].display.toLowerCase();
 }
@@ -54,7 +59,7 @@ function formSubmit(){
     filters[section] = selected;
     //TO DO: all checked is same as none checked
     Filters.set(filters);
-    closeHandler();
+    //closeHandler();
 }
 function closeHandler(){
     DimensionFilter.set(undefined);
@@ -178,7 +183,7 @@ function closeHandler(){
         vertical-align: top;
         transition: background-color .28s cubic-bezier(.4,0,.2,1);
         border: none;
-        margin: 10px 0 0; 
+        margin: 10px 5px 0; 
         &[disabled] {
             background-color: $gray;
             cursor: not-allowed;
@@ -190,11 +195,12 @@ function closeHandler(){
             <fieldset>
                 <legend>Select {plural(section)}:</legend>
                 {#each data as datum, i}
-                <label on:keydown="{keydownHandler}" tabindex="0" bind:this="{labels[i]}" data-key="{datum.key}" title="{datum.display}"><input tabindex="-1" on:change="{changeHandler}" name="{datum.key}" type="checkbox" /> {datum.display}</label>
+                <label on:keydown="{keydownHandler}" tabindex="0" data-key="{datum.key}" title="{datum.display}"><input  bind:this="{inputs[i]}" tabindex="-1" on:change="{changeHandler}" name="{datum.key}" type="checkbox" /> {datum.display}</label>
                 {/each}
             </fieldset>
         </form>
         <div class="input-wrapper">
+            <input disabled="{selected.length == 0}" on:click|preventDefault="{clearAll}" type="submit" value="Clear all" />
             <input disabled="{!isDirty}" on:click|preventDefault="{formSubmit}" type="submit" value="Apply changes" />
         </div>
         <div class="x-out-wrapper" on:click|preventDefault="{closeHandler}">

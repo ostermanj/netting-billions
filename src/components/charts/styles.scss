@@ -336,6 +336,9 @@ $color-level-3: #000;
             }
         }
     }
+    th[scope="column"]{
+        transform: translateX(19px);
+    }
     th[scope="column"][data-tippy-content]::after {
         @media screen and (max-width: 380px) {
             right: -6px;
