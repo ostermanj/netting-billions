@@ -158,8 +158,8 @@ $color-level-3: #000;
             color: $blue;
         }
         &.dv  {
-            //color: darken($orange, 10%);
-            color: $orange;
+            //color: darken($green, 10%);
+            color: $green;
         }
         &.ev  {
             color: $red;
@@ -352,7 +352,7 @@ $color-level-3: #000;
             margin-left: 0.2em;
         }
     }
-    th[scope="column"].sortedBy {
+    /*th[scope="column"].sortedBy {
         &::before {
             position: absolute;
             left: 50%;
@@ -368,13 +368,13 @@ $color-level-3: #000;
             color: $blue;
         }
         &.dv::before  {
-            //color: darken($orange, 10%);
-            color: $orange;
+            //color: darken($green, 10%);
+            color: $green;
         }
         &.ev::before  {
             color: $red;
         }
-    }
+    }*/
     tbody tr {
         border-top: 1px solid $gray;
         &:first-of-type {
@@ -403,11 +403,11 @@ $color-level-3: #000;
         }
     }
     &.dv {
-        //stroke: darken($orange, 10%);
-        stroke: $orange;
+        //stroke: darken($green, 10%);
+        stroke: $green;
         &.isLast {
-            //fill: darken($orange, 10%);
-            fill: $orange;
+            //fill: darken($green, 10%);
+            fill: $green;
         }
     }
     &.ev {
@@ -429,12 +429,12 @@ $color-level-3: #000;
 
     }
     &.v {
-        //fill: darken($blue, 20%);
-        fill: $blue;
+        fill: darken($blue, 10%);
+        //fill: $blue;
     }
     &.dv {
-        //fill: darken($orange, 10%);
-        fill: $orange;
+        fill: darken($green, 10%);
+        //fill: $green;
     }
     &.ev {
         fill: $red;
@@ -478,8 +478,8 @@ $color-level-3: #000;
         color: $blue;
     }
     .dv & {
-        //color: darken($orange, 10%);
-        color: $orange;
+        //color: darken($green, 10%);
+        color: $green;
     }
     .ev & {
         color: $red;
@@ -493,8 +493,8 @@ $color-level-3: #000;
         color: $blue;
     }
     .dv & {
-        //color: darken($orange, 10%);
-        color: $orange;
+        //color: darken($green, 10%);
+        color: $green;
     }
     .ev & {
         color: $red;
