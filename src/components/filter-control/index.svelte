@@ -200,12 +200,19 @@ onMount(() => {
             font-weight: bold;
         }
         p, label {
+            line-height: 1;
             margin-right: 0.5em;
             display: inline-block;
         }
-        input {
+        label {
             position: relative;
-            top: 1px;
+            padding-left: 17px;
+        }
+        input {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
             margin-right: 0.125em;
         }
     }
