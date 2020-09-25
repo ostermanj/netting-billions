@@ -9,15 +9,17 @@ import { Sortable } from '@shopify/draggable';
 import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
 
-let sections = ['rfmo','species','gear','product']; 
+let sections = ['rfmo','species','gear','product'];
+let clearAllHandlers = sections.reduce((acc,cur) => {acc[cur] = undefined; return acc},{})
 let container = document.querySelector('#render-filter-here');
 let selecteds = sections.map(() => []);
 let orgBy = sections.slice(); // taking a copy
 let hasBeenReorganized = false;
 // orBy length is > 0 at page load so we need to trigger a hasBeenReorganized gate
 $:reorgIsActive = orgBy.length > 0 && hasBeenReorganized == true;
-$:hasFiltersSelected = (function(){
-    if ( selecteds.some(d => d.length > 0) ){
+$:filtersApplied = selecteds.some(d => d.length > 0); // only applies to filters, not reorg
+$:hasFiltersSelected = (function(){ // despite name hasFiltersApplid is true if filters are applied or if reorg is on
+    if ( filtersApplied ){
         HasFiltersApplied.set(true);
     } else {
         HasFiltersApplied.set(reorgIsActive);
@@ -25,7 +27,8 @@ $:hasFiltersSelected = (function(){
 })();
 let filterIsClosing = false;
 let filterIsClosed = false;
-let draggableContainer
+let draggableContainer;
+
 FilterIsClosed.subscribe(v => {
     filterIsClosing = v;
     setTimeout(() => {
@@ -33,7 +36,9 @@ FilterIsClosed.subscribe(v => {
         container.classList[v ? 'add' : 'remove']('filterIsClosed');
     }, v ? 250 : 0);
 });
-
+function clearAllFilters(){
+   Object.values(clearAllHandlers).forEach(handler => handler());
+}
 function reorgChangeHandler(e){
     console.log(e,this, this.value);
     if (this.value == 'on' && !hasBeenReorganized) hasBeenReorganized = true;
@@ -194,7 +199,7 @@ onMount(() => {
     }
     .org-by-toggle {
         position: absolute;
-        top: 5px;
+        top: 7px;
         left: 28px;
         p {
             font-weight: bold;
@@ -282,6 +287,26 @@ onMount(() => {
     .form-inner-wrapper {
         max-width: 820px;
     }
+    .clear-all-filters {
+        appearance: none;
+        margin: 0;
+        padding: 0;
+        border: none;
+        bottom: none;
+        color: $pew_blue;
+        position: absolute;
+        top: 7px;
+        right: 49px;
+        font-weight: bold;
+        &:hover, &:focus {
+            text-decoration: underline;
+        }
+        &[disabled]{
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: none !important;
+        }
+    }
 </style>
 <div on:click|stopPropagation="{() => {}}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
     <div class="full-width-container">
@@ -305,9 +330,10 @@ onMount(() => {
                         <div class="org-by-toggle">
                             <p>Reorganize:</p><label><input on:change="{reorgChangeHandler}" checked="{reorgIsActive}" type="radio" name="reorganize" value="on">On</label><label><input on:change="{reorgChangeHandler}" checked="{!reorgIsActive}" type="radio" name="reorganize" value="off">Off</label>
                         </div>
+                        <button on:click|preventDefault="{clearAllFilters}" disabled="{!filtersApplied ? 'disabled' : null}" role="button" class="clear-all-filters">Clear all</button>
                         <div bind:this="{draggableContainer}" class="filter-items-container">
                            {#each sections as section, i }
-                            <FilterItem {section} bind:selected="{selecteds[i]}"/>
+                            <FilterItem {section} bind:selected="{selecteds[i]}" bind:clearAll="{clearAllHandlers[section]}" />
                             {/each}
                         </div>
                     </div>

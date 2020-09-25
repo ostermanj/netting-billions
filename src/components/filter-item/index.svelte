@@ -6,8 +6,8 @@ import SearchForm from '@Project/components/search-form/';
 import { DimensionFilter } from '@Project/store.js';
 
 export let section;
-
 export let selected = [];
+export let clearAll;
 let isDirty = false;
 
 $:hasFiltersApplied = selected.length > 0;
@@ -113,5 +113,5 @@ function clickHandler(e){
     </div>
     <label class="filter-button-label">Filter <button class="open-filter" on:click|preventDefault="{clickHandler}" role="button" aria-label="Filter {dictionary[section].display} options"></button></label>
     <div class:isDirty class="hasUnsubmittedChanges">*</div>
-    <SearchForm {section} bind:selected bind:isDirty />
+    <SearchForm {section} bind:selected bind:clearAll bind:isDirty />
 </div>

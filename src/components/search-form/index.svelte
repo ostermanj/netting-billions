@@ -20,6 +20,11 @@ let data = [...fieldValues[section]].sort().map(v => {
 export let selected = []; // changes committed to by submitting the form
 export let dirtySelected = []; // changes not yet committed to
 export let isDirty;
+export let clearAll = function(){
+    dirtySelected = [];
+    inputs.forEach(ip => ip.checked = false);
+    formSubmit();
+};
 $:isDirty = !( 
         selected.every(item => dirtySelected.includes(item)) &&
         dirtySelected.every(item => selected.includes(item))
@@ -29,11 +34,6 @@ let isOpen = false;
 DimensionFilter.subscribe(v => {
  isOpen = v == section;
 });
-function clearAll(){
-    dirtySelected = [];
-    inputs.forEach(ip => ip.checked = false);
-    formSubmit();
-}
 function inline(key){
     return dictionary[key].alwaysCaps ? dictionary[key].display : dictionary[key].display.toLowerCase();
 }
@@ -202,7 +202,7 @@ function closeHandler(){
             </fieldset>
         </form>
         <div class="input-wrapper">
-            <input disabled="{selected.length == 0}" on:click|preventDefault="{clearAll}" type="submit" value="Clear all" />
+            <input disabled="{selected.length == 0}" on:click|preventDefault="{clearAll}" type="submit" value="Clear" />
             <input disabled="{!isDirty}" on:click|preventDefault="{formSubmit}" type="submit" value="Apply changes" />
         </div>
         <div class="x-out-wrapper" on:click|preventDefault="{closeHandler}">
