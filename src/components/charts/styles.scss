@@ -14,6 +14,20 @@ $color-level-3: #000;
    // outline: 1px solid cyan;
 }
 
+.closeAllRows {
+    appearance: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #fff;
+    font-size: 0.85rem;
+    position: absolute;
+    right: 28px;
+    &:hover, &:focus {
+        text-decoration: underline;
+    }
+}
 .chartSection {
     width: 100%;
     max-width: 650px;

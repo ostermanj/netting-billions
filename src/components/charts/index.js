@@ -40,7 +40,13 @@ function logSection(depth, d, i, arr) {
     Sections[depth][d.key].push(sect);
     console.log(Sections);
 }
-
+function closeAllRows(){
+    document.querySelector('#render-here').querySelectorAll('tr').forEach(row => {
+        if ( row.isExpanded ){
+            row.isExpanded = false;
+        }
+    });
+}
 function _organize(orgBy) {
     if (orgBy == undefined) {
         return;
@@ -604,9 +610,21 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
         // here you should assign the section to a variable or object in more general scope so 
         // that existing sections can be handle on subscribe to OrganizeBy
-        entering.append('h' + (filters.length + 2))
+        let header = entering.append('h' + (filters.length + 2))
             .attr('class', s.sectionHead)
-            .html(d => `<a id="head-${d.key}" class="${s.headAnchor}"></a><span>${display(d.key)}</span> <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
+            .html(d => `<a id="head-${d.key}" class="${s.headAnchor}"></a>
+                        <span>${display(d.key)}</span>
+                        <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
+
+        header.each(function(){
+            if ( filters.length > 0 ){
+                d3.select(this)
+                    .append('button')
+                    .text('Close all')
+                    .attr('class', s.closeAllRows)
+                    .on('click', closeAllRows);
+            }
+        });
 
         if (filters.length === 0) { //only add graf when no filters applied, ie, main tables
 
