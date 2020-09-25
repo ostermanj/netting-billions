@@ -2,7 +2,24 @@
 
 a[href=""] {
     outline: 1px solid magenta;
+    .site-logo & {
+        outline: none;
+    }
 }
+
+.fpo {
+    outline: 1px solid magenta;
+    outline-offset: 5px;
+    position: relative;
+    &::before {
+        content: 'FPO';
+        display: block;
+        position: absolute;
+        top: -25px;
+        color: magenta
+    }
+}
+
 
 #pew-app {
     max-width: 850px;
