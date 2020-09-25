@@ -41,8 +41,11 @@ body {
     visibility: hidden;
     z-index: 4;
 }
-#render-here.is-working > section::before {
-    visibility: visible;
+#render-here.is-working {
+    cursor: progress;
+    & > section::before {
+        visibility: visible;
+    }
 }
 /*#render-here.is-working.is-working--transition > section::before {
     background-color: rgba(255,255,255,0.5);

@@ -5,6 +5,7 @@ import dictionary from '@Project/data/dictionary.json';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { DimensionFilter, Filters } from '@Project/store.js';
 import { fieldValues } from '@Project/scripts/data.js';
+import { isWorking } from '@Project/index.js';
 import { get } from 'svelte/store';
 
 export let section;
@@ -54,6 +55,7 @@ function changeHandler(e){
  }
 }
 function formSubmit(){
+    isWorking(true);
     selected = dirtySelected.slice(); // slicing to avoid binding by assignation
     var filters = get(Filters);
     filters[section] = selected;

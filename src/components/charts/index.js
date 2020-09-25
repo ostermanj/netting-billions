@@ -19,6 +19,7 @@ OrganizeBy.subscribe(v => {
 });
 Filters.subscribe(() => {
     if ( subsequentFilter ){
+        isWorking(true);
         updateCharts();
     }
     subsequentFilter = true;
@@ -838,4 +839,7 @@ function Play(rows){
 }
 function updateCharts(){
     initCharts({});
+    setTimeout(function(){
+        isWorking(false);
+    },500);
 }
