@@ -148,7 +148,7 @@ function description(key) {
     return dictionary[key].description;
 }
 String.prototype._replaceAbbrev = function(){
-    return this.replace('G', 'B');
+    return this.replace('G', 'b').replace('M', 'm');
 }
 function abbrev({ value, type, precision }) {
     return d3.format(formatTypes(precision)[type])(value)._replaceAbbrev();
@@ -629,7 +629,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 })
                 .classed(s.asc, d => d == sortBy && sortDirection == 'asc')
                 .attr('width', (d,i,arr) => i == arr.length - 1 ? '20px' : null)
-                .html(d => d ? `${display(d)}${ units(d) ? ' <span class="' + s.units + '">(' + units(d) + ')</span>' : ''}` : '');
+                .html(d => d ? `<span class="${s.columnTitle}">${display(d)}</span>${units(d) ? '<br /><span class="' + s.units + '">(' + units(d) + ')</span>' : ''}` : '');
         }
 
         table.append('tbody');

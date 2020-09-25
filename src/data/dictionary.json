@@ -105,14 +105,16 @@
     },
     "v": {
         "display": "Volume",
-        "units": "tons"
+        "units": "metric tons"
     },
     "dv": {
         "display": "Dock value",
+        "units": "USD",
         "description": "the amount paid to fishers for their catch"
     },
     "ev": {
         "display": "End value",
+        "units": "USD",
         "description": "the amount paid by final customers"
     }
 }
