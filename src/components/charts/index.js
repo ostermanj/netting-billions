@@ -92,21 +92,21 @@ if (module.hot) {
 }
 
 const margin = {
-    top: 9,
+    top: 11,
     right: 51,
-    bottom: 10,
+    bottom: 12,
     left: 45
 };
 const r = 2.7; 
 const strokeWidth = 2.2            ;
 const viewBoxWidth = 150;
-const viewBoxHeight = 70;
+const viewBoxHeight = 64;
 const tickLength = 6;
 const safety = 2;
 const height = viewBoxHeight - margin.top - margin.bottom;
 const width = viewBoxWidth - margin.left - margin.right;
 //const yScale = d3.scaleLinear().range([height, 0]);
-const yScale = d3.scaleSymlog().range([height, 0]);
+const yScale = d3.scaleSymlog().constant(0.1).range([height, 0]);
 const xScale = d3.scaleLinear().range([0, width]);
 const valueline = d3.line()
     .x(d => {
