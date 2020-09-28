@@ -115,7 +115,12 @@ const valueline = d3.line()
     .y(d => {
         return yScale(d.p);
     });
-
+const pieGenerator = d3.pie().value(d => d.value).sort(function(a,b) {
+    return a.currentRow === a.parent.rowIndex ? -1 : b.currentRow === b.parent.rowIndex ? 1 : a.parent.rowIndex - b.parent.rowIndex;
+});
+const innerRadius = 5;
+const outerRadius = 10;
+const pieArc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
 function formatTypes(precision) {
     return {
         v: `,.${precision}~s`,
@@ -274,6 +279,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     }
 
     function createSVG(datum, cellIndex, arr) {
+        var rowIndex = datum.rowIndex;
         if ( cellIndex == arr.length - 1 ){
             return;
         }
@@ -536,6 +542,8 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         return yScale(d.p);
                     });
             if ( gIndex == 1 ){
+                let datalabelY;
+                /* DATA POINT LABEL */
                  let datalabel = g.selectAll('text')
                     .data(d => d);
 
@@ -543,9 +551,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     let entering = datalabel.enter()
                         .append('text')
                         .attr('class', `${s.dataPoint} ${s[datum.parent.key]}`)
-                        .attr('x', d => xScale(d[d.length - 1].x))
-                        .attr('dy', '0.3em')
-                        .attr('dx', '0.5em');
+                        .attr('dy', '0.3em');
 
                         datalabel = datalabel.merge(entering);
                     }
@@ -554,8 +560,78 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     datalabel
                         .text(d => abbrev({ value: d[d.length - 1].y, type: datum.parent.key, precision: 3 }))
                         .transition().duration(200)
-                            .attr('x', d => xScale(d[d.length - 1].x))
-                            .attr('y', d => yScale(d[d.length - 1].p));
+                            .attr('x', d => width + 30)
+                            .attr('y', d => {
+                                //datalabelY = yScale(d[d.length - 1].p);
+                                datalabelY = height / 2 - 10
+                                return datalabelY;
+                        });
+
+                /* MAGNITUDE DONUT. DATUM.PARENT.VALUES ==> COLUMN. YEARS.LENGTH - 1 ==> CURRENT YEAR */
+                let pieData = datum.parent.values.filter(d => d.values.length > 0).map((row) => {
+                    var obj = row.values.find(d => d.key == years[years.length - 1]); //[{key:str,parent:{},value:num}, ...]
+                    obj.currentRow = rowIndex;
+                    return obj;
+                });
+                let pieAngles = pieGenerator(pieData);
+                console.log('pie', pieAngles);
+                let pieGroup = g.selectAll('g.pie')
+                    .data([pieAngles]);
+                {
+
+                    let entering = pieGroup.enter()
+                        .append('g')
+                        .attr('class', 'pie')
+                        .attr('transform', d => {
+                           // return `translate( ${width +  outerRadius + 9} ${datalabelY + outerRadius + 7} )`;
+                            return `translate( ${width + 30} ${height / 2 + outerRadius} )`;
+                        });
+                    
+                    pieGroup = pieGroup.merge(entering);
+               
+                }
+
+             /*   let piePath = pieGroup.selectAll('path')
+                    .data(d => {
+                        return d
+                    });
+
+                {
+                    let entering = piePath.enter()
+                        .append('path');
+
+                    piePath.exit().remove();
+                    piePath = piePath.merge(entering);
+                }
+
+                piePath
+                    .attr('d', pieArc); */
+
+                let segments = pieGroup.selectAll('path.segment')
+                    .data(d => {
+                        return d;
+                    });
+
+                    {
+                        let entering = segments.enter()
+                            .append('path')
+                            .attr('class', `segment ${s.segment}`);
+                        
+                        segments = segments.merge(entering)
+                    }
+
+                segments.exit().remove();
+
+                segments
+                    .attr('class', s.segment)
+                    .classed(s.currentRow, (d,i) => {
+                        console.log(rowIndex, d.data.parent.rowIndex);
+                        return d.data.parent.rowIndex == rowIndex;
+                    })
+                    .attr('d', function(d){
+                        return pieArc(d);
+                    });
+
 
                 let dummyBarGroup = g.selectAll('g.dummy-bars')
                     .data(d => d);
@@ -684,7 +760,9 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 .attr('data-index', function(d,i) {
                     return i;
                 })
-                .attr('class', s.isEntering + ' js-row js-row-level-' + filters.length);
+                .attr('class', function(d,i){
+                    return 'rowIndex' + i + ' js-row js-row-level-' + filters.length;
+            });
 
             entering.each(function(){
                 Object.defineProperty(this, 'isExpanded', {

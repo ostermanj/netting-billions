@@ -435,12 +435,34 @@ $color-level-3: #000;
     }
 }
 
+path.segment {
+    fill: $light_gray;
+    stroke:  $light_gray;
+    stroke-width: 0; 
+    &.currentRow {
+        .v & {
+                fill: $blue;
+                stroke:  $blue;
+            }
+        .dv & {
+                fill: $green;
+                stroke:  $green;
+            }
+        .ev & {
+                fill: $red;
+                stroke:  $red;
+            }
+        }
+}
+
 .units {
     color: $a11y;
     font-weight: normal;
 }
 .dataPoint {
     font-size: 14px;
+    text-anchor: middle;
+    font-weight: bold;
     @media screen and (max-width: 400px) {
         font-size: 16px;
 

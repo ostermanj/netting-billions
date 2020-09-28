@@ -5,13 +5,14 @@ import { format, formatLocale } from 'd3-format';
 import { path }                 from 'd3-path';
 import { scaleLinear,scaleLog, scaleSymlog } from 'd3-scale';
 import { select, selectAll }               from 'd3-selection';
-import { line }                 from 'd3-shape';
+import { arc, line, pie }                 from 'd3-shape';
 import { timeYear }             from 'd3-time';
 import { timeParse, timeFormat }from 'd3-time-format';
 import tip                      from 'd3-tip';
 import { transition }           from 'd3-transition';
 // TO DO: IMPORT ONLY WHAT'S NEEDED
 export default {
+    arc,
     ascending,
     axisBottom,
     axisLeft,
@@ -28,6 +29,7 @@ export default {
     min,
     nest,
     path,
+    pie,
     range,
     scaleLinear,
     scaleLog,
