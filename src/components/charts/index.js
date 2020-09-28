@@ -92,15 +92,15 @@ if (module.hot) {
 }
 
 const margin = {
-    top: 13,
+    top: 9,
     right: 51,
-    bottom: 14,
+    bottom: 10,
     left: 45
 };
 const r = 2.7; 
 const strokeWidth = 2.2            ;
 const viewBoxWidth = 150;
-const viewBoxHeight = 64;
+const viewBoxHeight = 70;
 const tickLength = 6;
 const safety = 2;
 const height = viewBoxHeight - margin.top - margin.bottom;
@@ -471,7 +471,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     .classed(s.dummyGroup, (d,i) => i == 0)
                     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-   //             entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
+//                entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
   //              entering.append('rect').attr('x', 0).attr('y', 0 - r - strokeWidth).attr('width', width).attr('height', height + 2 * r + 2 * strokeWidth).attr('stroke', 'cyan').attr('fill', 'none').attr('stroke-width','0.5px');
 
                 g = g.merge(entering);
