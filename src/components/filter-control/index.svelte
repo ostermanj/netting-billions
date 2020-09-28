@@ -258,9 +258,11 @@ onMount(() => {
         background: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7.67 7.97'%3E%3Cpolyline points='0.35 5 2.55 7.19 7.26 0.28' style='fill:none;stroke:%23333;stroke-miterlimit:10'/%3E%3C/svg%3E") 50% 50% / 75% 75% no-repeat;
     }
     .filters-text::before {
+        position: relative;
+        top: 2px;
         content: '';
         display: inline-block;
-        width: 28px;
+        width: 23px;
         height: 19px;
         height: 1lh;
         background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 19 19'%3E %3Cline stroke='%23333' stroke-width='2' class='st0' x1='1' y1='2' x2='18' y2='2'/%3E %3Cpath stroke='%23333' stroke-width='3' class='st1' d='M9.5,18V6V18z'/%3E %3Cpath stroke='%23333' fill='%23333' class='st2' d='M16.5,5l-6.9,9l-6.9-9H16z'/%3E %3C/svg%3E") 50% 50%/18px no-repeat;
@@ -268,17 +270,17 @@ onMount(() => {
     .drag-drop-text::before {
         content: '';
         display: inline-block;
-        width: 28px;
-        height: 23px;
-        background: transparent url('./handle.svg') 2px / 25px no-repeat;
+        width: 23px;
+        height: 19px;
+        background: transparent url('./handle.svg') 2px / 20px no-repeat;
     }
     .filter-position-labels {
         display: flex;
         flex-direction: column;
         font-weight: bold;
-        &.inactive {
+       /* &.inactive {
             color: #999;
-        }
+        }*/
 
         div {
             height: 50px;

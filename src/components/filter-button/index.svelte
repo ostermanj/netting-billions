@@ -35,7 +35,7 @@
         }
         &::before {
             content: 'filters';
-            top: -9px;
+            bottom: 5px;
         }
         &:hover, &:focus, &.hasFiltersApplied {
             background-image: url('./filter-blue.svg');
@@ -46,7 +46,7 @@
         &.hasFiltersApplied {
             &::after {
                 content: 'applied';
-                bottom:5px;
+                bottom:-6px;
             }
         }
     }
