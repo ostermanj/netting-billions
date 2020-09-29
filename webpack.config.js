@@ -16,7 +16,7 @@ const {sass} = require('svelte-preprocess-sass');
 const repoName = 'netting-billions';
 const publicPath = isProd ? '/~/media/data-visualizations/interactives/2020/netting-billions/' : '';
 
-const copyWebpack =
+const copyWebpack = 
     new CopyWebpackPlugin([{
         from: '-/',
         context: 'src',
@@ -106,7 +106,7 @@ const svelteUse = [
         loader: 'svelte-loader',
         options: {
             emitCss: true,
-            hotReload: true,
+            //hotReload: true,
             hydratable: true, // here must be true for preprocessing of component to work
             preprocess: {
                 style: sass({}, {name: 'scss'})
@@ -134,7 +134,15 @@ function returnJSUse() {
         return [{
                 loader: 'babel-loader',
                 options: {
-                    presets: ['@babel/preset-env']
+                    //presets: ['@babel/preset-env']
+                    "presets": [
+                        ["@babel/preset-env", {
+                            "useBuiltIns": "usage",
+                            "corejs": "3.6",
+                            "targets": "defaults",
+                            "modules": false
+                        }]
+                    ]
                 }
             },
             {
@@ -150,6 +158,7 @@ const rules = [{
 
     {
         test: /\.js$|\.mjs$/,
+        exclude: /node_modules\/(?!svelte|d3-array)/, // need to transpile svelte to avoid errors; same for d3-array in IE11
         use: returnJSUse()
     },
     {
@@ -265,36 +274,14 @@ if (!isProd) {
     plugins.push(copyWebpack);
 }
 if (!isDev) {
-    rules.unshift({
-        test: /\.js$|\.mjs$/,
-        use: [{
-                loader: 'babel-loader',
-                options: {
-                    presets: ['@babel/preset-env'],
-                    plugins: ['@babel/plugin-transform-runtime']
-                }
-            },
-            {
-                loader: 'eslint-loader'
-            }
-        ]
-    });
-}
-if (isProd) {
-    plugins.push(...devToolPlugins);
-}
-if (isDev) {
-   // plugins.push(new webpack.HotModuleReplacementPlugin());
-}
-if (!isDev) {
-    plugins.push(new CleanWebpackPlugin(), prerender);
+    plugins.push(new CleanWebpackPlugin(), prerender, ...devToolPlugins);
 }
 module.exports = env => {
     return {
         devServer: {
             hot: false //isDev
         },
-        devtool: isProd ? false : 'eval-source-map',
+        devtool: isDev ? 'eval-source-map' : false,
         entry: {
             index: ['./src/index.js']
         },
@@ -303,7 +290,7 @@ module.exports = env => {
             rules
         },
         optimization: {
-            minimizer: [
+            minimizer: isProd ? [ // only minimize for prod to aid debugging
                 new TerserPlugin({
                     sourceMap: true,
                     terserOptions: {
@@ -312,7 +299,7 @@ module.exports = env => {
                         },
                     },
                 })
-            ]
+            ] : []
         },
         output: {
             path: __dirname + '/' + outputFolder,
