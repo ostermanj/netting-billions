@@ -201,6 +201,7 @@ $color-level-3: #000;
 
             }
             .sectionHead {
+                position: static; // for browsers that don't do sticky: make sure top value doesn't displace
                 position: sticky;
                 top: 100px;
                 text-align: left;

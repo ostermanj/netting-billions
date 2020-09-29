@@ -24,6 +24,7 @@
         top: 20px;
         left: 1.125rem;
         background: transparent url('./filter.svg') 50% 5px / 24px no-repeat;
+        overflow: visible;
         &::before, &::after {
             position: absolute;
             left: 50%;

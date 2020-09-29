@@ -5,7 +5,8 @@
 import FilterItem from '@Project/components/filter-item/';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { FilterIsClosed, OrganizeBy, HasFiltersApplied, DimensionFilter } from '@Project/store.js';
-import { Sortable } from '@shopify/draggable';
+// below explicitly got to es5 version. not bracketed
+import Sortable from '@shopify/draggable/lib/es5/sortable.js';
 import { onMount } from 'svelte';
 import { isWorking } from '@Project/index.js';
 
@@ -199,6 +200,7 @@ onMount(() => {
         background-color: #fff;
         border-bottom: 1px solid $gray;
         box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        z-index: 1;
     }
     :global(#render-filter-here.filterIsClosed) {
         overflow-x: hidden;

@@ -1,6 +1,7 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 /* global BUILDTYPE */
+
 import './css/styles.scss';
 import 'tippy.js/dist/tippy.css';
 //import { fieldValues, returnNestedData } from './scripts/data.js';
@@ -65,7 +66,9 @@ new StickyFilterButton({
 initCharts({});
 //initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});
 //initCharts({filters: [['rfmo','W']]});
-document.dispatchEvent(new Event('custom-render-trigger'));
+if (window.IS_PRERENDERING){
+  document.dispatchEvent(new Event('custom-render-trigger'));
+}
 
 export function isWorking(bool){
     if ( bool ){

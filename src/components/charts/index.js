@@ -891,7 +891,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     return container.node();
 }
 function FLIP($rows){
-    var rows = $rows.nodes();
+    var rows = Array.from($rows.nodes());
    // First(rows);
     Last(rows);
    // Invert(rows);
@@ -908,7 +908,8 @@ function First(rows){
 }
 function Last(rows){
     var parent = rows[0].parentNode;
-    var frag = new DocumentFragment();
+    //var frag = new DocumentFragment();
+    var frag = document.createDocumentFragment(); // IE compat ?
     rows.forEach(row => {
         frag.appendChild(row);
         if ( row.expansionChild ){ // expansionChild is the <td> need to move the parent <tr>
