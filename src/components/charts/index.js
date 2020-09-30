@@ -267,6 +267,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             .data(years.map(() => returnDatum(datum)))
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);
+
+        bars.each(function(d, i, arr){
+            this.addEventListener('click', function(e){
+                e.stopPropagation();
+                tip.show.call(this,d,i,arr);
+            });
+        });
     }
 
     function sortFieldValues(d, a, b) {
@@ -831,7 +838,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         }
         rows.selectAll('th').each(function(){
             this.addEventListener('click', function(e){
-                if ( !document.body.classList.contains('has-hover') ){
+                if ( document.body._isTouchMode ){
                     e.stopPropagation();
                 }
             })

@@ -189,6 +189,9 @@ $color-level-3: #000;
             padding: 0;
             &.isExpandedChild {
                 display: table-cell;
+                table {
+                    background-color: #f8f8f8;
+                }
                 &::before {
                     content: '';
                     display: block;
@@ -291,6 +294,11 @@ $color-level-3: #000;
             padding-top: 1rem;   
         }
     }
+    .hasNoValues td {
+        @media screen and (max-width: 625px) {
+            padding-top: 0;   
+        }
+    }
     thead th {
         @media screen and (max-width: 625px){
             padding: 0;
@@ -315,6 +323,8 @@ $color-level-3: #000;
         }
         
 
+    }
+    tr:not(.hasNoValues) > th[scope="row"] {
         @media screen and (max-width: 625px){
             /* working in Chrome and FF -- need to check others */
             display: block !important;
@@ -328,7 +338,9 @@ $color-level-3: #000;
             left: 0 !important;
             background-color: transparent !important;
         }
+
     }
+   
     .columnTitle {
         position: relative;
     }
@@ -706,18 +718,40 @@ path.segment {
     font-weight: 300;
     filter: grayscale(1);
     opacity: 0.65;
-    th {
+    & > th {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-weight: inherit;
         padding: 0 0 0 15px;
+        @media screen and (max-width: 625px){
+            display: block;
+            overflow: visible;
+            width: 0;
+
+        }
         &::after {
             display: none !important;
         }
     }
     td {
         height: 0;
+        @media screen and (max-width: 625px){
+            &:first-of-type, &:nth-of-type(3) {
+                visibility: hidden;
+            }
+            &:nth-of-type(2) {
+                visibility: visible;
+            }
+        }
+        @media screen and (max-width: 400px){
+            &:nth-of-type(2) {
+                visibility: hidden;
+            }
+            &:nth-of-type(3) {
+                visibility: visible;
+            }
+        }
     }
     button {
         display: none;
