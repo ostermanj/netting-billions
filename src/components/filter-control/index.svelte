@@ -134,14 +134,15 @@ onMount(() => {
         max-width: 650px;
         margin: 0 auto;
         padding: 22px 0 30px;
-        max-height: calc(100vh - 120px);
+        max-height: calc(100vh - 100px);
         
 
         @media screen and (max-width: 1020px) {
             padding: 22px 20px 30px;
         }
-        @media screen and (max-width: 579px) {
+        @media screen and (max-height: 730px) {
             overflow-y: auto;
+            height: 100vh;
         }
     }
     .form-section {
@@ -161,6 +162,8 @@ onMount(() => {
         padding: 10px;
         position: relative;
         bottom: 10px;
+    }
+    .filter-form-label {
     }
     .filter-items-container--organize {
     }
@@ -187,11 +190,15 @@ onMount(() => {
         position: absolute;
         top: -22px;
         right: 6px;
+        background-color: rgba(255,255,255, 0.85);
         @media screen and (max-width: 1020px) {
             right: 0;
         }
         @media screen and (max-width: 922px) {
             right: 18px;
+        }
+        @media screen and (max-width: 685px) {
+            right: 36px;
         }
     }
     .inner-container {
@@ -228,6 +235,9 @@ onMount(() => {
             left: 0;
             transform: translateY(-50%);
             margin-right: 0.125em;
+        }
+        @media screen and (max-width: 440px) {
+            left: 20px;
         }
     }
     input[type="checkbox"] {
@@ -280,6 +290,9 @@ onMount(() => {
         display: flex;
         flex-direction: column;
         font-weight: bold;
+        @media screen and (max-width: 440px) {
+            display: none;
+        }
        /* &.inactive {
             color: #999;
         }*/
@@ -297,6 +310,9 @@ onMount(() => {
     }
     .form-inner-wrapper {
         max-width: 820px;
+        @media screen and (max-width: 365px){
+            font-size: 0.85rem;
+        }
     }
     .clear-all-filters {
         appearance: none;
@@ -316,6 +332,9 @@ onMount(() => {
             color: #999;
             cursor: not-allowed;
             text-decoration: none !important;
+        }
+        @media screen and (max-width: 450px) {
+            right: 23px;   
         }
     }
 </style>

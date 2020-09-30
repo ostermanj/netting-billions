@@ -16,15 +16,17 @@
         appearance:none;
         border: none;
         position: relative;
-        background-color: rgba(255,255,255,0.85);
         padding: 0;
         margin: 0 0 0 30px;
         width: 50px;
         height: 50px;
         top: 20px;
         left: 1.125rem;
-        background: transparent url('./filter.svg') 50% 5px / 24px no-repeat;
+        background: rgba(255,255,255,0.85) url('./filter.svg') 50% 5px / 24px no-repeat;
         overflow: visible;
+        @media screen and (max-width: 685px) {
+            transform: translateX(-18px);
+        }
         &::before, &::after {
             position: absolute;
             left: 50%;

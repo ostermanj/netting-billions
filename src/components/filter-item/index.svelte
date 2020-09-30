@@ -32,8 +32,36 @@ function clickHandler(e){
         display: flex;
         justify-content: space-between;
         align-items: center;
-        max-width: 510px;
+        max-width: 470px;
         width: calc(100vw - 182px);
+        @media screen and (max-width: 440px) {
+            height: 30px;
+            margin-top: 1.2rem;
+            width: 100%;
+            background-size: 18px;
+            &::before {
+                content: 'Then:';
+                display: block;
+                color: $dark_gray;
+                text-transform: none;
+                font-size: 1rem;
+                position: absolute;
+                left: 0;
+                top: -1.3rem;
+                @media screen and (max-width: 365px) {
+                    font-size: 0.85rem;
+                    top: -1.1rem;
+
+                }
+
+            }
+            &:first-child::before {
+                content: 'View by:';
+            }
+            &:nth-child(2)::before {
+                content: 'Drill down by:';
+            }
+        }
 
     }
     .filter-label {
@@ -41,6 +69,10 @@ function clickHandler(e){
         height: 100%;
         padding: 0 0 0 25px;
         line-height: 50px;
+        @media screen and (max-width: 440px) {
+            line-height: 30px;
+            font-size: 0.85rem;
+        }
     }
     .open-filter {
         appearance:none;
@@ -103,6 +135,13 @@ function clickHandler(e){
         top: 3px;
         position: relative;
         letter-spacing: 0.5px;
+        @media screen and (max-width: 450px) {
+            top: 2px;
+            button {
+                margin: 0;
+                bottom: 1px;
+            }
+        }
     }
 
 </style>

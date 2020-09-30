@@ -37,12 +37,23 @@ FilterIsClosed.subscribe(v => {
 <style lang="scss">
     @import '../../css/variables.scss';
     .nav-wrapper {
+        position: relative;
         display: flex;
         align-items: center;
         margin-bottom: 96px;
         padding-right: 25px;
         margin-right: 25px;
         background-color: #fff;
+        @media screen and (max-width: 585px) {
+            &::before {
+                position: absolute;
+                top: -1.2rem;
+                left: .625rem;
+                content: 'Jump to section:';
+                color: $a11y;
+                font-style: italic;
+            }
+        }
     }
     nav {
         margin: 0;

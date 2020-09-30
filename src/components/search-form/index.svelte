@@ -81,6 +81,8 @@ function closeHandler(){
         background-color: #fff;
         visibility: hidden;
         z-index: 1;
+        width: 100%;
+        max-width: 258px;
         &.isOpen {
             visibility: visible;
         }

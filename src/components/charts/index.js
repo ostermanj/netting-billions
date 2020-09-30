@@ -692,8 +692,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
         let header = entering.append('h' + (filters.length + 2))
             .attr('class', s.sectionHead)
             .html(d => `<a id="head-${d.key}" class="${s.headAnchor}"></a>
-                        <span>${display(d.key)}</span>
-                        <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>`);
+                        <div class="${s.sectionHeadText}">
+                            <span>${display(d.key)}</span>
+                            <span class="${s.filtersDisplay}">${displayFilters(filters)}</span>
+                        </div>`);
 
         header.each(function(){
             if ( filters.length > 0 ){

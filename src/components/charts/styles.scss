@@ -24,6 +24,10 @@ $color-level-3: #000;
     font-size: 0.85rem;
     position: absolute;
     right: 28px;
+    bottom: 11px;
+    @media screen and (max-width: 625px) {
+        bottom: 6px;
+    }
     &:hover, &:focus {
         text-decoration: underline;
     }
@@ -53,7 +57,7 @@ $color-level-3: #000;
         }
         th[scope="row"] button {
             left: 0;
-            @media screen and (max-width: 499px) {
+            @media screen and (max-width: 625px) {
                 left: 0.625rem !important;
             }
         }
@@ -63,7 +67,7 @@ $color-level-3: #000;
             
         }
         & > table th[scope="row"] {
-            @media screen and (max-width: 499px ) {
+            @media screen and (max-width: 625px ) {
                 padding-left: 0.625rem !important;
                 margin-right: -0.625rem;               
             }
@@ -84,7 +88,7 @@ $color-level-3: #000;
             bottom: 0;
             background-color: #fff;
             z-index: 1;
-            @media screen and (max-width: 499px) {
+            @media screen and (max-width: 625px) {
                 display: none;
             }
         }
@@ -102,7 +106,7 @@ $color-level-3: #000;
         }
         & > .sectionHead {
             margin-left: 14px !important;
-            @media screen and (max-width: 499px) {
+            @media screen and (max-width: 625px) {
                 margin-left: 0 !important;
             }
         }
@@ -125,7 +129,7 @@ $color-level-3: #000;
         & > .sectionHead {
                padding-left: 20px;
                margin-left: 28px !important;
-               @media screen and (max-width: 499px) {
+               @media screen and (max-width: 625px) {
                    margin-left: 0 !important;
                }
            }
@@ -138,16 +142,17 @@ $color-level-3: #000;
         position: relative;
         cursor: default;
     }
+
     table {
         width: 100%;
-        @media screen and (min-width: 500px){
+        @media screen and (min-width: 626px){
             table-layout: fixed;
         }
 
     }
     tr {
         cursor: pointer;
-        @media screen and (max-width: 499px){
+        @media screen and (max-width: 625px){
             padding-top: 10px;
         }
         transition: transform 0.3s ease-in;
@@ -194,11 +199,14 @@ $color-level-3: #000;
                     bottom: 0;
                     background-color: #000;
                     z-index: 1;
-                    @media screen and (max-width: 499px) {
+                    @media screen and (max-width: 625px) {
                         display: none;
                     }
                 }
 
+            }
+            .sectionHeadText {
+                max-width: calc(100% - 100px);
             }
             .sectionHead {
                 position: static; // for browsers that don't do sticky: make sure top value doesn't displace
@@ -212,14 +220,13 @@ $color-level-3: #000;
                 padding-bottom: 0.625rem;
                 margin: 0;
                 display: flex;
-               // justify-content: space-between;
                 align-items: baseline;
                 flex-wrap: wrap;
                 border-top: 1px solid $light_gray;
                 @media screen and (max-width: 910px){
                     top: 98px;
                 }
-                @media screen and (max-width: 499px) {
+                @media screen and (max-width: 625px) {
                     padding: 0.3125rem 0.625rem;
                 }
 
@@ -236,7 +243,7 @@ $color-level-3: #000;
             }
             h3.sectionHead {
                 z-index: 3;
-                @media screen and (max-width: 499px){
+                @media screen and (max-width: 625px){
                     z-index: 1;
                 }
             }
@@ -246,7 +253,7 @@ $color-level-3: #000;
                 @media screen and (max-width: 910px){
                     top: 139px; 
                 }
-                @media screen and (max-width: 499px){
+                @media screen and (max-width: 625px){
                     top: 129px; 
                 }
             }
@@ -256,7 +263,7 @@ $color-level-3: #000;
                 @media screen and (max-width: 910px){
                     top: 180px; 
                 }
-                @media screen and (max-width: 499px){
+                @media screen and (max-width: 625px){
                     top: 160px; 
                     z-index: 3;
                 }
@@ -280,12 +287,12 @@ $color-level-3: #000;
         color: #fff;
     }
     th:not([scope="row"]), td {
-        @media screen and (max-width: 499px) {
+        @media screen and (max-width: 625px) {
             padding-top: 1rem;   
         }
     }
     thead th {
-        @media screen and (max-width: 499px){
+        @media screen and (max-width: 625px){
             padding: 0;
         }
     }
@@ -302,13 +309,13 @@ $color-level-3: #000;
             bottom: 0;
             display: block;
             visibility: hidden;
-            @media screen and (max-width: 499px) {
+            @media screen and (max-width: 625px) {
                 display: none;
             }
         }
         
 
-        @media screen and (max-width: 499px){
+        @media screen and (max-width: 625px){
             /* working in Chrome and FF -- need to check others */
             display: block !important;
             position: relative !important;
@@ -334,7 +341,7 @@ $color-level-3: #000;
         width: 14px;
         height: 14px;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 924 922.666015625'%3E%3Cpath fill='%23b0b0b0' d='M456.667 1.333c126.667-1.333 235.333 42 326 130s137.333 195.333 140 322C924 580 880.334 689 791.667 780.333s-196.333 138.333-323 141C342 922.666 233 879 141.667 790.333S4 594 2.667 467.333c-2.667-126.667 40.667-235.667 130-327s197.333-137.667 324-139m52 152c-28 0-49.667 8-65 24-15.333 16-23 32.667-23 50-1.333 18.667 3.667 33.333 15 44 11.333 10.667 27.667 16 49 16 25.333 0 45.667-7.333 61-22 15.333-14.667 23-32.667 23-54 0-38.667-20-58-60-58m-120 594c20 0 48-8.667 84-26s71.333-43.333 106-78l-18-24c-32 24-56 36-72 36-9.333 0-10.667-12.667-4-38l42-160c17.333-64 10-96-22-96-20 0-49.667 9.667-89 29s-77.667 44.333-115 75l16 26c34.667-22.667 59.333-34 74-34 8 0 8 11.333 0 34l-36 152c-17.333 69.333-6 104 34 104'%3E%3C/path%3E%3C/svg%3E");
-        @media screen and (max-width: 499px) {
+        @media screen and (max-width: 625px) {
             bottom: calc(50% - 11px);
             width: 10px;
             height: 10px;
@@ -353,6 +360,9 @@ $color-level-3: #000;
     }
     th[scope="column"]{
         transform: translateX(17px);
+        @media screen and (max-width: 380px) {
+            font-size: 0.85rem;
+        }
     }
     th[scope="column"][data-tippy-content]::after {
         @media screen and (max-width: 380px) {
@@ -365,7 +375,7 @@ $color-level-3: #000;
     }
     th[scope="row"][data-tippy-content]::after {
         bottom: calc(50% - 6px);
-        @media screen and (max-width: 499px){
+        @media screen and (max-width: 625px){
             bottom: calc(50% - 5px);
             margin-left: 0.2em;
         }
@@ -580,7 +590,7 @@ path.segment {
     height: 100%;
     border: none;
     background-color: transparent;
-    @media screen and (max-width: 499px) {
+    @media screen and (max-width: 625px) {
         top: 25px;
         left: 0;
     }
@@ -600,14 +610,14 @@ path.segment {
         transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
         position: absolute;
         box-sizing: border-box;
-        @media screen and (max-width: 499px) {
+        @media screen and (max-width: 625px) {
             left: 6px;
             width: 11px;
             height: 11px;
         }
         .chartSection2 & {
             left: 22px;
-            @media screen and (max-width: 499px) {
+            @media screen and (max-width: 625px) {
                 left: 6px;
             }
         }
