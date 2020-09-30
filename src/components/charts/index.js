@@ -563,7 +563,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                             .attr('x', d => width + 30)
                             .attr('y', d => {
                                 //datalabelY = yScale(d[d.length - 1].p);
-                                datalabelY = height / 2 - 10
+                                datalabelY = height / 2 + outerRadius - 2;
                                 return datalabelY;
                         });
 
@@ -584,7 +584,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('class', 'pie')
                         .attr('transform', d => {
                            // return `translate( ${width +  outerRadius + 9} ${datalabelY + outerRadius + 7} )`;
-                            return `translate( ${width + 30} ${height / 2 + outerRadius} )`;
+                            return `translate( ${width + 30} ${height / 2 - outerRadius - 2} )`;
                         });
                     
                     pieGroup = pieGroup.merge(entering);
