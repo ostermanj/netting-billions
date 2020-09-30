@@ -36,6 +36,12 @@ $color-level-3: #000;
     width: 100%;
     max-width: 650px;
     margin: 0;
+    > table {
+        @media screen and (max-width: 625px) {
+            margin-left: -16px;
+            margin-right: -16px;
+        }
+    }
 
     &.chartSection0 {
         margin: 128px auto 2em;
@@ -144,8 +150,9 @@ $color-level-3: #000;
     }
 
     table {
-        width: 100%;
+        width: calc(100% + 32px);
         @media screen and (min-width: 626px){
+            width: 100%;
             table-layout: fixed;
         }
 
@@ -230,6 +237,8 @@ $color-level-3: #000;
                     top: 98px;
                 }
                 @media screen and (max-width: 625px) {
+                    width: calc(100% + 32px);
+                    margin-left: -10px;
                     padding: 0.3125rem 0.625rem;
                 }
 
