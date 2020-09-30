@@ -9,6 +9,7 @@ import Navigation from '@Project/components/navigation/';
 import StickyFilterButton from '@Project/components/sticky-filter-button/';
 import FilterControl from '@Project/components/filter-control/';
 import { initCharts } from '@Project/components/charts/';
+import { disableHoverOnTouch } from '@Submodule/UTILS';
 import { HasFiltersApplied } from '@Project/store.js';
 
 
@@ -16,37 +17,6 @@ const navContainer = document.querySelector('#render-nav-here');
 const filterContainer = document.querySelector('#render-filter-here');
 const appContainer = document.querySelector('#render-here');
 
-function disableHoverOnTouch(){
-// HT: https://stackoverflow.com/a/30303898
-    var hasHoverClass = false;
-    var container = document.body;
-    var lastTouchTime = 0;
-
-    function enableHover() {
-        // filter emulated events coming from touch events
-        if (new Date() - lastTouchTime < 500) return;
-        if (hasHoverClass) return;
-
-        container.classList.add('has-hover');
-        hasHoverClass = true;
-    }
-
-    function disableHover() {
-        if (!hasHoverClass) return;
-        container.classList.remove('has-hover');
-        hasHoverClass = false;
-    }
-
-    function updateLastTouchTime() {
-        lastTouchTime = new Date();
-    }
-
-    document.addEventListener('touchstart', updateLastTouchTime, true);
-    document.addEventListener('touchstart', disableHover, true);
-    document.addEventListener('mousemove', enableHover, true);
-
-    enableHover();
-}
 export default function init(){
   disableHoverOnTouch();
   HasFiltersApplied.subscribe(v => {
