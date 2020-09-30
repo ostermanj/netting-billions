@@ -8,7 +8,7 @@ import { FilterIsClosed, OrganizeBy, HasFiltersApplied, DimensionFilter } from '
 // below explicitly got to es5 version. not bracketed
 import Sortable from '@shopify/draggable/lib/es5/sortable.js';
 import { onMount } from 'svelte';
-import { isWorking } from '@Project/index.js';
+import { isWorking } from '@Project/app.js';
 
 let sections = ['rfmo','species','gear','product'];
 let clearAllHandlers = sections.reduce((acc,cur) => {acc[cur] = undefined; return acc},{})

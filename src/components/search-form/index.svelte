@@ -5,7 +5,7 @@ import dictionary from '@Project/data/dictionary.json';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { DimensionFilter, Filters } from '@Project/store.js';
 import { fieldValues } from '@Project/scripts/data.js';
-import { isWorking } from '@Project/index.js';
+import { isWorking } from '@Project/app.js';
 import { get } from 'svelte/store';
 
 export let section;

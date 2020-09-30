@@ -7,7 +7,7 @@ import dictionary from '@Project/data/dictionary.json';
 import { returnFieldValues, returnNestedData } from '@Project/scripts/data.js';
 import { OrganizeBy, Filters, HasFiltersApplied } from '@Project/store.js';
 import organize from './organize.js';
-import { isWorking } from '@Project/index.js';
+import { isWorking } from '@Project/app.js';
 import tippy from 'tippy.js';
 
 var organizeBy;
