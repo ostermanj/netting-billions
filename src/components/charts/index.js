@@ -93,16 +93,16 @@ if (module.hot) {
 
 const margin = {
     top: 11,
-    right: 51,
+    right: 56,
     bottom: 12,
-    left: 45
+    left: 40
 };
 const r = 2.7; 
 const strokeWidth = 2.2            ;
 const viewBoxWidth = 150;
 const viewBoxHeight = 64;
 const tickLength = 6;
-const safety = 2;
+const safety = 3;
 const height = viewBoxHeight - margin.top - margin.bottom;
 const width = viewBoxWidth - margin.left - margin.right;
 //const yScale = d3.scaleLinear().range([height, 0]);
@@ -381,12 +381,14 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     let entering = ticks.enter()
                         .append('g')
                         .attr('class', `ticks ${s.ticks}`)
+                        .classed(s.isChild, filters.length > 0)
                         .attr('transform', (d,i) => `translate(${margin.left + xScale(+d.key)} 0)`);
 
                     entering.append('text')
-                        .attr('text-anchor', 'middle')
+                        //.attr('text-anchor', 'middle')
                         .attr('y', (d,i) => i % 2 ? safety : viewBoxHeight - safety)
                         .attr('dy', (d,i) => i % 2 ? '0.6em' : 0 )
+                        .attr('dx', -3)
                         .text(d => d.key);
 
                     entering.append('line')
@@ -394,11 +396,11 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('x2', 0)
                         .attr('y1', (d,i) => {
                             var datum = returnDatum(d.parent).find(_d => _d.x == d.key);
-                            return i % 2 ? margin.top / 1.3 : margin.top + yScale(datum.p);
+                            return i % 2 ? margin.top + 2 : margin.top + yScale(datum.p);
                         })
                         .attr('y2', (d,i) => {
                             var datum = returnDatum(d.parent).find(_d => _d.x == d.key);
-                            return i % 2 ? margin.top + yScale(datum.p) : margin.top + height + margin.bottom -  margin.bottom / 1.3;
+                            return i % 2 ? margin.top + yScale(datum.p) : margin.top + height - 2;
                         });
 
 
@@ -413,7 +415,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .append('text')
                         .attr('class', `y-axis-title ${s.yAxisTitle}`)
                         .classed(s.isChild, filters.length > 0)
-                        .attr('y',0)
+                        .attr('y',-3)
                         .attr('x', margin.left - tickLength)
                         .attr('text-anchor', 'end')
                         .text('% change')
@@ -433,14 +435,14 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('class', `${s.yTicks} y-ticks`);
 
                     entering.append('line')
-                        .attr('x1',0)
+                        .attr('x1',-1)
                         .attr('x2', -tickLength)
                         .attr('y1', 0)
                         .attr('y2', 0);
 
                     let tickText = entering.append('text')
                         .attr('text-anchor', 'end')
-                        .attr('dy', '0.4em');
+                        .attr('dy', '0.3em');
                         
                     tickText 
                         .append('tspan')
@@ -478,7 +480,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     .classed(s.dummyGroup, (d,i) => i == 0)
                     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-//                entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
+                //entering.append('rect').attr('x', 0).attr('y',0).attr('width', width).attr('height', height).attr('stroke', 'magenta').attr('fill', 'none').attr('stroke-width','0.5px');
   //              entering.append('rect').attr('x', 0).attr('y', 0 - r - strokeWidth).attr('width', width).attr('height', height + 2 * r + 2 * strokeWidth).attr('stroke', 'cyan').attr('fill', 'none').attr('stroke-width','0.5px');
 
                 g = g.merge(entering);
@@ -560,10 +562,10 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     datalabel
                         .text(d => abbrev({ value: d[d.length - 1].y, type: datum.parent.key, precision: 3 }))
                         .transition().duration(200)
-                            .attr('x', d => width + 30)
+                            .attr('x', d => width + 35)
                             .attr('y', d => {
                                 //datalabelY = yScale(d[d.length - 1].p);
-                                datalabelY = height / 2 + outerRadius - 2;
+                                datalabelY = height / 2 + outerRadius +3;
                                 return datalabelY;
                         });
 
@@ -584,7 +586,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('class', 'pie')
                         .attr('transform', d => {
                            // return `translate( ${width +  outerRadius + 9} ${datalabelY + outerRadius + 7} )`;
-                            return `translate( ${width + 30} ${height / 2 - outerRadius - 2} )`;
+                            return `translate( ${width + 35} ${height / 2 - outerRadius + 3} )`;
                         });
                     
                     pieGroup = pieGroup.merge(entering);

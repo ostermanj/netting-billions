@@ -352,7 +352,7 @@ $color-level-3: #000;
         }
     }
     th[scope="column"]{
-        transform: translateX(19px);
+        transform: translateX(17px);
     }
     th[scope="column"][data-tippy-content]::after {
         @media screen and (max-width: 380px) {
@@ -667,6 +667,9 @@ path.segment {
 .legendAxis, .legendCenter, .ticks line, .yTicks line {
     stroke: $gray;
     stroke-width: 1px;
+}
+.ticks.isChild {
+    display: none;
 }
 .ticks line {
     stroke-dasharray: 2px 2px;
