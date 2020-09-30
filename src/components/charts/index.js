@@ -416,7 +416,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                         .attr('class', `y-axis-title ${s.yAxisTitle}`)
                         .classed(s.isChild, filters.length > 0)
                         .attr('y',-3)
-                        .attr('x', margin.left - tickLength)
+                        .attr('x', margin.left - tickLength + 2)
                         .attr('text-anchor', 'end')
                         .text('% change')
                         .attr('dy', '0.6em');
@@ -430,7 +430,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                     let entering = yTicks.enter()
                         .append('g')
                         .attr('transform', d =>  {
-                            return `translate(${margin.left - r - strokeWidth} 0)`;
+                            return `translate(${margin.left - r - strokeWidth + 2} 0)`;
                         })
                         .attr('class', `${s.yTicks} y-ticks`);
 
@@ -458,11 +458,11 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
             yTicks
                 .attr('transform', d =>  {
-                    return `translate(${margin.left - r - strokeWidth} ${margin.top + yScale(d)})`;
+                    return `translate(${margin.left - r - strokeWidth + 2} ${margin.top + yScale(d)})`;
                 });
 
             yTicks.select('.tick-label')
-                .text((d,i) => i == 1 ? '0' : d3.format('+.3~s')(d * 100).replace('-','–') + '%'._replaceAbbrev());
+                .text((d,i) => i == 1 ? '0' : d3.format('+.3~s')(d * 100).replace('-','–')._replaceAbbrev());
 
           /*  yTicks.select('.y-axis-title')
                 .text((d,i) => i == 0 ? '% change' : ''); */
