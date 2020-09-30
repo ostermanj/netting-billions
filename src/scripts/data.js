@@ -1,13 +1,19 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 /* eslint no-debugger: warn */
-import data from '@Project/data/data.csv';
+//import data from '@Project/data/data.csv';
 import d3 from '@Project/d3-importer.js';
 import { Filters } from '@Project/store.js';
 import { get } from 'svelte/store';
 
+var data;
+var fieldValues; // original field values
+
 const sections = ['rfmo', 'species', 'gear', 'product'];
-const fieldValues = returnFieldValues(); // original field values
+function initData(_data){
+    data = _data;
+    fieldValues = returnFieldValues(); // original field values
+}
 function returnFilteredData(){
     var filters = get(Filters);
     return Object.keys(filters).reduce(function(acc,cur){
@@ -142,5 +148,5 @@ function summarizeChildren(datum) {
     return datum;
 }
 
-export { fieldValues, returnFieldValues, returnNestedData} ;
+export { fieldValues, initData, returnFieldValues, returnNestedData} ;
 

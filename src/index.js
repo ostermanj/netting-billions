@@ -1,84 +1,24 @@
+/* global PUBLICPATH */
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
-/* global BUILDTYPE */
 
-import './css/styles.scss';
-import 'tippy.js/dist/tippy.css';
-//import { fieldValues, returnNestedData } from './scripts/data.js';
-import Navigation from '@Project/components/navigation/';
-import StickyFilterButton from '@Project/components/sticky-filter-button/';
-import FilterControl from '@Project/components/filter-control/';
-import { initCharts } from '@Project/components/charts/';
-import { HasFiltersApplied } from '@Project/store.js';
+import Papa from 'papaparse';
+import { initData } from '@Project/scripts/data.js';
+import init from './app.js';
+import dataFile from './data/data.csv'; // via file-loader
 
+const publicPath = window.IS_PRERENDERING ? '' : PUBLICPATH;
 
-const navContainer = document.querySelector('#render-nav-here');
-const filterContainer = document.querySelector('#render-filter-here');
-const appContainer = document.querySelector('#render-here');
-
-function disableHoverOnTouch(){
-// HT: https://stackoverflow.com/a/30303898
-    var hasHoverClass = false;
-    var container = document.body;
-    var lastTouchTime = 0;
-
-    function enableHover() {
-        // filter emulated events coming from touch events
-        if (new Date() - lastTouchTime < 500) return;
-        if (hasHoverClass) return;
-
-        container.classList.add('has-hover');
-        hasHoverClass = true;
-    }
-
-    function disableHover() {
-        if (!hasHoverClass) return;
-        container.classList.remove('has-hover');
-        hasHoverClass = false;
-    }
-
-    function updateLastTouchTime() {
-        lastTouchTime = new Date();
-    }
-
-    document.addEventListener('touchstart', updateLastTouchTime, true);
-    document.addEventListener('touchstart', disableHover, true);
-    document.addEventListener('mousemove', enableHover, true);
-
-    enableHover();
-}
-disableHoverOnTouch();
-HasFiltersApplied.subscribe(v => {
-      appContainer.classList[v ? 'add' : 'remove']('has-filters-applied');
+Papa.parse(publicPath + dataFile, {
+    complete: function(results) {
+        initData(results.data); // passes data to data.js where it's processed. app.js gets in from there after it's called
+        init();
+    },
+    download: true,
+    dynamicTyping: true,
+    error: function(error, file) {
+        console.log(error,file);
+    },
+    header: true,
+    skipEmptyLines: true
 });
-new Navigation({
-  target: navContainer,
-    hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
-});
-new FilterControl({
-  target: filterContainer,
-    hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
-});
-new StickyFilterButton({
-  target: appContainer,
-   hydrate: !( BUILDTYPE == 'development' || window.IS_PRERENDERING )
-});
-initCharts({});
-//initCharts({filters: [], sortDirection: 'desc', sortBy: 'dv'});
-//initCharts({filters: [['rfmo','W']]});
-if (window.IS_PRERENDERING){
-  document.dispatchEvent(new Event('custom-render-trigger'));
-}
-
-export function isWorking(bool){
-    if ( bool ){
-        appContainer.classList.add('is-working');
-       // appContainer.classList.add('is-working--transition');
-    } else {
-      //  appContainer.classList.remove('is-working--transition');
-       // setTimeout(() => {
-            appContainer.classList.remove('is-working');
-       // },200);
-    }
-    
-}

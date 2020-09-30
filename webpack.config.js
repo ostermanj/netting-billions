@@ -252,11 +252,9 @@ const rules = [{
         },
     {
         test: /\.csv$/,
-        loader: 'csv-loader',
+        loader: 'file-loader',
         options: {
-            dynamicTyping: true,
-            header: true,
-            skipEmptyLines: true
+            name: 'data/[name].[ext]?v=[hash:6]', 
         }
     },
     {
