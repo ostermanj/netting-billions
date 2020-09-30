@@ -32,7 +32,7 @@ function clickHandler(e){
         display: flex;
         justify-content: space-between;
         align-items: center;
-        max-width: 680px;
+        max-width: 510px;
         width: calc(100vw - 182px);
 
     }

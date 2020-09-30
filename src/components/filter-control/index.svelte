@@ -131,7 +131,7 @@ onMount(() => {
     form {
         position: relative;
         width: 100%;
-        max-width: 990px;
+        max-width: 650px;
         margin: 0 auto;
         padding: 22px 0 30px;
         max-height: calc(100vh - 120px);
