@@ -590,11 +590,13 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
                     let entering = pieGroup.enter()
                         .append('g')
-                        .attr('class', 'pie')
+                        .attr('class', `pie ${s.pie}`)
                         .attr('transform', d => {
                            // return `translate( ${width +  outerRadius + 9} ${datalabelY + outerRadius + 7} )`;
                             return `translate( ${width + 35} ${height / 2 - outerRadius + 3} )`;
-                        });
+                        })
+                            .append('g')
+                            .attr('class', s.pieInner);
                     
                     pieGroup = pieGroup.merge(entering);
                

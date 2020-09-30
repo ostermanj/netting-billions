@@ -497,6 +497,7 @@ path.segment {
     font-weight: bold;
     @media screen and (max-width: 400px) {
         font-size: 16px;
+        transform: translateY(7px);
 
     }
     &.v {
@@ -771,6 +772,11 @@ path.segment {
     border-top-width: 0 !important;
 }
 
+@media screen and (max-width: 400px) {
+    g.pieInner {
+        transform:  scale(1.5);
+    }    
+}
 
 /* tippy overrides */
 
