@@ -68,17 +68,8 @@ function _organize(orgBy) {
                 if (Sections[i][orgBy[i]]) {
                     Sections[i][orgBy[i]].forEach(node => {
                         node.section.style.display = 'block';
-                       /* var shouldOpenRows = !!orgBy[i + 1];
-                        node.rows.forEach(row => {
-                            if ( !row.isExpanded == shouldOpenRows ){
-                                row.dispatchEvent(new MouseEvent('click', {
-                                    view: window,
-                                    bubbles: false,
-                                    cancelable: true
-                                }));
-                            }
-                        });*/
                         isWorking(false);
+                        document.querySelector('a#head-' + orgBy[0]).scrollIntoView();
                     });
                 }
             }
