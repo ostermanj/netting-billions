@@ -1,6 +1,7 @@
 <script>
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
+import { GTMPush } from '@Submodule/UTILS';
 import dictionary from '@Project/data/dictionary.json';
 import { xOut as XOut } from '@Submodule/UI-Svelte/';
 import { DimensionFilter, Filters } from '@Project/store.js';
@@ -70,6 +71,9 @@ function formSubmit(){
         filters[section] = selected;
         //TO DO: all checked is same as none checked
         Filters.set(filters);
+        if ( selected.length > 0 ){
+            GTMPush('NettingBillions|Filter|' + section + '|' + selected.join('-'));
+        }
     }
     if ( window.requestIdleCallback ){
             requestIdleCallback(_formSubmit,{timeout: 500});

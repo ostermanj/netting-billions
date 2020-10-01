@@ -1,7 +1,7 @@
 /* eslint no-unused-vars: warn */
 /* eslint no-undef: warn */
 import d3 from '@Project/d3-importer.js';
-import StringHelpers from '@Submodule/UTILS';
+import { GTMPush } from '@Submodule/UTILS';
 import s from './styles.scss';
 import dictionary from '@Project/data/dictionary.json';
 import { returnFieldValues, returnNestedData } from '@Project/scripts/data.js';
@@ -16,6 +16,7 @@ var fieldValues;
 OrganizeBy.subscribe(v => {
     organizeBy = v;
     _organize(v);
+    if ( v ) GTMPush('NettingBillions|OrgBy|' + v.join('-'));
 });
 Filters.subscribe(() => {
     if ( subsequentFilter ){
@@ -199,6 +200,7 @@ function rowClickHandler(d, sortBy, sortDirection) {
     this.classList.add('js-child-is-loaded');
     this.expansionChild = initCharts({ filters: this.rowFilters, sortBy, sortDirection, appendAfter: this });
     this.isExpanded = true;
+    GTMPush('NettingBillions|RowExpand|' + rowValues.join('-'));
 }
 function returnNiceValues(domain){
     //domain[1] = 0.24968
