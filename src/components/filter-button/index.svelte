@@ -2,9 +2,11 @@
     /* eslint no-unused-vars: warn */
     /* eslint no-undef: warn */
     import { FilterIsClosed, HasFiltersApplied } from '@Project/store.js';
+    import { get } from 'svelte/store';
     let hasFiltersApplied = false;
-    function openFilters(){
-        FilterIsClosed.set(false);
+    function toggleFilters(){
+        var filterIsClosed = get(FilterIsClosed);
+        FilterIsClosed.set(!filterIsClosed);
     }
     HasFiltersApplied.subscribe(v => {
         hasFiltersApplied = v;
@@ -54,4 +56,4 @@
         }
     }
 </style>
-<button class:hasFiltersApplied role="button" aria-controls="nb-filter-container" on:click|stopPropagation="{openFilters}"></button>
+<button class:hasFiltersApplied role="button" aria-controls="nb-filter-container" on:click|stopPropagation="{toggleFilters}"></button>

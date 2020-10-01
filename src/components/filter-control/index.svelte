@@ -26,7 +26,6 @@ $:hasFiltersSelected = (function(){ // despite name hasFiltersApplid is true if 
         HasFiltersApplied.set(reorgIsActive);
     }
 })();
-let filterIsClosing = false;
 let filterIsClosed = false;
 let filterFormIsOpen = false;
 let draggableContainer;
@@ -36,11 +35,8 @@ DimensionFilter.subscribe(v => {
 });
 
 FilterIsClosed.subscribe(v => {
-    filterIsClosing = v;
-    setTimeout(() => {
-        filterIsClosed = v;
-        container.classList[v ? 'add' : 'remove']('filterIsClosed');
-    }, v ? 250 : 0);
+    filterIsClosed = v;
+    container.classList[v ? 'add' : 'remove']('filter-is-closed');
 });
 function clearAllFilters(){
     isWorking(true);
@@ -103,37 +99,31 @@ onMount(() => {
 <style lang="scss">
     @import '../../css/variables.scss';
     :global(#render-filter-here){
-        position: sticky;
-        top: 76px;
+        position: fixed;
+        left: 0;
+        top: 61px;
+        width: 100vw;
         z-index: 5;
+        transition: transform 0.2s ease-in;
         @media screen and (max-width: 910px) {
-            top: 73px;
+            top: 58px;
         }
     }
+    :global(#render-filter-here.filter-is-closed) {
+        transform: translateX(101vw);
+        transition-timing-function: ease-out;
+    }
     .filter-container {
+        padding-top: 40px;
         left: 0;
         width: 100%;
         z-index: 5;
         transition: transform 0.25s ease-out;
-        margin-top: -176px;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
         @media screen and (max-width: 910px) {
             top: 98px;            
         }
-
-    }
-    .full-width-container {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        background-color: #fff;
-        border-top: 1px solid $gray;
-        border-bottom: 1px solid $gray;
-        top: 25px;
-        position: relative;
-
 
     }
     form {
@@ -143,8 +133,6 @@ onMount(() => {
         margin: 0 auto;
         padding: 22px 0 30px;
         max-height: calc(100vh - 100px);
-        
-
         @media screen and (max-width: 1020px) {
             padding: 22px 20px 30px;
         }
@@ -179,13 +167,7 @@ onMount(() => {
         font-weight: bold;
         margin-bottom: 1.2rem;
     }
-    .filter-container.filterIsClosing {
-        transform: translateX(101vw);
-        transition-timing-function: ease-in;
-    }
-    .filter-container.filterIsClosed {
-        visibility: hidden;
-    }
+    
     .x-out-outer-wrapper {
         width: 100%;
         max-width: 850px;
@@ -217,7 +199,6 @@ onMount(() => {
     }
     :global(#render-filter-here.filterIsClosed) {
         overflow-x: hidden;
-        margin-bottom: -174px;
     }
     .org-by-toggle {
         position: absolute;
@@ -347,9 +328,7 @@ onMount(() => {
         }
     }
 </style>
-<div on:click|stopPropagation="{containerClick}" id="nb-filter-container" class:filterIsClosing class:filterIsClosed class="filter-container" aria-hidden="{filterIsClosed || filterIsClosing }">
-    <div class="full-width-container">
-        <div class="inner-container">
+<div on:click|stopPropagation="{containerClick}" id="nb-filter-container" class="filter-container" aria-hidden="{filterIsClosed}">
             <div class="x-out-outer-wrapper">
                 <div hidden="{filterIsClosed}" class="x-out-container" on:click|preventDefault="{closeHandler}">
                     <XOut ariaLabel="Close filter drill-down form" />
@@ -378,6 +357,4 @@ onMount(() => {
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
 </div>

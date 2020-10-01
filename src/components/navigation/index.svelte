@@ -7,7 +7,6 @@ import { FilterIsClosed, HasFiltersApplied, OrganizeBy } from '@Project/store.js
 
 let sections = ['rfmo','species','gear','product'];
 let anchors = {};
-let filterIsClosed;
 let activeSection;
 
 function clickHandler(){
@@ -26,8 +25,7 @@ OrganizeBy.subscribe(v => {
     console.log(activeSection);
 });
 FilterIsClosed.subscribe(v => {
-    filterIsClosed = v;
-    if ( !filterIsClosed ){
+    if ( !v ){
         document.body.addEventListener('click', bodyClickFn);
     } else {
         document.body.removeEventListener('click', bodyClickFn);
@@ -40,7 +38,6 @@ FilterIsClosed.subscribe(v => {
         position: relative;
         display: flex;
         align-items: center;
-        margin-bottom: 96px;
         padding-right: 25px;
         margin-right: 25px;
         background-color: #fff;
@@ -104,7 +101,7 @@ FilterIsClosed.subscribe(v => {
     }
 </style>
 <div class="nav-wrapper">
-    <nav class:isHidden="{!filterIsClosed}" aria-label="Navigation for data visualization section">
+    <nav aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
             <li><a class:active="{activeSection && activeSection === section}" disabled="{activeSection && activeSection !== section ? 'disabled' : null}" title="{activeSection && activeSection !== section ? 'Filters applied: view not available' : null}" data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
