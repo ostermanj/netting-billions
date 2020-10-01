@@ -223,7 +223,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
     var nestedData = returnNestedData(filters);
     fieldValues = returnFieldValues();
     var sortedFieldValues = nestedData.values.reduce(function(acc,cur){
-        acc[cur.key] = [...fieldValues[cur.key]].sort(sortFieldValues.bind(undefined, cur));
+        acc[cur.key] = [...fieldValues[cur.key]].sort(sortByNumberOfColumnsWithData.bind(undefined, cur)).sort(sortFieldValues.bind(undefined, cur));
         return acc;
     },{});
     console.log(nestedData);
@@ -266,7 +266,15 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
             });
         });
     }
-
+    function sortByNumberOfColumnsWithData(d,a,b){
+        var compare = [a,b].map(x => d.values.reduce(function(acc,cur){
+            if ( cur.values.find(d => d.key == x).values.length > 0 ){
+                acc++;
+            }
+            return acc;
+        },0)); 
+        return compare[1] - compare[0];
+    }
     function sortFieldValues(d, a, b) {
         var columnValues = d.values.find(d => d.key == sortBy).values;
         var ab = [a, b].map(fv => {
