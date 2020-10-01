@@ -153,7 +153,7 @@ function displayFilters(filters) {
         return '';
     }
     return filters.reduce(function(acc, cur, i, arr) {
-        return acc + `<span>${display(cur[0])}:</span> ${display(cur[1])} `;
+        return acc + `<span>${display(cur[0])}:</span> ${display(cur[1])}${ i == arr.length - 1 ? '' : '; '}`;
     }, '(') + ')';
 }
 
@@ -590,7 +590,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
 
                     let entering = pieGroup.enter()
                         .append('g')
-                        .attr('class', `pie ${s.pie}`)
+                        .attr('class', `pie`)
                         .attr('transform', d => {
                            // return `translate( ${width +  outerRadius + 9} ${datalabelY + outerRadius + 7} )`;
                             return `translate( ${width + 35} ${height / 2 - outerRadius + 3} )`;

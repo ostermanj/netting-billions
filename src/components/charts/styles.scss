@@ -36,20 +36,23 @@ $color-level-3: #000;
     width: 100%;
     max-width: 650px;
     margin: 0;
-    > table {
-        @media screen and (max-width: 625px) {
-            margin-left: -16px;
-            margin-right: -16px;
-        }
-    }
 
     &.chartSection0 {
         margin: 128px auto 2em;
         background-color: #fff;
-        & > table > tr > td.childCell.isExpandedChild {
-            border-left: 1px solid #000;
-            &::before {
-                display: none;
+        & > table {
+            @media screen and (max-width: 625px){
+                width: 100vw;
+                margin-left: -18px;
+            }
+             @media screen and (max-width: 470px){
+                margin-left: -25px;
+            }
+            > tr > td.childCell.isExpandedChild {
+                border-left: 1px solid #000;
+                &::before {
+                    display: none;
+                }
             }
         }
     }
@@ -150,9 +153,9 @@ $color-level-3: #000;
     }
 
     table {
-        width: calc(100% + 32px);
+        
+        width: 100%;
         @media screen and (min-width: 626px){
-            width: 100%;
             table-layout: fixed;
         }
 
@@ -237,8 +240,7 @@ $color-level-3: #000;
                     top: 98px;
                 }
                 @media screen and (max-width: 625px) {
-                    width: calc(100% + 32px);
-                    margin-left: -10px;
+                    width: 100vw;
                     padding: 0.3125rem 0.625rem;
                 }
 
@@ -344,10 +346,15 @@ $color-level-3: #000;
             font-size: .85rem !important;
             padding-left: 0;
             padding-right: 0 !important;
-            left: 0 !important;
+            left: 0;
             background-color: transparent !important;
         }
 
+    }
+    &.chartSection0 > table > tbody > tr:not(.hasNoValues) > th[scope="row"] {
+         @media screen and (max-width: 625px){
+            left: 10px;
+         }
     }
    
     .columnTitle {
@@ -754,7 +761,7 @@ path.segment {
                 visibility: visible;
             }
         }
-        @media screen and (max-width: 400px){
+        @media screen and (max-width: 500px){
             &:nth-of-type(2) {
                 visibility: hidden;
             }
