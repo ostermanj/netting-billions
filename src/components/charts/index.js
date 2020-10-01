@@ -181,11 +181,6 @@ d3.formatLocale({
     currency: ['$', '']
 });
 function removeNode(selection){
-    /*selection.attr('class', s.rowIsExiting)
-    .transition().duration(500)
-    .on('end', function(){
-        selection.remove();
-    });*/
     selection.remove();
 }
 function rowClickHandler(d, sortBy, sortDirection) {
@@ -868,7 +863,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 })*/
                 .attr('class', (d,i,arr) => i == arr.length - 1 ? null : s[d.parent.key])
                 .attr('width', (d,i, arr) => i == arr.length - 1 ? '20px' : null)
-                .text((d,i,arr) => i == arr.length - 1 ? null : 'n.a'); // put in 'n.a.' for all cells. to be replaced by VSG in createSVG if data calls for it
+                .text((d,i,arr) => i == arr.length - 1 ? null : 'n.a.'); // put in 'n.a.' for all cells. to be replaced by VSG in createSVG if data calls for it
 
             cells = cells.merge(entering);
 
