@@ -583,7 +583,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                 });
                 let pieAngles = pieGenerator(pieData);
                 console.log('pie', pieAngles);
-                let pieGroup = g.selectAll('g.pie')
+                let pieGroup = g.selectAll('g.pie-inner')
                     .data([pieAngles]);
                 {
 
@@ -595,7 +595,7 @@ export function initCharts({ filters = [], sortBy = 'ev', sortDirection = 'desc'
                             return `translate( ${width + 35} ${height / 2 - outerRadius + 3} )`;
                         })
                             .append('g')
-                            .attr('class', s.pieInner);
+                            .attr('class', `pie-inner ${s.pieInner}`);
                     
                     pieGroup = pieGroup.merge(entering);
                
