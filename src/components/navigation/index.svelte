@@ -6,13 +6,8 @@ import FilterButton from '@Project/components/filter-button/';
 import { FilterIsClosed, HasFiltersApplied, OrganizeBy } from '@Project/store.js';
 
 let sections = ['rfmo','species','gear','product'];
-let anchors = {};
 let activeSection;
 
-function clickHandler(){
-  anchors[this.dataset.key] = anchors[this.dataset.key] || document.querySelector(`#head-${this.dataset.key}`);
-  anchors[this.dataset.key].scrollIntoView(true);
-} 
 function bodyClickFn(){
     FilterIsClosed.set(true);
 }
@@ -104,7 +99,7 @@ FilterIsClosed.subscribe(v => {
     <nav aria-label="Navigation for data visualization section">
         <ul>
             {#each sections as section}
-            <li><a class:active="{activeSection && activeSection === section}" disabled="{activeSection && activeSection !== section ? 'disabled' : null}" title="{activeSection && activeSection !== section ? 'Filters applied: view not available' : null}" data-key="{section}" on:click|preventDefault="{clickHandler}" href="#">{dictionary[section].display}</a></li>
+            <li><a class:active="{activeSection && activeSection === section}" disabled="{activeSection && activeSection !== section ? 'disabled' : null}" title="{activeSection && activeSection !== section ? 'Filters applied: view not available' : null}" data-key="{section}" href="#head-{section}">{dictionary[section].display}</a></li>
             {/each}
         </ul>
     </nav>
