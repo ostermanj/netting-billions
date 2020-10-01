@@ -6,11 +6,12 @@
         display: flex;
         justify-content: flex-end;
         position: sticky;
-        top: 100px;
+        top: 78px;
         margin-top: 21px;
         margin-bottom: 0;
         height: 0;
         z-index: 4;
+        
     }
 </style>
 

@@ -24,8 +24,8 @@
         left: 1.125rem;
         background: rgba(255,255,255,0.85) url('./filter.svg') 50% 5px / 24px no-repeat;
         overflow: visible;
-        @media screen and (max-width: 685px) {
-            transform: translateX(-18px);
+        @media screen and (max-width: 470px) {
+            left: 1.5rem;
         }
         &::before, &::after {
             position: absolute;

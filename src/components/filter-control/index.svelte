@@ -197,9 +197,7 @@ onMount(() => {
         @media screen and (max-width: 922px) {
             right: 18px;
         }
-        @media screen and (max-width: 685px) {
-            right: 36px;
-        }
+        
     }
     .inner-container {
         position: absolute;
