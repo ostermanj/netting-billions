@@ -82,13 +82,12 @@ function clickHandler(e){
         margin: 0 12px 0 0;
         width: 28px;
         height: 28px;
-        background: transparent url('./../filter-button/filter.svg') 50% 50% / 18px no-repeat;
-        filter: brightness(20);
+        background: transparent url('./filter-white.svg') 50% 50% / 18px no-repeat;
         transition: filter 0.2s ease-in-out;
         position: relative;
         vertical-align: middle;
         &:hover, &:focus {
-            filter: brightness(2);
+            background-image: url('./filter-light-blue.svg');
         }
     }
     .token-wrapper {
