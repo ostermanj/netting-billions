@@ -21,7 +21,7 @@
         padding: 0;
         margin: 0 0 0 30px;
         width: 50px;
-        height: 50px;
+        height: 55px;
         top: 20px;
         left: 1.125rem;
         background: rgba(255,255,255,0.85) url('./filter.svg') 50% 5px / 24px no-repeat;
@@ -40,7 +40,7 @@
         }
         &::before {
             content: 'filters';
-            bottom: 5px;
+            bottom: 11px;
         }
         &:hover, &:focus, &.hasFiltersApplied {
             background-image: url('./filter-blue.svg');
@@ -51,7 +51,7 @@
         &.hasFiltersApplied {
             &::after {
                 content: 'applied';
-                bottom:-6px;
+                bottom:0;
             }
         }
     }
