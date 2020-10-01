@@ -21,9 +21,17 @@ export let selected = []; // changes committed to by submitting the form
 export let dirtySelected = []; // changes not yet committed to
 export let isDirty;
 export let clearAll = function(){
-    dirtySelected = [];
-    inputs.forEach(ip => ip.checked = false);
-    formSubmit();
+    isWorking(true);
+    function _clearAll(){
+        inputs.forEach(ip => ip.checked = false);
+        formSubmit();
+        dirtySelected = [];
+    }
+    if ( window.requestIdleCallback ){
+        requestIdleCallback(_clearAll,{timeout: 500});
+    } else {
+        setTimeout(_clearAll);
+    }
 };
 $:isDirty = !( 
         selected.every(item => dirtySelected.includes(item)) &&
@@ -56,12 +64,18 @@ function changeHandler(e){
 }
 function formSubmit(){
     isWorking(true);
-    selected = dirtySelected.slice(); // slicing to avoid binding by assignation
-    var filters = get(Filters);
-    filters[section] = selected;
-    //TO DO: all checked is same as none checked
-    Filters.set(filters);
-    //closeHandler();
+    function _formSubmit(){
+        selected = dirtySelected.slice(); // slicing to avoid binding by assignation
+        var filters = get(Filters);
+        filters[section] = selected;
+        //TO DO: all checked is same as none checked
+        Filters.set(filters);
+    }
+    if ( window.requestIdleCallback ){
+            requestIdleCallback(_formSubmit,{timeout: 500});
+        } else {
+            setTimeout(_formSubmit);
+        }
 }
 function closeHandler(){
     DimensionFilter.set(undefined);

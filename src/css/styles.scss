@@ -28,27 +28,31 @@ a[href=""] {
 body {
     overflow-x: hidden;
 }
-#render-here > section::before {
-    content: '';
+#render-here::before {
+    content: 'working ...';
+    text-align: center;
     display: block;
-    position: absolute;
+    position: relative;
+    width: 100vw;
+    position: fixed;
+    top: 98px;
     left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255,255,255,0.75);
+    height: 100vh;
     //transition: background-color 0.2s ease-in-out;
     visibility: hidden;
-    z-index: 4;
+    z-index: 5;
+    padding-top: calc(50vh - 100px);
+    font-weight: bold;
 }
 #render-here.is-working {
     cursor: progress;
-    & > section::before {
+    &::before {
         visibility: visible;
     }
 }
 /*#render-here.is-working.is-working--transition > section::before {
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255,255,255,0.75);
 }*/
 .ie-note {
     background-color: $pew_blue;

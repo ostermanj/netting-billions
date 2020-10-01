@@ -43,7 +43,15 @@ FilterIsClosed.subscribe(v => {
     }, v ? 250 : 0);
 });
 function clearAllFilters(){
-   Object.values(clearAllHandlers).forEach(handler => handler());
+    isWorking(true);
+    function _clearAll(){
+        Object.values(clearAllHandlers).forEach(handler => handler())
+    }
+    if ( window.requestIdleCallback ) {
+        requestIdleCallback(_clearAll), {timeout: 500};
+    } else {
+        setTimeout(_clearAll);
+    }
 }
 function reorgChangeHandler(e){
     console.log(e,this, this.value);
@@ -330,6 +338,9 @@ onMount(() => {
             color: #999;
             cursor: not-allowed;
             text-decoration: none !important;
+        }
+        @media screen and (min-width: 1021px) {
+            right: 89px;
         }
         @media screen and (max-width: 450px) {
             right: 23px;   
